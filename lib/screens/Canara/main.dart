@@ -11,7 +11,7 @@ import 'dart:typed_data';
 import 'package:printing/printing.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-// Fix: Remove duplicate HTML import - only use universal_html for cross-platform compatibility
+
 import 'package:universal_html/html.dart' as html;
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
