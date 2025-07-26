@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:login_screen/screens/Canara/main.dart';
 import 'package:login_screen/screens/Federal/federal.dart';
 import 'package:login_screen/screens/IDBI/valuation_form_ui.dart';
 import 'package:login_screen/screens/LIC/pvr1/valuation_form_screen_pvr1.dart';
@@ -24,11 +25,9 @@ class LoanType extends StatelessWidget {
       bankName = LIC(context);
     } else if (selectedBank['name'] == 'South Indian Bank') {
       bankName = SIB(context);
-    }
-    else if (selectedBank['name'] == 'State Bank of India') {
+    } else if (selectedBank['name'] == 'State Bank of India') {
       bankName = SBI(context);
-    }
-     else {
+    } else {
       bankName = Federal(context);
     }
 
@@ -52,9 +51,11 @@ class LoanType extends StatelessWidget {
           preferredSize: const Size.fromHeight(100),
           child: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(24),
@@ -108,11 +109,14 @@ class LoanType extends StatelessWidget {
 
     return Column(
       children: [
-        const SizedBox(height: 20,),
+        const SizedBox(
+          height: 20,
+        ),
         const Text('LIC',
             style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 28,)),
+              fontWeight: FontWeight.bold,
+              fontSize: 28,
+            )),
         const SizedBox(height: 10),
         Image.asset('assets/images/lic.jpeg'),
         const SizedBox(height: 50),
@@ -136,9 +140,11 @@ class LoanType extends StatelessWidget {
                     selectedValue = value;
                   });
                   if (value == 'HOUSE RENOVATION (PVR - 3)') {
-                    Navigator.of(ctx).push(MaterialPageRoute(builder: (_) => const ValuationFormScreen()));
+                    Navigator.of(ctx).push(MaterialPageRoute(
+                        builder: (_) => const ValuationFormScreen()));
                   } else if (value == 'HOUSE CONSTRUCTION (PVR - 1)') {
-                    Navigator.of(ctx).push(MaterialPageRoute(builder: (_) => const ValuationFormScreenPVR1()));
+                    Navigator.of(ctx).push(MaterialPageRoute(
+                        builder: (_) => const ValuationFormScreenPVR1()));
                   }
                 },
               );
@@ -159,11 +165,14 @@ class LoanType extends StatelessWidget {
 
     return Column(
       children: [
-        const SizedBox(height: 20,),
+        const SizedBox(
+          height: 20,
+        ),
         const Text('IDBI Bank',
             style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 28,)),
+              fontWeight: FontWeight.bold,
+              fontSize: 28,
+            )),
         const SizedBox(height: 10),
         Image.asset('assets/images/idbi.jpeg'),
         const SizedBox(height: 50),
@@ -187,7 +196,8 @@ class LoanType extends StatelessWidget {
                     selectedValue = value;
                   });
                   if (value == 'VALUATION REPORT') {
-                    Navigator.of(ctx).push(MaterialPageRoute(builder: (_) => const ValuationFormScreenIDBI()));
+                    Navigator.of(ctx).push(MaterialPageRoute(
+                        builder: (_) => const ValuationFormScreenIDBI()));
                   }
                 },
               );
@@ -208,11 +218,14 @@ class LoanType extends StatelessWidget {
 
     return Column(
       children: [
-        const SizedBox(height: 20,),
+        const SizedBox(
+          height: 20,
+        ),
         const Text('FEDERAL BANK',
             style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 28,)),
+              fontWeight: FontWeight.bold,
+              fontSize: 28,
+            )),
         const SizedBox(height: 10),
         Image.asset('assets/images/federal.jpeg'),
         const SizedBox(height: 50),
@@ -236,7 +249,8 @@ class LoanType extends StatelessWidget {
                     selectedValue = value;
                   });
                   if (value == 'LAND AND BUILDING') {
-                    Navigator.of(ctx).push(MaterialPageRoute(builder: (_) => const PdfGeneratorScreen()));
+                    Navigator.of(ctx).push(MaterialPageRoute(
+                        builder: (_) => const PdfGeneratorScreen()));
                   }
                 },
               );
@@ -250,24 +264,28 @@ class LoanType extends StatelessWidget {
   Widget Canara(BuildContext ctx) {
     final List<String> loanTypes = [
       '---SELECT---',
-      'Plant And Machinery',
+      /* 'Plant And Machinery',
       'Property (Land & BUILDING)',
       'VALUATION OF COMMERCIAL BUILDING BY RENT CAPITALISATION METHOD',
       'VALUATION OF FLAT BY COMPOSITE RATE METHOD',
       'GENERAL FORMAT VALUATION REPORT OTHER PROPERTIES',
       'VALUATION OF VACANT SITES/ RESIDENTIAL PLOT / COMMERCIAL SITE / LAND',
-      'VALUATION REPORT (IN RESPECT OF AGRICULTURAL LANDS)',
+      'VALUATION REPORT (IN RESPECT OF AGRICULTURAL LANDS)', */
+      'CANARA FORM'
     ];
 
     String? selectedValue = loanTypes[0];
 
     return Column(
       children: [
-        const SizedBox(height: 20,),
+        const SizedBox(
+          height: 20,
+        ),
         const Text('CANARA BANK',
             style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 28,)),
+              fontWeight: FontWeight.bold,
+              fontSize: 28,
+            )),
         const SizedBox(height: 15),
         Image.asset('assets/images/canara.jpeg'),
         const SizedBox(height: 50),
@@ -290,7 +308,8 @@ class LoanType extends StatelessWidget {
                   setState(() {
                     selectedValue = value;
                   });
-                  Navigator.of(ctx).push(MaterialPageRoute(builder: (_) => const LocationScreen()));
+                  Navigator.of(ctx).push(MaterialPageRoute(
+                      builder: (_) => const PropertyValuationReportPage()));
                 },
               );
             },
@@ -312,11 +331,14 @@ class LoanType extends StatelessWidget {
 
     return Column(
       children: [
-        const SizedBox(height: 20,),
+        const SizedBox(
+          height: 20,
+        ),
         const Text('SOUTH INDIAN BANK',
             style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 28,)),
+              fontWeight: FontWeight.bold,
+              fontSize: 28,
+            )),
         const SizedBox(height: 10),
         Image.asset('assets/images/south indian.jpeg'),
         const SizedBox(height: 50),
@@ -340,11 +362,16 @@ class LoanType extends StatelessWidget {
                     selectedValue = value;
                   });
                   if (value == 'VALUATION REPORT (IN RESPECT OF FLATS)') {
-                    Navigator.of(ctx).push(MaterialPageRoute(builder: (_) => const SIBValuationFormScreen()));
-                  } else if (value == 'VALUATION REPORT (IN RESPECT OF LAND / SITE AND BUILDING)') {
-                    Navigator.of(ctx).push(MaterialPageRoute(builder: (_) => const ValuationFormPage()));
-                  } else if (value == 'VALUATION REPORT (IN RESPECT OF VACANT LAND / SITE)') {
-                    Navigator.of(ctx).push(MaterialPageRoute(builder: (_) => const VacantLandFormPage()));
+                    Navigator.of(ctx).push(MaterialPageRoute(
+                        builder: (_) => const SIBValuationFormScreen()));
+                  } else if (value ==
+                      'VALUATION REPORT (IN RESPECT OF LAND / SITE AND BUILDING)') {
+                    Navigator.of(ctx).push(MaterialPageRoute(
+                        builder: (_) => const ValuationFormPage()));
+                  } else if (value ==
+                      'VALUATION REPORT (IN RESPECT OF VACANT LAND / SITE)') {
+                    Navigator.of(ctx).push(MaterialPageRoute(
+                        builder: (_) => const VacantLandFormPage()));
                   }
                 },
               );
@@ -367,11 +394,14 @@ class LoanType extends StatelessWidget {
 
     return Column(
       children: [
-        const SizedBox(height: 20,),
+        const SizedBox(
+          height: 20,
+        ),
         const Text('STATE BANK OF INDIA',
             style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 28,)),
+              fontWeight: FontWeight.bold,
+              fontSize: 28,
+            )),
         const SizedBox(height: 10),
         Image.asset('assets/images/sbi.png'),
         const SizedBox(height: 50),
@@ -395,11 +425,16 @@ class LoanType extends StatelessWidget {
                     selectedValue = value;
                   });
                   if (value == 'VALUATION REPORT (IN RESPECT OF FLATS)') {
-                    Navigator.of(ctx).push(MaterialPageRoute(builder: (_) => const SIBValuationFormScreen()));
-                  } else if (value == 'VALUATION REPORT (IN RESPECT OF LAND / SITE AND BUILDING)') {
-                    Navigator.of(ctx).push(MaterialPageRoute(builder: (_) => const ValuationFormPage()));
-                  } else if (value == 'VALUATION REPORT (IN RESPECT OF VACANT LAND / SITE)') {
-                    Navigator.of(ctx).push(MaterialPageRoute(builder: (_) => const VacantLandFormPage()));
+                    Navigator.of(ctx).push(MaterialPageRoute(
+                        builder: (_) => const SIBValuationFormScreen()));
+                  } else if (value ==
+                      'VALUATION REPORT (IN RESPECT OF LAND / SITE AND BUILDING)') {
+                    Navigator.of(ctx).push(MaterialPageRoute(
+                        builder: (_) => const ValuationFormPage()));
+                  } else if (value ==
+                      'VALUATION REPORT (IN RESPECT OF VACANT LAND / SITE)') {
+                    Navigator.of(ctx).push(MaterialPageRoute(
+                        builder: (_) => const VacantLandFormPage()));
                   }
                 },
               );
@@ -410,4 +445,3 @@ class LoanType extends StatelessWidget {
     );
   }
 }
-

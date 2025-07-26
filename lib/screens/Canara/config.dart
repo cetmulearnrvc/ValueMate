@@ -1,2 +1,9 @@
+const url1 = "http://192.168.29.46:3000/api/v1/canara/save";
 
-const url = 'https://cldap-1-0-0-default-rtdb.firebaseio.com/';
+const url2 = "http://192.168.29.46:3000/api/v2/getNearby";
+
+const url3 = "http://192.168.29.46:3000/api/v1/canara/getByDate";
+
+const url4 = "http://192.168.29.46:3000/uploads/";
+
+const url5 = "http://192.168.29.46:3000/api/v2/saveNearby";
