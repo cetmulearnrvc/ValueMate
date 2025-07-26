@@ -16,6 +16,8 @@ import 'package:login_screen/screens/SIB/Flat/savedDrafts.dart';
 import 'package:login_screen/screens/nearbyDetails.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
+import 'package:path/path.dart' as path;
+import 'package:login_screen/screens/driveAPIconfig.dart';
 
 class SIBValuationFormScreen extends StatefulWidget {
 
@@ -152,6 +154,62 @@ class _SIBValuationFormScreenState extends State<SIBValuationFormScreen> {
     };
   }
 
+  Future<String> _getAccessToken() async {
+    final response = await http.post(
+      Uri.parse('https://oauth2.googleapis.com/token'),
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: {
+        'client_id': clientId,
+        'client_secret': clientSecret,
+        'refresh_token': refreshToken,
+        'grant_type': 'refresh_token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body)['access_token'] as String;
+    } else {
+      throw Exception('Failed to refresh access token');
+    }
+  }
+
+  String _getMimeTypeFromExtension(String extension) {
+    switch (extension) {
+      case '.jpg':
+      case '.jpeg':
+        return 'image/jpeg';
+      case '.png':
+        return 'image/png';
+      case '.gif':
+        return 'image/gif';
+      case '.webp':
+        return 'image/webp';
+      default:
+        return 'application/octet-stream';
+    }
+  }
+
+  Future<Uint8List> fetchImageFromDrive(String fileId) async {
+    try {
+      // Get access token using refresh token
+      final accessToken = await _getAccessToken();
+      
+      final response = await http.get(
+        Uri.parse('https://www.googleapis.com/drive/v3/files/$fileId?alt=media'),
+        headers: {'Authorization': 'Bearer $accessToken'},
+      );
+
+      if (response.statusCode == 200) {
+        return response.bodyBytes;
+      } else {
+        throw Exception('Failed to load image: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error fetching image from Drive: $e');
+    }
+  }
+
+
   void _initializeFormWithPropertyData() async{
     print('PROPERTY DATA: ${widget.propertyData}');
   if (widget.propertyData != null) {
@@ -230,57 +288,43 @@ print('dateOfValuation: ${_data.dateOfValuation}');
     debugPrint('No property data - using default values');
   }
 }
-Future<Uint8List> fetchImage(String imageUrl) async {
-    try {
-      debugPrint("Attempting to fetch image from: $imageUrl");
-      final response = await http.get(Uri.parse(imageUrl));
 
-      debugPrint("Response status: ${response.statusCode}");
-      debugPrint("Response headers: ${response.headers}");
-
-      if (response.statusCode == 200) {
-        debugPrint(
-            "Successfully fetched image (bytes length: ${response.bodyBytes.length})");
-        return response.bodyBytes;
-      } else {
-        throw Exception('Failed to load image: ${response.statusCode}');
-      }
-    } catch (e) {
-      debugPrint("Error details: $e");
-      throw Exception('Error fetching image: $e');
-    }
-  }
     Future<void> _loadInitialImages(Map<String, dynamic> data) async {
       final List<ValuationImage> loadedImages = [];
     try {
-        // Check if the property data contains image information
         if (data['images'] != null && data['images'] is List) {
           final List<dynamic> imagesData = data['images'];
 
           for (var imgData in imagesData) {
             try {
-              // Construct the image URL based on your server configuration
-              String imageUrl = '$url4${imgData['fileName']}';
-              debugPrint("Fetching image from: $imageUrl");
-              Uint8List imageBytes = await fetchImage(imageUrl);
+              // Get the file ID from your data (assuming it's stored as 'fileId')
+              String fileID = imgData['fileID'];
+              String fileName = imgData['fileName'];
+              debugPrint("Fetching image from Drive with ID: $fileID");
 
-              
-                 loadedImages.add(ValuationImage(
-            imageFile: imageBytes,
-            latitude: imgData['latitude']?.toString() ?? '',
-            longitude: imgData['longitude']?.toString() ?? '',
-          ));
+              // Fetch image bytes from Google Drive
+              Uint8List imageBytes = await fetchImageFromDrive(fileID);
+
+              // Get file extension from original filename
+              String extension = path.extension(fileName).toLowerCase();
+              if (extension.isEmpty) extension = '.jpg'; // default fallback
+
+              _valuationImages.add(ValuationImage(
+                imageFile: imageBytes,
+                latitude: imgData['latitude']?.toString() ?? '',
+                longitude: imgData['longitude']?.toString() ?? '',
+              ));
             } catch (e) {
-              debugPrint('Error loading image: $e');
+              debugPrint('Error loading image from Drive: $e');
             }
           }
         }
       } catch (e) {
-        debugPrint('Error initializing images: $e');
+        debugPrint('Error in fetchImages: $e');
       }
        if (mounted) { 
     setState(() {
-      _valuationImages.addAll(loadedImages);
+      
     });
   }
 }

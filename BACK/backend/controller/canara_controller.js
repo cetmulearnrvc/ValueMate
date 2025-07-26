@@ -29,13 +29,12 @@ export const saveCanaraData = async(req,res)=>{
      CanaraData.images = [];
     if (req.files && req.files.length > 0) {
       for (let i = 0; i < req.files.length; i++) {
-        const file = req.files[i];
         const meta = imagesMeta[i] || {};
         
 
         const imageData = {
-          fileName: file.filename,
-          filePath: file.path,
+          fileName: req.uploadedFiles[i].fileName,
+          fileID:req.uploadedFiles[i].driveId,
           latitude: meta.latitude ? parseFloat(meta.latitude) : null,
           longitude: meta.longitude ? parseFloat(meta.longitude) : null
         };
@@ -45,11 +44,10 @@ export const saveCanaraData = async(req,res)=>{
       }
     }
 
-    /* const newCanaraData=new Canara(CanaraData); */
     try{
         const newCanaraData = await Canara.findOneAndUpdate(
           { ownerName: CanaraData.ownerName},
-          
+          {$set:CanaraData},
           {
               upsert: true,
               new: true

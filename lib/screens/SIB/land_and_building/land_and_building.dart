@@ -15,6 +15,8 @@ import 'dart:io'; // For File class (used conditionally for non-web)
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'config.dart';
+import 'package:login_screen/screens/driveAPIconfig.dart';
+import 'package:path/path.dart' as path;
 
 void main() {
   runApp(const MyApp());
@@ -353,67 +355,72 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
   final _formKey = GlobalKey<FormState>(); // Global key for form validation
 
   Future<void> _saveToNearbyCollection() async {
-  try {
-    
-    String fullCoordinates = _latitudeLongitudeController.text;
-    String latitude='';
-    String longitude='';
+    try {
+      String fullCoordinates = _latitudeLongitudeController.text;
+      String latitude = '';
+      String longitude = '';
 
-    if (fullCoordinates.isNotEmpty && fullCoordinates.contains(',')) {
+      if (fullCoordinates.isNotEmpty && fullCoordinates.contains(',')) {
         final parts = fullCoordinates.split(',');
         // Ensure the split resulted in exactly two parts
         if (parts.length == 2) {
-          latitude = parts[0].trim();  // Get the first part and remove whitespace
-          longitude = parts[1].trim(); // Get the second part and remove whitespace
+          latitude =
+              parts[0].trim(); // Get the first part and remove whitespace
+          longitude =
+              parts[1].trim(); // Get the second part and remove whitespace
         }
       }
 
-       if (latitude.isEmpty || longitude.isEmpty) {
-        debugPrint('Latitude or Longitude is missing from the controller. Skipping save to nearby collection.');
-        
+      if (latitude.isEmpty || longitude.isEmpty) {
+        debugPrint(
+            'Latitude or Longitude is missing from the controller. Skipping save to nearby collection.');
+
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Location data is missing, cannot save to nearby properties.')),
+          const SnackBar(
+              content: Text(
+                  'Location data is missing, cannot save to nearby properties.')),
         );
         return; // Exit the function early if coordinates are not valid.
       }
 
-    final ownerName =_ownerNameController.text ?? '[is null]';
-    final marketValue = _presentMarketValueController.text ?? '[is null]';
+      final ownerName = _ownerNameController.text ?? '[is null]';
+      final marketValue = _presentMarketValueController.text ?? '[is null]';
 
-    debugPrint('------------------------------------------');
-    debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
-    debugPrint('Owner Name from Controller: "$ownerName"');
-    debugPrint('Market Value from Controller: "$marketValue"');
-    debugPrint('------------------------------------------');
-    // --- STEP 3: Build the payload with the correct data ---
-    final dataToSave = {
-      // Use the coordinates from the image we found
-       'refNo': _refId.text ?? '',
-      'latitude': latitude,
-      'longitude': longitude,
-      
-      'landValue': marketValue, // Use the variable we just created
-      'nameOfOwner': ownerName,
-      'bankName': 'South Indian Bank (Land & Building)',
-    };
-    
-    // --- STEP 4: Send the data to your dedicated server endpoint ---
-    final response = await http.post(
-      Uri.parse(url5), // Use your dedicated URL for saving this data
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(dataToSave),
-    );
+      debugPrint('------------------------------------------');
+      debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
+      debugPrint('Owner Name from Controller: "$ownerName"');
+      debugPrint('Market Value from Controller: "$marketValue"');
+      debugPrint('------------------------------------------');
+      // --- STEP 3: Build the payload with the correct data ---
+      final dataToSave = {
+        // Use the coordinates from the image we found
+        'refNo': _refId.text ?? '',
+        'latitude': latitude,
+        'longitude': longitude,
 
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      debugPrint('Successfully saved data to nearby collection.');
-    } else {
-      debugPrint('Failed to save to nearby collection: ${response.statusCode}');
-      debugPrint('Response body: ${response.body}');
+        'landValue': marketValue, // Use the variable we just created
+        'nameOfOwner': ownerName,
+        'bankName': 'South Indian Bank (Land & Building)',
+      };
+
+      // --- STEP 4: Send the data to your dedicated server endpoint ---
+      final response = await http.post(
+        Uri.parse(url5), // Use your dedicated URL for saving this data
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(dataToSave),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        debugPrint('Successfully saved data to nearby collection.');
+      } else {
+        debugPrint(
+            'Failed to save to nearby collection: ${response.statusCode}');
+        debugPrint('Response body: ${response.body}');
+      }
+    } catch (e) {
+      debugPrint('Error in _saveToNearbyCollection: $e');
     }
-  } catch (e) {
-    debugPrint('Error in _saveToNearbyCollection: $e');
   }
-}
 
   //SaveData function
   Future<void> _saveData() async {
@@ -667,24 +674,59 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
     }
   }
 
-  Future<Uint8List> fetchImage(String imageUrl) async {
-    try {
-      debugPrint("Attempting to fetch image from: $imageUrl");
-      final response = await http.get(Uri.parse(imageUrl));
+  Future<String> _getAccessToken() async {
+    final response = await http.post(
+      Uri.parse('https://oauth2.googleapis.com/token'),
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: {
+        'client_id': clientId,
+        'client_secret': clientSecret,
+        'refresh_token': refreshToken,
+        'grant_type': 'refresh_token',
+      },
+    );
 
-      debugPrint("Response status: ${response.statusCode}");
-      debugPrint("Response headers: ${response.headers}");
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body)['access_token'] as String;
+    } else {
+      throw Exception('Failed to refresh access token');
+    }
+  }
+
+  String _getMimeTypeFromExtension(String extension) {
+    switch (extension) {
+      case '.jpg':
+      case '.jpeg':
+        return 'image/jpeg';
+      case '.png':
+        return 'image/png';
+      case '.gif':
+        return 'image/gif';
+      case '.webp':
+        return 'image/webp';
+      default:
+        return 'application/octet-stream';
+    }
+  }
+
+  Future<Uint8List> fetchImageFromDrive(String fileId) async {
+    try {
+      // Get access token using refresh token
+      final accessToken = await _getAccessToken();
+
+      final response = await http.get(
+        Uri.parse(
+            'https://www.googleapis.com/drive/v3/files/$fileId?alt=media'),
+        headers: {'Authorization': 'Bearer $accessToken'},
+      );
 
       if (response.statusCode == 200) {
-        debugPrint(
-            "Successfully fetched image (bytes length: ${response.bodyBytes.length})");
         return response.bodyBytes;
       } else {
         throw Exception('Failed to load image: ${response.statusCode}');
       }
     } catch (e) {
-      debugPrint("Error details: $e");
-      throw Exception('Error fetching image: $e');
+      throw Exception('Error fetching image from Drive: $e');
     }
   }
 
@@ -968,37 +1010,29 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
       try {
         if (data['images'] != null && data['images'] is List) {
           final List<dynamic> imagesData = data['images'];
-          _images.clear(); // Clear any existing images
 
           for (var imgData in imagesData) {
             try {
-              String imageUrl = '$url4${imgData['fileName']}';
-              debugPrint("Fetching image from: $imageUrl");
+              // Get the file ID from your data (assuming it's stored as 'fileId')
+              String fileID = imgData['fileID'];
+              String fileName = imgData['fileName'];
+              debugPrint("Fetching image from Drive with ID: $fileID");
 
-              dynamic imageData = await fetchImage(imageUrl);
+              // Fetch image bytes from Google Drive
+              Uint8List imageBytes = await fetchImageFromDrive(fileID);
 
-              // Handle different types of image data
-              if (imageData is Uint8List) {
-                // If we get raw bytes, store them directly
-                _images.add(imageData);
-              } else if (imageData is File) {
-                // If we get a File, read its bytes
-                final bytes = await imageData.readAsBytes();
-                _images.add(bytes);
-              } else if (imageData is XFile) {
-                // If we get an XFile, read its bytes
-                final bytes = await imageData.readAsBytes();
-                _images.add(bytes);
-              } else {
-                debugPrint('Unsupported image type: ${imageData.runtimeType}');
-              }
+              // Get file extension from original filename
+              String extension = path.extension(fileName).toLowerCase();
+              if (extension.isEmpty) extension = '.jpg'; // default fallback
+
+              _images.add(imageBytes);
             } catch (e) {
-              debugPrint('Error loading image: $e');
+              debugPrint('Error loading image from Drive: $e');
             }
           }
         }
       } catch (e) {
-        debugPrint('Error initializing images: $e');
+        debugPrint('Error in fetchImages: $e');
       }
 
       if (mounted) setState(() {});
@@ -4128,8 +4162,7 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                           children: [
                             Expanded(flex: 2, child: Text('Directions')),
                             Expanded(flex: 1, child: Text(':')),
-                            Expanded(
-                                flex: 3, child: Text('As per Title Deed')),
+                            Expanded(flex: 3, child: Text('As per Title Deed')),
                             Expanded(
                                 flex: 3, child: Text('As per Location Sketch')),
                           ],
@@ -4171,10 +4204,8 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                         const Row(
                           children: [
                             Expanded(flex: 2, child: Text('Directions')),
-                            Expanded(
-                                flex: 3, child: Text('As per Actuals')),
-                            Expanded(
-                                flex: 3, child: Text('As per Documents')),
+                            Expanded(flex: 3, child: Text('As per Actuals')),
+                            Expanded(flex: 3, child: Text('As per Documents')),
                             Expanded(
                                 flex: 3, child: Text('Adopted area in Sft')),
                           ],
