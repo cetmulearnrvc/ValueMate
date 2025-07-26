@@ -14,7 +14,7 @@ class SavedDraftsCanara extends StatefulWidget {
 }
 
 class _SavedDraftsCanaraState extends State<SavedDraftsCanara> {
-  DateTime date = DateTime(2025, 06, 26);
+  DateTime date = DateTime.now();
   List<dynamic> searchResults = [];
   bool isLoading = false;
 

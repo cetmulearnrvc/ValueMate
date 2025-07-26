@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:login_screen/screens/Canara/savedDraftsCanara.dart';
+import 'package:login_screen/screens/nearbyDetails.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/services.dart' show rootBundle;
@@ -20,7 +21,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
-import 'config.dart'; // Ensure this imports your config file
 
 // Add this class definition inside your state class
 class ImageWithLocation {
@@ -438,6 +438,138 @@ class _PropertyValuationReportPageState
   final _nearByLong = TextEditingController();
   bool _isNotValidState = false;
 
+  Future<void> _getNearbyProperty() async {
+    final latitude = _nearByLat.text.trim();
+    final longitude = _nearByLong.text.trim();
+
+    debugPrint(latitude);
+
+    if (latitude.isEmpty || longitude.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Please enter both latitude and longitude')),
+      );
+      return;
+    }
+
+    try {
+      final url = Uri.parse(url2);
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'latitude': latitude,
+          'longitude': longitude,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        // Decode the JSON response (assuming it's an array)
+        final List<dynamic> responseData = jsonDecode(response.body);
+
+        // Debug print the array
+        debugPrint('Response Data (Array):');
+        for (var item in responseData) {
+          debugPrint(item.toString()); // Print each item in the array
+        }
+
+        if (context.mounted) {
+          // Navigator.of(context).push(
+          //   MaterialPageRoute(
+          //     builder: (ctx) => Nearbydetails(responseData: responseData),
+          //   ),
+          // );
+          showModalBottomSheet(context: context, builder: (ctx)
+          {
+            return Nearbydetails(responseData: responseData);
+          });
+        }
+      }
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Nearby properties fetched successfully')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${response.statusCode}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
+  
+  Future<void> _saveToNearbyCollection() async {
+  try {
+    String fullCoordinates = _latitudelongitudeController.text;
+      String latitude = '';
+      String longitude = '';
+
+      if (fullCoordinates.isNotEmpty && fullCoordinates.contains(',')) {
+        final parts = fullCoordinates.split(',');
+        // Ensure the split resulted in exactly two parts
+        if (parts.length == 2) {
+          latitude =
+              parts[0].trim(); // Get the first part and remove whitespace
+          longitude =
+              parts[1].trim(); // Get the second part and remove whitespace
+        }
+      }
+
+      if (latitude.isEmpty || longitude.isEmpty) {
+        debugPrint(
+            'Latitude or Longitude is missing from the controller. Skipping save to nearby collection.');
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text(
+                  'Location data is missing, cannot save to nearby properties.')),
+        );
+        return; // Exit the function early if coordinates are not valid.
+      }
+
+    final ownerName = _ownerNameController.text ?? '[is null]';
+    final marketValue = _presentValueController.text ?? '[is null]';
+
+    debugPrint('------------------------------------------');
+    debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
+    debugPrint('Owner Name from Controller: "$ownerName"');
+    debugPrint('Market Value from Controller: "$marketValue"');
+    debugPrint('------------------------------------------');
+    // --- STEP 3: Build the payload with the correct data ---
+    final dataToSave = {
+      // Use the coordinates from the image we found
+       'refNo': 111 ?? '',
+      'latitude': latitude,
+      'longitude': longitude,
+      
+      'landValue': marketValue, // Use the variable we just created
+      'nameOfOwner': ownerName,
+      'bankName': 'Canara Bank',
+    };
+    
+    // --- STEP 4: Send the data to your dedicated server endpoint ---
+    final response = await http.post(
+      Uri.parse(url5), // Use your dedicated URL for saving this data
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(dataToSave),
+    );
+
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      debugPrint('Successfully saved data to nearby collection.');
+    } else {
+      debugPrint('Failed to save to nearby collection: ${response.statusCode}');
+      debugPrint('Response body: ${response.body}');
+    }
+  } catch (e) {
+    debugPrint('Error in _saveToNearbyCollection: $e');
+  }
+}
+
   Future<void> _saveData() async {
     try {
       // Validate required fields (adjust as needed)
@@ -727,6 +859,7 @@ class _PropertyValuationReportPageState
           ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Data saved successfully!')));
         }
+        await _saveToNearbyCollection();
         // Add any additional save actions here if needed
       } else {
         if (context.mounted) {
@@ -1573,7 +1706,7 @@ class _PropertyValuationReportPageState
                       ),
                       Expanded(
                         child: ElevatedButton.icon(
-                          onPressed: () {},
+                          onPressed: _getNearbyProperty,
                           label: const Text('Search'),
                           icon: const Icon(Icons.search),
                         ),

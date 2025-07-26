@@ -19,8 +19,8 @@ app.get('/',(req,res)=>{
 })
 
 app.use('/api/v1',pvr1_router)
-app.use('/api/v2',flat_router)
-app.use('/api/v2',nearby_router)
+app.use('/api/v1',flat_router)
+app.use('/api/v1',nearby_router)
 app.use('/api/v1',pvr3_router);
 
 app.use('/api/v1',federal_router)
