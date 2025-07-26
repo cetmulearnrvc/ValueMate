@@ -116,7 +116,7 @@ class _SavedDraftsCanaraState extends State<SavedDraftsCanara> {
                       margin: const EdgeInsets.symmetric(vertical: 8),
                       child: ListTile(
                         title: Text(
-                            'Owner Name: ${property['ownerOfTheProperty']}'),
+                            'Owner Name: ${property['ownerName']}'),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -124,7 +124,7 @@ class _SavedDraftsCanaraState extends State<SavedDraftsCanara> {
                                 'Bank: Canara Bank'), // Always shows Canara Bank
                             const SizedBox(height: 4),
                             Text(
-                              'Location: ${property['propertyAddressAsPerSiteVisit']}',
+                              'Location: ${property['propertyAddress']}',
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
