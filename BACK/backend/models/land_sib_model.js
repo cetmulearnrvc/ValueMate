@@ -187,7 +187,7 @@ const SIBValuationLandSchema = new mongoose.Schema({
             type:String,
             required:true
         },
-        filePath: {
+        fileID: {
             type:String,
             required:true
         }

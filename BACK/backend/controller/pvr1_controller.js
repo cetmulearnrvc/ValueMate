@@ -31,13 +31,12 @@ export const savePVR1Data = async(req,res)=>{
      pvr1Data.images = [];
     if (req.files && req.files.length > 0) {
       for (let i = 0; i < req.files.length; i++) {
-        const file = req.files[i];
         const meta = imagesMeta[i] || {};
         
 
         const imageData = {
-          fileName: file.filename,
-          filePath: file.path,
+          fileName: req.uploadedFiles[i].fileName,
+          fileID:req.uploadedFiles[i].driveId,
           latitude: meta.latitude ? parseFloat(meta.latitude) : null,
           longitude: meta.longitude ? parseFloat(meta.longitude) : null
         };
@@ -52,8 +51,7 @@ export const savePVR1Data = async(req,res)=>{
         const newPVR1Data = await pvr1.findOneAndUpdate(
           { fileNo: pvr1Data.fileNo },
           { 
-              $set: { ...pvr1Data, images: undefined }, // Set all other fields except images
-              $push: { images: { $each: pvr1Data.images } } // Append new images to array
+              $set: pvr1Data
           },
           {
               upsert: true,
