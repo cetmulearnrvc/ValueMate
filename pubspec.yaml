@@ -44,7 +44,7 @@ dependencies:
   pdf: ^3.11.3
   printing: ^5.14.2
   number_to_indian_words: ^1.0.1
-  file_picker: ^5.3.3
+  
   permission_handler: ^11.3.0
   universal_html: ^2.2.1
 
