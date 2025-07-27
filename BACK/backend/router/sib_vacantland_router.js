@@ -1,45 +1,19 @@
-import express from 'express';
-import {
-  createValuation,
-  getAllValuations,
-  getValuationById,
-  updateValuation,
-  deleteValuation,
-  searchByRefNo,
-  findNearbyValuations,
-  getValuationsByDate,
-  getValuationsByPropertyType
-} from '../controller/sib_vacantland_controller.js';
-import multer from 'multer';
+import express from "express";
+const vacantLandRouter = express.Router();
+import { 
+  saveVacantLand,
+  getNearbyVacantLands,
+  getVacantLandsByDate 
+} from "../controller/sib_vacantland_controller.js";
+import upload from "../multer/upload.js";
 
-const router = express.Router();
+// Save vacant land data with images
+vacantLandRouter.post("/vacant-land/save", upload.array("images"), saveVacantLand);
 
-// Multer configuration
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/land-valuations/'); // Specific directory for land valuations
-  },
-  filename: (req, file, cb) => {
-    cb(null, `land-${Date.now()}-${file.originalname}`);
-  }
-});
+// Get nearby vacant lands (changed to POST to match your example)
+vacantLandRouter.post("/vacant-land/nearby", getNearbyVacantLands);
 
-const upload = multer({ storage });
+// Get vacant lands by date (changed to POST to match your example)
+vacantLandRouter.post("/vacant-land/by-date", getVacantLandsByDate);
 
-// CRUD Routes
-router.route('/')
-  .post(upload.array('images'), createValuation)
-  .get(getAllValuations);
-
-router.route('/:id')
-  .get(getValuationById)
-  .put(upload.array('images'), updateValuation)
-  .delete(deleteValuation);
-
-// Specialized Routes
-router.get('/search/refNo', searchByRefNo);
-router.get('/nearby', findNearbyValuations);
-router.get('/filter/date', getValuationsByDate);
-router.get('/filter/property-type', getValuationsByPropertyType);
-
-export default router;
+export default vacantLandRouter;
