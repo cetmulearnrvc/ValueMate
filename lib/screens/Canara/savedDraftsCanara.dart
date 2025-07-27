@@ -120,7 +120,7 @@ class _SavedDraftsCanaraState extends State<SavedDraftsCanara> {
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                                 'Bank: Canara Bank'), // Always shows Canara Bank
                             const SizedBox(height: 4),
                             Text(
@@ -132,7 +132,7 @@ class _SavedDraftsCanaraState extends State<SavedDraftsCanara> {
 
                             Text(
                               'Inspection Date: ${DateFormat('dd-MM-yyyy').format(DateTime.parse(property['createdAt']).toLocal()) ?? 'N/A'}',
-                              style: TextStyle(fontSize: 12),
+                              style: const TextStyle(fontSize: 12),
                             ),
                           ],
                         ),

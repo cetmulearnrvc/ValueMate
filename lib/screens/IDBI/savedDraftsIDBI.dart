@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
-import 'package:login_screen/screens/Federal/federal.dart';
+import 'package:login_screen/screens/IDBI/valuation_form_ui.dart';
 import 'dart:convert';
 import 'config.dart';
 
-class SavedDraftsFederal extends StatefulWidget {
-  const SavedDraftsFederal({super.key});
+class SavedDraftsIDBI extends StatefulWidget {
+  const SavedDraftsIDBI({super.key});
 
   @override
-  State<SavedDraftsFederal> createState() => _SavedDraftsFederalState();
+  State<SavedDraftsIDBI> createState() => _SavedDraftsIDBIState();
 }
 
-class _SavedDraftsFederalState extends State<SavedDraftsFederal> {
+class _SavedDraftsIDBIState extends State<SavedDraftsIDBI> {
   DateTime date = DateTime.now();
   List<dynamic> searchResults = [];
   bool isLoading = false;
@@ -31,23 +31,16 @@ class _SavedDraftsFederalState extends State<SavedDraftsFederal> {
         body: json.encode({'date': formattedDate}),
       );
 
-      debugPrint("send req to back");
-
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         setState(() {
           searchResults = data;
         });
       } else {
-        debugPrint("some err");
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${response.statusCode}')),
-        );
+        showErrorSnackBar('Server error: ${response.statusCode}');
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
+      showErrorSnackBar('Error: $e');
     } finally {
       setState(() {
         isLoading = false;
@@ -55,13 +48,21 @@ class _SavedDraftsFederalState extends State<SavedDraftsFederal> {
     }
   }
 
+  void showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.redAccent,
+        content: Text(message),
+      ),
+    );
+  }
+
   void navigateToValuationForm(Map<String, dynamic> propertyData) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => PdfGeneratorScreen(
-          propertyData: propertyData,
-        ),
+        builder: (context) =>
+            ValuationFormScreenIDBI(propertyData: propertyData),
       ),
     );
   }
@@ -74,7 +75,7 @@ class _SavedDraftsFederalState extends State<SavedDraftsFederal> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: const Text(
-          'Federal Bank Drafts',
+          'IDBI Drafts',
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w500,
@@ -102,7 +103,7 @@ class _SavedDraftsFederalState extends State<SavedDraftsFederal> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                // Gradient date picker container
+                // Gradient Date Picker UI
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -147,9 +148,7 @@ class _SavedDraftsFederalState extends State<SavedDraftsFederal> {
                             lastDate: DateTime(2200),
                           );
                           if (picked != null) {
-                            setState(() {
-                              date = picked;
-                            });
+                            setState(() => date = picked);
                           }
                         },
                       )
@@ -182,14 +181,14 @@ class _SavedDraftsFederalState extends State<SavedDraftsFederal> {
                 ),
                 const SizedBox(height: 20),
 
-                // Search Results
+                // Results
                 Expanded(
                   child: isLoading
                       ? const Center(child: CircularProgressIndicator())
                       : searchResults.isEmpty
                           ? const Center(
                               child: Text(
-                                'No Federal Bank drafts found',
+                                'No IDBI drafts found',
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w500,
@@ -204,10 +203,22 @@ class _SavedDraftsFederalState extends State<SavedDraftsFederal> {
                                 final property = searchResults[index];
 
                                 final gradients = [
-                                  [const Color(0xFFDAF1F5), const Color(0xFFC7E8F3)],
-                                  [const Color(0xFFF6E9F8), const Color(0xFFEBD8F5)],
-                                  [const Color(0xFFFFF2D8), const Color(0xFFFFE8B8)],
-                                  [const Color(0xFFDFF6DD), const Color(0xFFBDE7BE)],
+                                  [
+                                    const Color(0xFFDAF1F5),
+                                    const Color(0xFFC7E8F3)
+                                  ],
+                                  [
+                                    const Color(0xFFF6E9F8),
+                                    const Color(0xFFEBD8F5)
+                                  ],
+                                  [
+                                    const Color(0xFFFFF2D8),
+                                    const Color(0xFFFFE8B8)
+                                  ],
+                                  [
+                                    const Color(0xFFDFF6DD),
+                                    const Color(0xFFBDE7BE)
+                                  ],
                                 ];
                                 final gradientColors =
                                     gradients[index % gradients.length];
@@ -233,7 +244,7 @@ class _SavedDraftsFederalState extends State<SavedDraftsFederal> {
                                   child: ListTile(
                                     contentPadding: const EdgeInsets.all(16),
                                     title: Text(
-                                      'Owner: ${property['ownerOfTheProperty']}',
+                                      'Application No: ${property['applicationNo'] ?? 'N/A'}',
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18,
@@ -241,34 +252,32 @@ class _SavedDraftsFederalState extends State<SavedDraftsFederal> {
                                       ),
                                     ),
                                     subtitle: Padding(
-                                      padding:
-                                          const EdgeInsets.only(top: 6.0),
+                                      padding: const EdgeInsets.only(top: 6.0),
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          const Text(
-                                            'Bank: Federal Bank',
-                                            style: TextStyle(
+                                          Text(
+                                            'Borrower: ${property['borrowerName'] ?? 'N/A'}',
+                                            style: const TextStyle(
                                               fontSize: 15,
                                               fontFamily: 'Poppins',
                                             ),
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
-                                            'Location: ${property['propertyAddressAsPerSiteVisit']}',
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
+                                            'Address: ${property['postalAddress'] ?? 'N/A'}',
                                             style: const TextStyle(
                                               fontSize: 14,
                                               fontFamily: 'Poppins',
                                             ),
                                           ),
                                           const SizedBox(height: 4),
+                                          const SizedBox(height: 4),
                                           Text(
                                             'Inspection Date: ${DateFormat('dd-MM-yyyy').format(DateTime.parse(property['createdAt']).toLocal())}',
                                             style: const TextStyle(
-                                              fontSize: 12,
+                                              fontSize: 14,
                                               fontFamily: 'Poppins',
                                             ),
                                           ),
