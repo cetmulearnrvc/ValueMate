@@ -9,7 +9,9 @@ import 'dart:typed_data'; // For Uint8List
 import 'dart:io'; // For File class (used conditionally for non-web)
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/services.dart' show rootBundle;
-
+import 'config.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 void main() {
   runApp(const MyApp());
 }
@@ -1555,6 +1557,129 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
       onLayout: (pdfLib.PdfPageFormat format) async => pdf.save(),
     );
   }
+Future<void> _saveForm() async {
+  if (_formKey.currentState!.validate()) {
+    try {
+      // Show loading dialog
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
+      );
+
+      // Create multipart request using AppConfig
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse(url1),
+      );
+
+      // Add basic fields
+      request.fields.addAll({
+        'refNo': _refId.text,
+        'typo': 'sibVacantLand',
+        'purpose': _purposeController.text,
+        'ownerName': _ownerNameController.text,
+        'applicantName': _applicantNameController.text,
+        'addressAsPerDocument': _addressDocController.text,
+        'addressAsPerActual': _addressActualController.text,
+        'deviations': _deviationsController.text,
+        'propertyType': _propertyTypeController.text,
+        'propertyZone': _propertyZoneController.text,
+      });
+
+      // Add dates in proper format
+      if (_dateOfInspectionController.text.isNotEmpty) {
+        final inspectionDate = DateFormat('dd-MM-yyyy').parse(_dateOfInspectionController.text);
+        request.fields['dateOfInspection'] = DateFormat('yyyy-MM-dd').format(inspectionDate);
+      }
+
+      if (_dateOfValuationController.text.isNotEmpty) {
+        final valuationDate = DateFormat('dd-MM-yyyy').parse(_dateOfValuationController.text);
+        request.fields['dateOfValuation'] = DateFormat('yyyy-MM-dd').format(valuationDate);
+      }
+
+      // Add complex fields as JSON strings
+      final boundaries = {
+        'north': {
+          'titleDeed': _boundaryNorthTitleController.text,
+          'sketch': _boundaryNorthSketchController.text,
+        },
+        'south': {
+          'titleDeed': _boundarySouthTitleController.text,
+          'sketch': _boundarySouthSketchController.text,
+        },
+        'east': {
+          'titleDeed': _boundaryEastTitleController.text,
+          'sketch': _boundaryEastSketchController.text,
+        },
+        'west': {
+          'titleDeed': _boundaryWestTitleController.text,
+          'sketch': _boundaryWestSketchController.text,
+        },
+        'deviations': _boundaryDeviationsController.text,
+      };
+      request.fields['boundaries'] = json.encode(boundaries);
+
+      // Add other JSON fields (dimensions, valuationDetails) similarly...
+
+      // Add images with coordinates
+      for (int i = 0; i < _images.length; i++) {
+        final image = _images[i];
+        Uint8List imageBytes;
+        
+        if (image is File) {
+          imageBytes = await image.readAsBytes();
+        } else if (image is Uint8List) {
+          imageBytes = image;
+        } else {
+          continue;
+        }
+
+        request.files.add(http.MultipartFile.fromBytes(
+          'images',
+          imageBytes,
+          filename: 'property_${_refId.text}_$i.jpg',
+        ));
+
+        request.fields['imageLatitude'] = _latController.text;
+        request.fields['imageLongitude'] = _lonController.text;
+      }
+
+      // Send request
+      final response = await request.send();
+
+      // Handle response
+      if (context.mounted) Navigator.of(context).pop();
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final responseBody = await response.stream.transform(utf8.decoder).join();
+        final jsonResponse = json.decode(responseBody);
+
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(jsonResponse['message'] ?? 'Valuation saved successfully!')),
+          );
+        }
+      } else {
+        final errorBody = await response.stream.transform(utf8.decoder).join();
+        final errorJson = json.decode(errorBody);
+
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(errorJson['message'] ?? 'Failed to save valuation')),
+          );
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${e.toString()}')),
+        );
+      }
+    }
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -2362,7 +2487,7 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
         ),
       ),
       floatingActionButton: ElevatedButton.icon(
-        onPressed: () {},
+        onPressed: _saveForm,
         icon: const Icon(Icons.save),
         label: const Text('Save', style: TextStyle(fontSize: 15.5)),
         style: ButtonStyle(
