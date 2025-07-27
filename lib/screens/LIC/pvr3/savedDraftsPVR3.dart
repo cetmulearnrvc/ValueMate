@@ -200,10 +200,10 @@ class _SavedDraftsPVR3State extends State<SavedDraftsPVR3> {
                                 final property = searchResults[index];
 
                                 final gradients = [
-                                  [Color(0xFFDAF1F5), Color(0xFFC7E8F3)],
-                                  [Color(0xFFF6E9F8), Color(0xFFEBD8F5)],
-                                  [Color(0xFFFFF2D8), Color(0xFFFFE8B8)],
-                                  [Color(0xFFDFF6DD), Color(0xFFBDE7BE)],
+                                  [const Color(0xFFDAF1F5), const Color(0xFFC7E8F3)],
+                                  [const Color(0xFFF6E9F8), const Color(0xFFEBD8F5)],
+                                  [const Color(0xFFFFF2D8), const Color(0xFFFFE8B8)],
+                                  [const Color(0xFFDFF6DD), const Color(0xFFBDE7BE)],
                                 ];
                                 final gradientColors =
                                     gradients[index % gradients.length];

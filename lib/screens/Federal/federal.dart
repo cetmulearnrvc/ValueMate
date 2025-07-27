@@ -401,14 +401,8 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
     //   firstImageWithLocation = null;
     // }
 
-    var latitude = _latController.text!;
-    var longitude = _lonController.text!;
-
-    // --- STEP 2: Handle the case where no image has location data ---
-    if (latitude == null || longitude == null) {
-      debugPrint('Please enter location. Skipping save to nearby collection.');
-      return; // Exit the function early.
-    }
+    var latitude = _latController.text;
+    var longitude = _lonController.text;
 
     final ownerName = controllers['Owner of the Property']!.text;
     final marketValue = controllers['Present Market Rate of the Property']!.text;

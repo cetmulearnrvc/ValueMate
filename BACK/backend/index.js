@@ -4,8 +4,8 @@ import { connectDB } from "./db.js";
 import pvr1_router from "./router/pvr1router.js";
 
 import pvr3_router from "./router/pvr3router.js";
-import federal_router from "./router/federalrouter.js"
-
+import federal_router from "./router/federalrouter.js";
+import idbi_router from "./router/idbi_router.js";
 import flat_router from "./router/sib_flat_router.js";
 import land_router from "./router/sib_land_router.js";
 import vacantland_router from "./router/sib_vacantland_router.js";
@@ -22,7 +22,7 @@ app.use('/api/v1',pvr1_router)
 app.use('/api/v1',flat_router)
 app.use('/api/v1',nearby_router)
 app.use('/api/v1',pvr3_router);
-
+app.use('/api/v1',idbi_router);
 app.use('/api/v1',federal_router)
 app.use('/api/v1',land_router)
 app.use('/api/v1',vacantland_router);

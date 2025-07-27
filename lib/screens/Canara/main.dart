@@ -77,7 +77,7 @@ class _PropertyValuationReportPageState
   double? _longitude;
   String? _locationError;
   // Add these with your other state variables
-  List<ImageWithLocation> _imagesWithLocation = [];
+  final List<ImageWithLocation> _imagesWithLocation = [];
   final ImagePicker _picker = ImagePicker();
   bool _isLoadingImages = false;
   Widget buildTextField(String label, TextEditingController controller) {
@@ -87,7 +87,7 @@ class _PropertyValuationReportPageState
         controller: controller,
         decoration: InputDecoration(
           labelText: label,
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
         ),
         validator: (value) {
           if (value == null || value.trim().isEmpty) {
@@ -110,20 +110,18 @@ class _PropertyValuationReportPageState
       await _getCurrentLocation();
 
       // Only proceed to pick images if location was fetched successfully or user wants to proceed without it
-      final List<XFile>? pickedFiles = await _picker.pickMultiImage();
-      if (pickedFiles != null) {
-        for (var file in pickedFiles) {
-          final bytes = await file.readAsBytes();
-          setState(() {
-            _imagesWithLocation.add(ImageWithLocation(
-              imageBytes: bytes,
-              latitude: _latitude,
-              longitude: _longitude,
-            ));
-          });
-        }
+      final List<XFile> pickedFiles = await _picker.pickMultiImage();
+      for (var file in pickedFiles) {
+        final bytes = await file.readAsBytes();
+        setState(() {
+          _imagesWithLocation.add(ImageWithLocation(
+            imageBytes: bytes,
+            latitude: _latitude,
+            longitude: _longitude,
+          ));
+        });
       }
-    } catch (e) {
+        } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error picking images: ${e.toString()}')),
       );
@@ -865,7 +863,7 @@ class _PropertyValuationReportPageState
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content:
-                  Text('Upload failed: ${response.reasonPhrase} ${response}')));
+                  Text('Upload failed: ${response.reasonPhrase} $response')));
         }
       }
     } catch (e) {
@@ -3506,25 +3504,25 @@ class _PropertyValuationReportPageState
                   3: FlexColumnWidth(2.2),
                 },
                 children: [
-                  TableRow(
+                  const TableRow(
                     children: [
-                      const Padding(
+                      Padding(
                         padding: EdgeInsets.all(6),
                         child: Text("Description",
                             style: TextStyle(fontWeight: FontWeight.bold)),
                       ),
-                      const Padding(
+                      Padding(
                         padding: EdgeInsets.all(6),
                         child: Text(":",
                             style: TextStyle(fontWeight: FontWeight.bold)),
                       ),
-                      const Padding(
+                      Padding(
                         padding: EdgeInsets.all(6),
                         child: Text("Value adopting\nGLR",
                             textAlign: TextAlign.center,
                             style: TextStyle(fontWeight: FontWeight.bold)),
                       ),
-                      const Padding(
+                      Padding(
                         padding: EdgeInsets.all(6),
                         child: Text("PMR",
                             textAlign: TextAlign.center,
@@ -3820,7 +3818,7 @@ class _PropertyValuationReportPageState
                       ],
                     ),
                   );
-                }).toList(),
+                }),
               ],
 
               // REMOVED old image and location widgets as they are now replaced by the new section above
@@ -4330,7 +4328,7 @@ class _PropertyValuationReportPageState
             children: [
               pw.Container(),
               pw.Container(
-                decoration: pw.BoxDecoration(
+                decoration: const pw.BoxDecoration(
                   border: pw.Border(
                     top: pw.BorderSide(width: 1, color: PdfColors.black),
                     right: pw.BorderSide(width: 1, color: PdfColors.black),
@@ -4341,7 +4339,7 @@ class _PropertyValuationReportPageState
                 child: pw.Text('Period'),
               ),
               pw.Container(
-                decoration: pw.BoxDecoration(
+                decoration: const pw.BoxDecoration(
                   border: pw.Border(
                     top: pw.BorderSide(width: 1, color: PdfColors.black),
                   ),
@@ -4369,7 +4367,7 @@ class _PropertyValuationReportPageState
             children: [
               pw.Container(),
               pw.Container(
-                decoration: pw.BoxDecoration(
+                decoration: const pw.BoxDecoration(
                   border: pw.Border(
                     right: pw.BorderSide(width: 1, color: PdfColors.black),
                   ),
@@ -4402,7 +4400,7 @@ class _PropertyValuationReportPageState
             children: [
               pw.Container(),
               pw.Container(
-                decoration: pw.BoxDecoration(
+                decoration: const pw.BoxDecoration(
                   border: pw.Border(
                     right: pw.BorderSide(width: 1, color: PdfColors.black),
                   ),
@@ -4435,7 +4433,7 @@ class _PropertyValuationReportPageState
             children: [
               pw.Container(),
               pw.Container(
-                decoration: pw.BoxDecoration(
+                decoration: const pw.BoxDecoration(
                   border: pw.Border(
                     right: pw.BorderSide(width: 1, color: PdfColors.black),
                   ),
@@ -4468,7 +4466,7 @@ class _PropertyValuationReportPageState
             children: [
               pw.Container(),
               pw.Container(
-                decoration: pw.BoxDecoration(
+                decoration: const pw.BoxDecoration(
                   border: pw.Border(
                     right: pw.BorderSide(width: 1, color: PdfColors.black),
                     bottom: pw.BorderSide(width: 1, color: PdfColors.black),
@@ -4479,7 +4477,7 @@ class _PropertyValuationReportPageState
                 child: pw.Text('Receipt in the name of'),
               ),
               pw.Container(
-                decoration: pw.BoxDecoration(
+                decoration: const pw.BoxDecoration(
                   border: pw.Border(
                     bottom: pw.BorderSide(width: 1, color: PdfColors.black),
                   ),
@@ -4895,9 +4893,9 @@ class _PropertyValuationReportPageState
       pw.Table(
         border: pw.TableBorder.all(color: PdfColors.black, width: 1),
         columnWidths: {
-          0: pw.FlexColumnWidth(2.5),
-          1: pw.FlexColumnWidth(0.5),
-          2: pw.FlexColumnWidth(2),
+          0: const pw.FlexColumnWidth(2.5),
+          1: const pw.FlexColumnWidth(0.5),
+          2: const pw.FlexColumnWidth(2),
         },
         children: [
           // GLR Header

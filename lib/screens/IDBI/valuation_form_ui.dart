@@ -1,15 +1,25 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:login_screen/screens/LIC/pvr1/savedDrafts.dart';
+import 'package:login_screen/screens/IDBI/savedDraftsIDBI.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
 import 'valuation_data_model.dart';
 import 'pdf_generator.dart';
+import 'package:http/http.dart' as http;
+import 'config.dart';
+import 'package:login_screen/screens/driveAPIconfig.dart';
+import 'package:path/path.dart' as path;
 
 class ValuationFormScreenIDBI extends StatefulWidget {
-  const ValuationFormScreenIDBI({super.key});
+  final Map<String, dynamic>? propertyData;
+
+  const ValuationFormScreenIDBI({super.key, this.propertyData});
 
   @override
   _ValuationFormScreenState createState() => _ValuationFormScreenState();
@@ -26,6 +36,21 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
   @override
   void initState() {
     super.initState();
+
+    if (widget.propertyData != null) {
+      // Use the passed data to initialize your form only if it exists
+      debugPrint('Received property data: ${widget.propertyData}');
+      // Example:
+      // _fileNoController.text = widget.propertyData!['fileNo'].toString();
+    } else {
+      debugPrint('No property data received - creating new valuation');
+      // Initialize with empty/default values
+    }
+    _initializeControllers();
+    _initializeFormWithPropertyData();
+  }
+
+  void _initializeControllers() {
     _controllers = {
       'nearbyLatitude': TextEditingController(),
 
@@ -160,10 +185,467 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
     _data.declarationDate = DateTime(2024, 12, 2);
   }
 
+  bool _isNotValidState = false;
+
   @override
   void dispose() {
     _controllers.forEach((_, controller) => controller.dispose());
     super.dispose();
+  }
+
+  Future<void> _saveData() async {
+    try {
+      // Validate required fields
+      if (_controllers['applicationNo']!.text.isEmpty ||
+          _controllers['caseType']!.text.isEmpty) {
+        debugPrint("Required fields are missing");
+        setState(() => _isNotValidState = true);
+        return;
+      }
+
+      if (_valuationImages.isEmpty) {
+        debugPrint("No images available");
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Please add at least one image')));
+        return;
+      }
+
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
+      );
+
+      var request = http.MultipartRequest('POST', Uri.parse(url1));
+
+      // Add text fields
+      request.fields.addAll({
+        // Valuer Information
+        "valuerNameAndQuals": _controllers['valuerNameAndQuals']!.text,
+        "valuerCredentials": _controllers['valuerCredentials']!.text,
+        "valuerAddressLine1": _controllers['valuerAddressLine1']!.text,
+        "valuerMob": _controllers['valuerMob']!.text,
+        "valuerEmail": _controllers['valuerEmail']!.text,
+
+        // Bank Information
+        "bankName": _controllers['bankName']!.text,
+        "branchName": _controllers['branchName']!.text,
+
+        // General Information
+        "caseType": _controllers['caseType']!.text,
+        "inspectionDate": _data.inspectionDate.toString(),
+        "applicationNo": _controllers['applicationNo']!.text,
+        "titleHolderName": _controllers['titleHolderName']!.text,
+        "borrowerName": _controllers['borrowerName']!.text,
+
+        // Documents Verified
+        "landTaxReceiptNo": _controllers['landTaxReceiptNo']!.text,
+        "possessionCertNo": _controllers['possessionCertNo']!.text,
+        "locationSketchNo": _controllers['locationSketchNo']!.text,
+        "thandaperAbstractNo": _controllers['thandaperAbstractNo']!.text,
+        "approvedLayoutPlanNo": _controllers['approvedLayoutPlanNo']!.text,
+        "approvedBuildingPlanNo": _controllers['approvedBuildingPlanNo']!.text,
+
+        // Property Description
+        "briefDescription": _controllers['briefDescription']!.text,
+        "locationAndLandmark": _controllers['locationAndLandmark']!.text,
+
+        // Property Location Details
+        "reSyNo": _controllers['reSyNo']!.text,
+        "blockNo": _controllers['blockNo']!.text,
+        "village": _controllers['village']!.text,
+        "taluk": _controllers['taluk']!.text,
+        "district": _controllers['district']!.text,
+        "state": _controllers['state']!.text,
+        "postOffice": _controllers['postOffice']!.text,
+        "pinCode": _controllers['pinCode']!.text,
+        "postalAddress": _controllers['postalAddress']!.text,
+
+        // Boundary Details
+        "northAsPerSketch": _controllers['northAsPerSketch']!.text,
+        "northActual": _controllers['northActual']!.text,
+        "southAsPerSketch": _controllers['southAsPerSketch']!.text,
+        "southActual": _controllers['southActual']!.text,
+        "eastAsPerSketch": _controllers['eastAsPerSketch']!.text,
+        "eastActual": _controllers['eastActual']!.text,
+        "westAsPerSketch": _controllers['westAsPerSketch']!.text,
+        "westActual": _controllers['westActual']!.text,
+
+        // Property Characteristics
+        "localAuthority": _controllers['localAuthority']!.text,
+        "plotDemarcated": _controllers['plotDemarcated']!.text,
+        "natureOfProperty": _controllers['natureOfProperty']!.text,
+        "classOfProperty": _controllers['classOfProperty']!.text,
+        "topographicalCondition": _controllers['topographicalCondition']!.text,
+        "approvedLandUse": _controllers['approvedLandUse']!.text,
+        "fourWheelerAccessibility":
+            _controllers['fourWheelerAccessibility']!.text,
+        "occupiedBy": _controllers['occupiedBy']!.text,
+        "yearsOfOccupancy": _controllers['yearsOfOccupancy']!.text,
+        "ownerRelationship": _controllers['ownerRelationship']!.text,
+
+        // Area Details
+        "areaOfLand": _controllers['areaOfLand']!.text,
+        "saleableArea": _controllers['saleableArea']!.text,
+
+        // Land Valuation
+        "landExtent": _controllers['landExtent']!.text,
+        "landRatePerCent": _controllers['landRatePerCent']!.text,
+        "landTotalValue": _controllers['landTotalValue']!.text,
+        "landMarketValue": _controllers['landMarketValue']!.text,
+        "landRealizableValue": _controllers['landRealizableValue']!.text,
+        "landDistressValue": _controllers['landDistressValue']!.text,
+        "landFairValue": _controllers['landFairValue']!.text,
+
+        // Building Valuation
+        "buildingPlinth": _controllers['buildingPlinth']!.text,
+        "buildingRatePerSqft": _controllers['buildingRatePerSqft']!.text,
+        "buildingTotalValue": _controllers['buildingTotalValue']!.text,
+        "buildingMarketValue": _controllers['buildingMarketValue']!.text,
+        "buildingRealizableValue":
+            _controllers['buildingRealizableValue']!.text,
+        "buildingDistressValue": _controllers['buildingDistressValue']!.text,
+
+        // Building Physical Details
+        "buildingNo": _controllers['buildingNo']!.text,
+        "approvingAuthority": _controllers['approvingAuthority']!.text,
+        "stageOfConstruction": _controllers['stageOfConstruction']!.text,
+        "typeOfStructure": _controllers['typeOfStructure']!.text,
+        "noOfFloors": _controllers['noOfFloors']!.text,
+        "livingDiningRooms": _controllers['livingDiningRooms']!.text,
+        "bedrooms": _controllers['bedrooms']!.text,
+        "toilets": _controllers['toilets']!.text,
+        "kitchen": _controllers['kitchen']!.text,
+        "typeOfFlooring": _controllers['typeOfFlooring']!.text,
+        "ageOfBuilding": _controllers['ageOfBuilding']!.text,
+        "residualLife": _controllers['residualLife']!.text,
+        "violationObserved": _controllers['violationObserved']!.text,
+
+        // Grand Totals
+        "grandTotalMarketValue": _controllers['grandTotalMarketValue']!.text,
+        "grandTotalRealizableValue":
+            _controllers['grandTotalRealizableValue']!.text,
+        "grandTotalDistressValue":
+            _controllers['grandTotalDistressValue']!.text,
+
+        // Declaration
+        "declarationDate": _data.declarationDate.toString(),
+        "declarationPlace": _controllers['declarationPlace']!.text,
+        "valuerName": _controllers['valuerName']!.text,
+        "valuerAddress": _controllers['valuerAddress']!.text,
+      });
+
+      // Handle the image upload
+      List<Map<String, String>> imageMetadata = [];
+
+      for (int i = 0; i < _valuationImages.length; i++) {
+        final image = _valuationImages[i];
+        final imageBytes = image.imageFile is File
+            ? await (image.imageFile as File).readAsBytes()
+            : image.imageFile;
+
+        request.files.add(http.MultipartFile.fromBytes(
+          'images', // Field name for array of images
+          imageBytes,
+          filename: 'property_${_data.applicationNo}_$i.jpg',
+        ));
+
+        imageMetadata.add({
+          "latitude": image.latitude.toString(),
+          "longitude": image.longitude.toString(),
+        });
+      }
+
+      request.fields['images'] = jsonEncode(imageMetadata);
+
+      final response = await request.send();
+
+      debugPrint("Request sent to backend");
+
+      if (context.mounted) Navigator.of(context).pop();
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Data saved successfully!')));
+        }
+      } else {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Upload failed: ${response.reasonPhrase}')));
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
+      }
+    }
+  }
+
+  Future<String> _getAccessToken() async {
+    final response = await http.post(
+      Uri.parse('https://oauth2.googleapis.com/token'),
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: {
+        'client_id': clientId,
+        'client_secret': clientSecret,
+        'refresh_token': refreshToken,
+        'grant_type': 'refresh_token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body)['access_token'] as String;
+    } else {
+      throw Exception('Failed to refresh access token');
+    }
+  }
+
+  String _getMimeTypeFromExtension(String extension) {
+    switch (extension) {
+      case '.jpg':
+      case '.jpeg':
+        return 'image/jpeg';
+      case '.png':
+        return 'image/png';
+      case '.gif':
+        return 'image/gif';
+      case '.webp':
+        return 'image/webp';
+      default:
+        return 'application/octet-stream';
+    }
+  }
+
+  Future<Uint8List> fetchImageFromDrive(String fileId) async {
+    try {
+      // Get access token using refresh token
+      final accessToken = await _getAccessToken();
+
+      final response = await http.get(
+        Uri.parse(
+            'https://www.googleapis.com/drive/v3/files/$fileId?alt=media'),
+        headers: {'Authorization': 'Bearer $accessToken'},
+      );
+
+      if (response.statusCode == 200) {
+        return response.bodyBytes;
+      } else {
+        throw Exception('Failed to load image: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error fetching image from Drive: $e');
+    }
+  }
+
+  void _initializeFormWithPropertyData() async {
+    debugPrint("hii");
+    if (widget.propertyData != null) {
+      final data = widget.propertyData!;
+
+      // Valuer Information
+      _controllers['valuerNameAndQuals']!.text =
+          data['valuerNameAndQuals']?.toString() ?? '';
+      _controllers['valuerCredentials']!.text =
+          data['valuerCredentials']?.toString() ?? '';
+      _controllers['valuerAddressLine1']!.text =
+          data['valuerAddressLine1']?.toString() ?? '';
+      _controllers['valuerMob']!.text = data['valuerMob']?.toString() ?? '';
+      _controllers['valuerEmail']!.text = data['valuerEmail']?.toString() ?? '';
+
+      // Bank Information
+      _controllers['bankName']!.text = data['bankName']?.toString() ?? '';
+      _controllers['branchName']!.text = data['branchName']?.toString() ?? '';
+
+      // General Information
+      _controllers['caseType']!.text = data['caseType']?.toString() ?? '';
+      if (data['inspectionDate'] != null) {
+        _data.inspectionDate = DateTime.parse(data['inspectionDate']);
+      }
+      _controllers['applicationNo']!.text =
+          data['applicationNo']?.toString() ?? '';
+      _controllers['titleHolderName']!.text =
+          data['titleHolderName']?.toString() ?? '';
+      _controllers['borrowerName']!.text =
+          data['borrowerName']?.toString() ?? '';
+
+      // Documents Verified
+      _controllers['landTaxReceiptNo']!.text =
+          data['landTaxReceiptNo']?.toString() ?? '';
+      _controllers['possessionCertNo']!.text =
+          data['possessionCertNo']?.toString() ?? '';
+      _controllers['locationSketchNo']!.text =
+          data['locationSketchNo']?.toString() ?? '';
+      _controllers['thandaperAbstractNo']!.text =
+          data['thandaperAbstractNo']?.toString() ?? '';
+      _controllers['approvedLayoutPlanNo']!.text =
+          data['approvedLayoutPlanNo']?.toString() ?? '';
+      _controllers['approvedBuildingPlanNo']!.text =
+          data['approvedBuildingPlanNo']?.toString() ?? '';
+
+      // Property Description
+      _controllers['briefDescription']!.text =
+          data['briefDescription']?.toString() ?? '';
+      _controllers['locationAndLandmark']!.text =
+          data['locationAndLandmark']?.toString() ?? '';
+
+      // Property Location Details
+      _controllers['reSyNo']!.text = data['reSyNo']?.toString() ?? '';
+      _controllers['blockNo']!.text = data['blockNo']?.toString() ?? '';
+      _controllers['village']!.text = data['village']?.toString() ?? '';
+      _controllers['taluk']!.text = data['taluk']?.toString() ?? '';
+      _controllers['district']!.text = data['district']?.toString() ?? '';
+      _controllers['state']!.text = data['state']?.toString() ?? '';
+      _controllers['postOffice']!.text = data['postOffice']?.toString() ?? '';
+      _controllers['pinCode']!.text = data['pinCode']?.toString() ?? '';
+      _controllers['postalAddress']!.text =
+          data['postalAddress']?.toString() ?? '';
+
+      // Boundary Details
+      _controllers['northAsPerSketch']!.text =
+          data['northAsPerSketch']?.toString() ?? '';
+      _controllers['northActual']!.text = data['northActual']?.toString() ?? '';
+      _controllers['southAsPerSketch']!.text =
+          data['southAsPerSketch']?.toString() ?? '';
+      _controllers['southActual']!.text = data['southActual']?.toString() ?? '';
+      _controllers['eastAsPerSketch']!.text =
+          data['eastAsPerSketch']?.toString() ?? '';
+      _controllers['eastActual']!.text = data['eastActual']?.toString() ?? '';
+      _controllers['westAsPerSketch']!.text =
+          data['westAsPerSketch']?.toString() ?? '';
+      _controllers['westActual']!.text = data['westActual']?.toString() ?? '';
+
+      // Property Characteristics
+      _controllers['localAuthority']!.text =
+          data['localAuthority']?.toString() ?? '';
+      _controllers['plotDemarcated']!.text =
+          data['plotDemarcated']?.toString() ?? '';
+      _controllers['natureOfProperty']!.text =
+          data['natureOfProperty']?.toString() ?? '';
+      _controllers['classOfProperty']!.text =
+          data['classOfProperty']?.toString() ?? '';
+      _controllers['topographicalCondition']!.text =
+          data['topographicalCondition']?.toString() ?? '';
+      _controllers['approvedLandUse']!.text =
+          data['approvedLandUse']?.toString() ?? '';
+      _controllers['fourWheelerAccessibility']!.text =
+          data['fourWheelerAccessibility']?.toString() ?? '';
+      _controllers['occupiedBy']!.text = data['occupiedBy']?.toString() ?? '';
+      _controllers['yearsOfOccupancy']!.text =
+          data['yearsOfOccupancy']?.toString() ?? '';
+      _controllers['ownerRelationship']!.text =
+          data['ownerRelationship']?.toString() ?? '';
+
+      // Area Details
+      _controllers['areaOfLand']!.text = data['areaOfLand']?.toString() ?? '';
+      _controllers['saleableArea']!.text =
+          data['saleableArea']?.toString() ?? '';
+
+      // Land Valuation
+      _controllers['landExtent']!.text = data['landExtent']?.toString() ?? '';
+      _controllers['landRatePerCent']!.text =
+          data['landRatePerCent']?.toString() ?? '';
+      _controllers['landTotalValue']!.text =
+          data['landTotalValue']?.toString() ?? '';
+      _controllers['landMarketValue']!.text =
+          data['landMarketValue']?.toString() ?? '';
+      _controllers['landRealizableValue']!.text =
+          data['landRealizableValue']?.toString() ?? '';
+      _controllers['landDistressValue']!.text =
+          data['landDistressValue']?.toString() ?? '';
+      _controllers['landFairValue']!.text =
+          data['landFairValue']?.toString() ?? '';
+
+      // Building Valuation
+      _controllers['buildingPlinth']!.text =
+          data['buildingPlinth']?.toString() ?? '';
+      _controllers['buildingRatePerSqft']!.text =
+          data['buildingRatePerSqft']?.toString() ?? '';
+      _controllers['buildingTotalValue']!.text =
+          data['buildingTotalValue']?.toString() ?? '';
+      _controllers['buildingMarketValue']!.text =
+          data['buildingMarketValue']?.toString() ?? '';
+      _controllers['buildingRealizableValue']!.text =
+          data['buildingRealizableValue']?.toString() ?? '';
+      _controllers['buildingDistressValue']!.text =
+          data['buildingDistressValue']?.toString() ?? '';
+
+      // Building Physical Details
+      _controllers['buildingNo']!.text = data['buildingNo']?.toString() ?? '';
+      _controllers['approvingAuthority']!.text =
+          data['approvingAuthority']?.toString() ?? '';
+      _controllers['stageOfConstruction']!.text =
+          data['stageOfConstruction']?.toString() ?? '';
+      _controllers['typeOfStructure']!.text =
+          data['typeOfStructure']?.toString() ?? '';
+      _controllers['noOfFloors']!.text = data['noOfFloors']?.toString() ?? '';
+      _controllers['livingDiningRooms']!.text =
+          data['livingDiningRooms']?.toString() ?? '';
+      _controllers['bedrooms']!.text = data['bedrooms']?.toString() ?? '';
+      _controllers['toilets']!.text = data['toilets']?.toString() ?? '';
+      _controllers['kitchen']!.text = data['kitchen']?.toString() ?? '';
+      _controllers['typeOfFlooring']!.text =
+          data['typeOfFlooring']?.toString() ?? '';
+      _controllers['ageOfBuilding']!.text =
+          data['ageOfBuilding']?.toString() ?? '';
+      _controllers['residualLife']!.text =
+          data['residualLife']?.toString() ?? '';
+      _controllers['violationObserved']!.text =
+          data['violationObserved']?.toString() ?? '';
+
+      // Grand Totals
+      _controllers['grandTotalMarketValue']!.text =
+          data['grandTotalMarketValue']?.toString() ?? '';
+      _controllers['grandTotalRealizableValue']!.text =
+          data['grandTotalRealizableValue']?.toString() ?? '';
+      _controllers['grandTotalDistressValue']!.text =
+          data['grandTotalDistressValue']?.toString() ?? '';
+
+      // Declaration
+      if (data['declarationDate'] != null) {
+        _data.declarationDate = DateTime.parse(data['declarationDate']);
+      }
+      _controllers['declarationPlace']!.text =
+          data['declarationPlace']?.toString() ?? '';
+      _controllers['valuerName']!.text = data['valuerName']?.toString() ?? '';
+      _controllers['valuerAddress']!.text =
+          data['valuerAddress']?.toString() ?? '';
+
+      // Handle images if needed
+      try {
+        if (data['images'] != null && data['images'] is List) {
+          final List<dynamic> imagesData = data['images'];
+          for (var imgData in imagesData) {
+            try {
+              String fileID = imgData['fileID'];
+              String fileName = imgData['fileName'];
+              debugPrint("Fetching image from Drive with ID: $fileID");
+
+              Uint8List imageBytes = await fetchImageFromDrive(fileID);
+              String extension = path.extension(fileName).toLowerCase();
+              if (extension.isEmpty) extension = '.jpg';
+
+              _valuationImages.add(ValuationImage(
+                imageFile: imageBytes,
+                latitude: imgData['latitude']?.toString() ?? '',
+                longitude: imgData['longitude']?.toString() ?? '',
+              ));
+            } catch (e) {
+              debugPrint('Error loading image from Drive: $e');
+            }
+          }
+        }
+      } catch (e) {
+        debugPrint('Error in fetchImages: $e');
+      }
+
+      if (mounted) setState(() {});
+      debugPrint('New form initialized with property data');
+    } else {
+      debugPrint('No property data - new form will use default values');
+    }
   }
 
   /// Replaces special characters that built-in PDF fonts can't handle.
@@ -443,7 +925,6 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
         child: ListView(
           padding: const EdgeInsets.all(16.0),
           children: [
-            
             Card(
               elevation: 4,
               child: Padding(
@@ -471,12 +952,19 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
                         Row(
                           children: [
                             ElevatedButton.icon(
-                              onPressed: _getNearbyLocation, // Call our new method
+                              onPressed:
+                                  _getNearbyLocation, // Call our new method
                               icon: const Icon(Icons.my_location),
                               label: const Text('Get Current Location'),
                             ),
-                            const SizedBox(width: 50,),
-                            ElevatedButton.icon(onPressed: (){}, label: const Text('Search'),icon: const Icon(Icons.search),)
+                            const SizedBox(
+                              width: 50,
+                            ),
+                            ElevatedButton.icon(
+                              onPressed: () {},
+                              label: const Text('Search'),
+                              icon: const Icon(Icons.search),
+                            )
                           ],
                         ),
                       ],
@@ -485,14 +973,19 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
                 ),
               ),
             ),
-             Padding(
-               padding: const EdgeInsets.only(top: 10,right: 50,left: 50,bottom: 10),
-               child: FloatingActionButton.extended(icon: const Icon(Icons.search),label: const Text('Search Saved Drafts'),onPressed: (){
-                       Navigator.of(context).push(MaterialPageRoute(builder: (ctx){
-                         return const SavedDrafts();
-                       }));
-                     },),
-             ),
+            Padding(
+              padding: const EdgeInsets.only(
+                  top: 10, right: 50, left: 50, bottom: 10),
+              child: FloatingActionButton.extended(
+                icon: const Icon(Icons.search),
+                label: const Text('Search Saved Drafts'),
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
+                    return const SavedDraftsIDBI();
+                  }));
+                },
+              ),
+            ),
             _buildSection(
               title: 'Valuer Header Info',
               initiallyExpanded: true,
@@ -967,22 +1460,26 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
               ],
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 10,right: 50,left: 50),
+              padding: const EdgeInsets.only(top: 10, right: 50, left: 50),
               child: FloatingActionButton.extended(
-              icon: const Icon(Icons.picture_as_pdf),
-              label: const Text('Generate PDF'),
-              onPressed: _generatePdf,
-                        ),
+                icon: const Icon(Icons.picture_as_pdf),
+                label: const Text('Generate PDF'),
+                onPressed: _generatePdf,
+              ),
             ),
           ],
-          
         ),
       ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          FloatingActionButton.extended(icon: const Icon(Icons.save),label: const Text('Save'),onPressed: (){},),
-      
+          FloatingActionButton.extended(
+            icon: const Icon(Icons.save),
+            label: const Text('Save'),
+            onPressed: () {
+              _saveData();
+            },
+          ),
         ],
       ),
     );
