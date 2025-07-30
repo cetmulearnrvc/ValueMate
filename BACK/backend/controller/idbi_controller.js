@@ -7,10 +7,10 @@ export const saveIDBIValuation = async (req, res) => {
     const valuationData = req.body;
     
     // Validate required fields
-    if (!valuationData.caseType || !valuationData.applicationNo) {
+    if (!valuationData.applicationNo) {
         return res.status(400).json({
             success: false,
-            message: "Case Type and application number are required"
+            message: "Application number is required"
         });
     }
 

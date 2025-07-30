@@ -1,4 +1,4 @@
-const url1 = "http://192.168.29.101:3000/api/v1/idbi/save";
+const url1 = "http://localhost:3000/api/v1/idbi/save";
 
 const url2 = "http://localhost:3000/api/v1/getNearby";
 

@@ -132,12 +132,14 @@ pw.Widget _buildHeader() {
 }
 
   pw.Widget _buildRecipient() {
+    print(data.bankName);
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         pw.Text('TO,', style: pw.TextStyle(font: font)),
         pw.SizedBox(height: 5),
         pw.Text('\t\t${data.bankName}', style: pw.TextStyle(font: boldFont)),
+        
         pw.Text('\t\t${data.branchName}', style: pw.TextStyle(font: boldFont)),
         pw.Text('\t\tTRIVANDRUM', style: pw.TextStyle(font: boldFont)),
       ],
@@ -387,8 +389,8 @@ pw.Widget _buildPhysicalDetailsOfBuildingSection() {
           ],
         ),
         _buildSimpleRow('1. Area of land', data.areaOfLand),
-        _buildSimpleRow('2. Plinth area of proposed building', '--'),
-        _buildSimpleRow('3. Carpet area of building', '--'),
+        _buildSimpleRow('2. Plinth area of proposed building', data.plinthArea),
+        _buildSimpleRow('3. Carpet area of building', data.carpetArea),
         _buildSimpleRow('4. Saleable area', data.saleableArea),
       ],
     );
@@ -634,7 +636,7 @@ pw.Widget _buildPhysicalDetailsOfBuildingSection() {
         ]),
             pw.TableRow(children: [
           _cell('Remarks',isBold: true),
-          _cell(''),
+          _cell('${data.remarks}'),
         ]),
           ]
         ),

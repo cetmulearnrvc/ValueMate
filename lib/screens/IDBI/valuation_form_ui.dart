@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:login_screen/screens/IDBI/savedDraftsIDBI.dart';
+import 'package:login_screen/screens/nearbyDetails.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
 import 'valuation_data_model.dart';
@@ -120,6 +121,8 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
       'yearsOfOccupancy': TextEditingController(text: _data.yearsOfOccupancy),
       'ownerRelationship': TextEditingController(text: _data.ownerRelationship),
       'areaOfLand': TextEditingController(text: _data.areaOfLand),
+      'plinthArea' : TextEditingController(),
+      'carpetArea' : TextEditingController(),
       'saleableArea': TextEditingController(text: _data.saleableArea),
       'landExtent': TextEditingController(text: _data.landExtent),
       'landRatePerCent': TextEditingController(text: _data.landRatePerCent),
@@ -179,6 +182,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
       'buildingDistressValue': TextEditingController(
         text: _data.buildingDistressValue,
       ),
+      'remarks': TextEditingController(),
       // 'images': TextEditingController(),
     };
     _data.inspectionDate = DateTime(2024, 8, 7);
@@ -193,12 +197,136 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
     super.dispose();
   }
 
+  Future<void> _getNearbyProperty() async {
+    final latitude = _controllers['nearbyLatitude']!.text.trim();
+    final longitude = _controllers['nearbyLongitude']!.text.trim();
+
+    debugPrint(latitude);
+
+    if (latitude.isEmpty || longitude.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Please enter both latitude and longitude')),
+      );
+      return;
+    }
+
+    try {
+      final url = Uri.parse(url2);
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'latitude': latitude,
+          'longitude': longitude,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        // Decode the JSON response (assuming it's an array)
+        final List<dynamic> responseData = jsonDecode(response.body);
+
+        // Debug print the array
+        debugPrint('Response Data (Array):');
+        for (var item in responseData) {
+          debugPrint(item.toString()); // Print each item in the array
+        }
+
+        if (context.mounted) {
+          // Navigator.of(context).push(
+          //   MaterialPageRoute(
+          //     builder: (ctx) => Nearbydetails(responseData: responseData),
+          //   ),
+          // );
+          showModalBottomSheet(
+              context: context,
+              builder: (ctx) {
+                return Nearbydetails(responseData: responseData);
+              });
+        }
+      }
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Nearby properties fetched successfully')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${response.statusCode}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
+
+  Future<void> _saveToNearbyCollection() async {
+  try {
+    // --- STEP 1: Find the first image with valid coordinates ---
+    ValuationImage? firstImageWithLocation;
+    try {
+      // Use .firstWhere to find the first image that satisfies the condition.
+      firstImageWithLocation = _valuationImages.firstWhere(
+        (img) => img.latitude.isNotEmpty && img.longitude.isNotEmpty,
+      );
+    } catch (e) {
+      // .firstWhere throws an error if no element is found. We catch it here.
+      firstImageWithLocation = null;
+    }
+
+    // --- STEP 2: Handle the case where no image has location data ---
+    if (firstImageWithLocation == null) {
+      debugPrint('No image with location data found. Skipping save to nearby collection.');
+      return; // Exit the function early.
+    }
+
+    final ownerName = _controllers['titleHolderName']!.text ?? '[is null]';
+    final marketValue = _controllers['landMarketValue']!.text ?? '[is null]';
+
+    debugPrint('------------------------------------------');
+    debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
+    debugPrint('Owner Name from Controller: "$ownerName"');
+    debugPrint('Market Value from Controller: "$marketValue"');
+    debugPrint('------------------------------------------');
+    // --- STEP 3: Build the payload with the correct data ---
+    final dataToSave = {
+      // Use the coordinates from the image we found
+       'refNo': _controllers['applicationNo']!.text ?? '',
+      'latitude': firstImageWithLocation.latitude,
+      'longitude': firstImageWithLocation.longitude,
+      
+      'landValue': marketValue, // Use the variable we just created
+      'nameOfOwner': ownerName,
+      'bankName': 'IDBI Bank',
+    };
+    
+    // --- STEP 4: Send the data to your dedicated server endpoint ---
+    final response = await http.post(
+      Uri.parse(url5), // Use your dedicated URL for saving this data
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(dataToSave),
+    );
+
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      debugPrint('Successfully saved data to nearby collection.');
+    } else {
+      debugPrint('Failed to save to nearby collection: ${response.statusCode}');
+      debugPrint('Response body: ${response.body}');
+    }
+  } catch (e) {
+    debugPrint('Error in _saveToNearbyCollection: $e');
+  }
+}
+
   Future<void> _saveData() async {
     try {
       // Validate required fields
-      if (_controllers['applicationNo']!.text.isEmpty ||
-          _controllers['caseType']!.text.isEmpty) {
-        debugPrint("Required fields are missing");
+      if (_controllers['applicationNo']!.text.isEmpty) {
+        debugPrint("Application number missing");
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill Application number')));
         setState(() => _isNotValidState = true);
         return;
       }
@@ -286,6 +414,8 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
 
         // Area Details
         "areaOfLand": _controllers['areaOfLand']!.text,
+        "plinthArea":_controllers['plinthArea']!.text,
+        "carpetArea": _controllers['carpetArea']!.text,
         "saleableArea": _controllers['saleableArea']!.text,
 
         // Land Valuation
@@ -333,6 +463,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
         "declarationPlace": _controllers['declarationPlace']!.text,
         "valuerName": _controllers['valuerName']!.text,
         "valuerAddress": _controllers['valuerAddress']!.text,
+        "remarks":_controllers['remarks']!.text,
       });
 
       // Handle the image upload
@@ -369,6 +500,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
           ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Data saved successfully!')));
         }
+        await _saveToNearbyCollection();
       } else {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -441,7 +573,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
   }
 
   void _initializeFormWithPropertyData() async {
-    debugPrint("hii");
+    
     if (widget.propertyData != null) {
       final data = widget.propertyData!;
 
@@ -540,6 +672,9 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
 
       // Area Details
       _controllers['areaOfLand']!.text = data['areaOfLand']?.toString() ?? '';
+      _controllers['plinthArea']!.text = data['plinthArea']?.toString() ?? '';
+      _controllers['carpetArea']!.text = data['carpetArea']?.toString() ?? '';      
+
       _controllers['saleableArea']!.text =
           data['saleableArea']?.toString() ?? '';
 
@@ -602,7 +737,8 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
           data['grandTotalRealizableValue']?.toString() ?? '';
       _controllers['grandTotalDistressValue']!.text =
           data['grandTotalDistressValue']?.toString() ?? '';
-
+      _controllers['remarks']!.text =
+          data['remarks']?.toString() ?? '';
       // Declaration
       if (data['declarationDate'] != null) {
         _data.declarationDate = DateTime.parse(data['declarationDate']);
@@ -870,6 +1006,8 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
       _data.yearsOfOccupancy = _controllers['yearsOfOccupancy']!.text;
       _data.ownerRelationship = _controllers['ownerRelationship']!.text;
       _data.areaOfLand = _controllers['areaOfLand']!.text;
+      _data.plinthArea=_controllers['plinthArea']!.text;
+      _data.carpetArea=_controllers['carpetArea']!.text;
       _data.saleableArea = _controllers['saleableArea']!.text;
       _data.landExtent = _controllers['landExtent']!.text;
       _data.landRatePerCent = _controllers['landRatePerCent']!.text;
@@ -910,6 +1048,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
       _data.buildingRealizableValue =
           _controllers['buildingRealizableValue']!.text;
       _data.buildingDistressValue = _controllers['buildingDistressValue']!.text;
+      _data.remarks=_controllers['remarks']!.text;
       Printing.layoutPdf(
         onLayout: (PdfPageFormat format) => PdfGenerator(_data).generate(),
       );
@@ -951,19 +1090,23 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
                       children: [
                         Row(
                           children: [
-                            ElevatedButton.icon(
-                              onPressed:
-                                  _getNearbyLocation, // Call our new method
-                              icon: const Icon(Icons.my_location),
-                              label: const Text('Get Current Location'),
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                onPressed:
+                                    _getNearbyLocation, // Call our new method
+                                icon: const Icon(Icons.my_location),
+                                label: const Text('Get Location'),
+                              ),
                             ),
                             const SizedBox(
-                              width: 50,
+                              width: 4,
                             ),
-                            ElevatedButton.icon(
-                              onPressed: () {},
-                              label: const Text('Search'),
-                              icon: const Icon(Icons.search),
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                onPressed: _getNearbyProperty,
+                                label: const Text('Search'),
+                                icon: const Icon(Icons.search),
+                              ),
                             )
                           ],
                         ),
@@ -1065,7 +1208,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
               title: 'II. PHYSICAL DETAILS OF LAND',
               children: [
                 _buildTextField(
-                  '1. Brief description',
+                  '1. Brief description of the property',
                   _controllers['briefDescription']!,
                   maxLines: 5,
                 ),
@@ -1158,15 +1301,15 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
                   _controllers['fourWheelerAccessibility']!,
                 ),
                 _buildTextField(
-                  'a) Occupied by Owner/Tenant',
+                  '14 a) Occupied by Owner/Tenant',
                   _controllers['occupiedBy']!,
                 ),
                 _buildTextField(
-                  'b) No. of years of occupancy',
+                  '14 b) No. of years of occupancy',
                   _controllers['yearsOfOccupancy']!,
                 ),
                 _buildTextField(
-                  'c) Relationship of owner & occupant',
+                  '14 c) Relationship of owner & occupant',
                   _controllers['ownerRelationship']!,
                 ),
               ],
@@ -1212,7 +1355,11 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Expanded(
+                    
+                  ],
+                ),
+                Row(children: [
+                  Expanded(
                       child: _buildTextField(
                         'Toilets',
                         _controllers['toilets']!,
@@ -1225,8 +1372,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
                         _controllers['kitchen']!,
                       ),
                     ),
-                  ],
-                ),
+                ],),
                 _buildTextField(
                   '7. Type of flooring',
                   _controllers['typeOfFlooring']!,
@@ -1249,6 +1395,8 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
               title: 'III. AREA DETAILS OF THE PROPERTY',
               children: [
                 _buildTextField('1. Area of land', _controllers['areaOfLand']!),
+                _buildTextField('2. Plinth area of proposed building', _controllers['plinthArea']!),
+                _buildTextField('3. Carpet area of building', _controllers['carpetArea']!),
                 _buildTextField(
                   '4. Saleable area',
                   _controllers['saleableArea']!,
@@ -1354,6 +1502,11 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
                 _buildTextField(
                   'Valuer Address',
                   _controllers['valuerAddress']!,
+                  maxLines: 3,
+                ),
+                _buildTextField(
+                  'Remarks',
+                  _controllers['remarks']!,
                   maxLines: 3,
                 ),
               ],

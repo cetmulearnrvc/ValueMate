@@ -198,6 +198,10 @@ const idbiValuationSchema = new mongoose.Schema({
   areaOfLand: {
     type: String,
   },
+  plinthArea:{type:String},
+
+  carpetArea:{type:String},
+
   saleableArea: {
     type: String,
   },
@@ -311,6 +315,7 @@ const idbiValuationSchema = new mongoose.Schema({
     type: String,
     
   },
+  remarks :{type : String},
 
   // Images
   images: [valuationImageSchema]
