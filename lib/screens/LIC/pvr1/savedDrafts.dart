@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
-import 'package:login_screen/screens/LIC/pvr1/config.dart';
-import 'package:login_screen/screens/LIC/pvr1/valuation_form_screen_pvr1.dart';
+import 'package:ValuMate/screens/LIC/pvr1/config.dart';
+import 'package:ValuMate/screens/LIC/pvr1/valuation_form_screen_pvr1.dart';
 import 'dart:convert';
 
 class SavedDrafts extends StatefulWidget {
