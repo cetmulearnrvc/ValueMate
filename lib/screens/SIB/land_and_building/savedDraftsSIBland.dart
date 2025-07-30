@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
-import 'package:login_screen/screens/SIB/land_and_building/land_and_building.dart';
+import 'package:ValuMate/screens/SIB/land_and_building/land_and_building.dart';
 import 'dart:convert';
 import 'config.dart';
 

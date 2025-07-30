@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:login_screen/screens/LIC/pvr1/savedDrafts.dart';
+import 'package:ValuMate/screens/LIC/pvr1/savedDrafts.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
 import 'valuation_data_model.dart';

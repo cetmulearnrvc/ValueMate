@@ -7,15 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:login_screen/screens/LIC/pvr3/savedDraftsPVR3.dart';
-import 'package:login_screen/screens/nearbyDetails.dart';
+import 'package:ValuMate/screens/LIC/pvr3/savedDraftsPVR3.dart';
+import 'package:ValuMate/screens/nearbyDetails.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
 import 'valuation_data_model.dart';
 import 'pdf_generator.dart';
 import 'package:http/http.dart' as http;
 import 'config.dart';
-import 'package:login_screen/screens/driveAPIconfig.dart';
+import 'package:ValuMate/screens/driveAPIconfig.dart';
 import 'package:path/path.dart' as path;
 
 class ValuationFormScreen extends StatefulWidget {

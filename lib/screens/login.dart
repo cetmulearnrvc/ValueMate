@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:login_screen/main.dart';
-import 'package:login_screen/screens/home.dart';
+import 'package:ValuMate/main.dart';
+import 'package:ValuMate/screens/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatelessWidget {

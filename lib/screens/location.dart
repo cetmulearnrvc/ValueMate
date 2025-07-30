@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:login_screen/screens/form.dart';
+import 'package:ValuMate/screens/form.dart';
 
 class LocationScreen extends StatefulWidget {
   const LocationScreen({super.key});

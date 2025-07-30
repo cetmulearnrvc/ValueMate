@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:login_screen/screens/Federal/savedDraftsFederal.dart';
-import 'package:login_screen/screens/nearbyDetails.dart';
+import 'package:ValuMate/screens/Federal/savedDraftsFederal.dart';
+import 'package:ValuMate/screens/nearbyDetails.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart' as pdfLib;
 import 'package:printing/printing.dart';
@@ -14,7 +14,7 @@ import 'package:geolocator/geolocator.dart'; // Import geolocator package
 // Import geolocator package
 import 'package:http/http.dart' as http;
 import 'config.dart';
-import 'package:login_screen/screens/driveAPIconfig.dart';
+import 'package:ValuMate/screens/driveAPIconfig.dart';
 import 'package:path/path.dart' as path;
 
 void main() {

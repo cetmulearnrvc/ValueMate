@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:login_screen/screens/Canara/main.dart';
-import 'package:login_screen/screens/Federal/federal.dart';
-import 'package:login_screen/screens/IDBI/valuation_form_ui.dart';
-import 'package:login_screen/screens/LIC/pvr1/valuation_form_screen_pvr1.dart';
-import 'package:login_screen/screens/LIC/pvr3/valuation_form_screen.dart';
-import 'package:login_screen/screens/SIB/Flat/valuation_form.dart';
-import 'package:login_screen/screens/location.dart';
-import 'package:login_screen/screens/SIB/land_and_building/land_and_building.dart';
-import 'package:login_screen/screens/SIB/vacant_land/vacant_land.dart';
+import 'package:ValuMate/screens/Canara/main.dart';
+import 'package:ValuMate/screens/Federal/federal.dart';
+import 'package:ValuMate/screens/IDBI/valuation_form_ui.dart';
+import 'package:ValuMate/screens/LIC/pvr1/valuation_form_screen_pvr1.dart';
+import 'package:ValuMate/screens/LIC/pvr3/valuation_form_screen.dart';
+import 'package:ValuMate/screens/SIB/Flat/valuation_form.dart';
+import 'package:ValuMate/screens/location.dart';
+import 'package:ValuMate/screens/SIB/land_and_building/land_and_building.dart';
+import 'package:ValuMate/screens/SIB/vacant_land/vacant_land.dart';
 
 class LoanType extends StatelessWidget {
   final Map<String, dynamic> selectedBank;

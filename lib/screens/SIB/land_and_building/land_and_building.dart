@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:login_screen/screens/SIB/land_and_building/savedDraftsSIBland.dart';
-import 'package:login_screen/screens/nearbyDetails.dart';
+import 'package:ValuMate/screens/SIB/land_and_building/savedDraftsSIBland.dart';
+import 'package:ValuMate/screens/nearbyDetails.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart' as pdfLib;
 import 'package:printing/printing.dart';
@@ -15,7 +15,7 @@ import 'dart:io'; // For File class (used conditionally for non-web)
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'config.dart';
-import 'package:login_screen/screens/driveAPIconfig.dart';
+import 'package:ValuMate/screens/driveAPIconfig.dart';
 import 'package:path/path.dart' as path;
 
 void main() {
@@ -3820,87 +3820,66 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Center(
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  margin: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(
-                        255, 244, 238, 238), // Light background color
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color.fromARGB(255, 204, 200, 200)
-                            .withOpacity(0.3),
-                        spreadRadius: 4,
-                        blurRadius: 8,
-                        offset: const Offset(0, 4), // Shadow position
-                      ),
-                    ],
-                  ),
+              Card(
+                elevation: 4,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TextField(
-                        // Changed from TextFormField to TextField
+                      Text(
+                        "Search for Nearby Property",
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
                         controller: _latController,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(20))), // Applied new styling
-                          hintText: 'Latitude',
-                        ),
+                        decoration:
+                            const InputDecoration(labelText: 'Latitude'),
                       ),
-                      const SizedBox(height: 20),
-                      TextField(
-                        // Changed from TextFormField to TextField
+                      const SizedBox(height: 8),
+                      TextFormField(
                         controller: _lonController,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(20))), // Applied new styling
-                          hintText: 'Longitude',
-                        ),
+                        decoration:
+                            const InputDecoration(labelText: 'Longitude'),
                       ),
-                      const SizedBox(height: 30),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      const SizedBox(height: 8),
+                      Center(
+                          child: Column(
                         children: [
-                          ElevatedButton.icon(
-                            onPressed: _getCurrentLocation,
-                            icon: const Icon(Icons.my_location),
-                            label: const Text('Get Location',
-                                style: TextStyle(fontSize: 15.5)),
-                            style: ButtonStyle(
-                              fixedSize:
-                                  WidgetStateProperty.all(const Size(200, 40)),
-                              shape: WidgetStateProperty.all(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Expanded(
+                                child: ElevatedButton.icon(
+                                  onPressed:
+                                      _getCurrentLocation, // Call our new method
+                                  icon: const Icon(Icons.my_location),
+                                  label: const Text('Get Location'),
                                 ),
                               ),
-                            ),
-                          ),
-                          const SizedBox(width: 15), // Spacing between buttons
-                          ElevatedButton.icon(
-                            onPressed: () {
-                              _getNearbyProperty();
-                            },
-                            icon: const Icon(Icons.search),
-                            label: const Text('Search',
-                                style: TextStyle(fontSize: 15.5)),
-                            style: ButtonStyle(
-                              fixedSize:
-                                  WidgetStateProperty.all(const Size(150, 40)),
-                              shape: WidgetStateProperty.all(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
+                              const SizedBox(
+                                width: 5,
                               ),
-                            ),
+                              Expanded(
+                                child: ElevatedButton.icon(
+                                  onPressed: /* () {
+                                  Navigator.of(context)
+                                      .push(MaterialPageRoute(builder: (ctx) {
+                                    return Nearbydetails(
+                                        latitude: _nearbyLatitude.text,
+                                        longitude: _nearbyLongitude.text);
+                                  }));
+                                } */
+                                      _getNearbyProperty,
+                                  label: const Text('Search'),
+                                  icon: const Icon(Icons.search),
+                                ),
+                              )
+                            ],
                           ),
                         ],
-                      )
+                      )),
                     ],
                   ),
                 ),
@@ -3909,31 +3888,18 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
               const SizedBox(height: 20),
 
               Center(
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const SavedDraftsSIBLand(),
-                      ),
-                    );
-                  },
-                  icon: const Icon(
-                    Icons.search,
-                    size: 30,
-                  ),
-                  label: const Text(
-                    'Search Saved Drafts',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  style: ButtonStyle(
-                    fixedSize: WidgetStateProperty.all(const Size(300, 50)),
-                    shape: WidgetStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(20), // 👈 Small border radius
-                      ),
-                    ),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      right: 50, left: 50, top: 10, bottom: 10),
+                  child: FloatingActionButton.extended(
+                    icon: const Icon(Icons.search),
+                    label: const Text('Search Saved Drafts'),
+                    onPressed: () {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (ctx) {
+                        return const SavedDraftsSIBLand();
+                      }));
+                    },
                   ),
                 ),
               ),
@@ -3969,6 +3935,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(
+                    height: 13,
+                  ),
                   TextField(
                     // Changed from _buildTextField
                     controller: _dateOfInspectionController,
@@ -3980,6 +3949,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
+                  ),
+                  const SizedBox(
+                    height: 13,
                   ),
                   TextField(
                     // Changed from _buildTextField
@@ -4019,6 +3991,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(
+                    height: 13,
+                  ),
                   TextField(
                     // Changed from _buildTextField
                     controller: _applicantNameController,
@@ -4033,6 +4008,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                     '6. The address of the property (including pin code)',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
+                  const SizedBox(
+                    height: 13,
+                  ),
                   TextField(
                     // Changed from _buildTextField
                     controller: _addressDocController,
@@ -4042,6 +4020,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(
+                    height: 13,
+                  ),
                   TextField(
                     // Changed from _buildTextField
                     controller: _addressActualController,
@@ -4050,6 +4031,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
+                  ),
+                  const SizedBox(
+                    height: 13,
                   ),
                   TextField(
                     // Changed from _buildTextField
@@ -4061,6 +4045,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(
+                    height: 13,
+                  ),
                   TextField(
                     // Changed from _buildTextField
                     controller: _propertyTypeController,
@@ -4070,6 +4057,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
+                  ),
+                  const SizedBox(
+                    height: 13,
                   ),
                   TextField(
                     // Changed from _buildTextField
@@ -4106,6 +4096,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(
+                    height: 13,
+                  ),
                   TextField(
                     // Changed from _buildTextField
                     controller: _urbanSemiUrbanRuralController,
@@ -4115,6 +4108,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
+                  ),
+                  const SizedBox(
+                    height: 13,
                   ),
                   TextField(
                     // Changed from _buildTextField
@@ -4127,6 +4123,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(
+                    height: 13,
+                  ),
                   TextField(
                     // Changed from _buildTextField
                     controller: _coveredUnderStateCentralGovtController,
@@ -4137,6 +4136,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
+                  ),
+                  const SizedBox(
+                    height: 13,
                   ),
                   TextField(
                     // Changed from _buildTextField
@@ -4153,6 +4155,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                   const Text(
                     '14. Boundaries of the property',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    height: 13,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 16.0),
@@ -4182,6 +4187,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                       ],
                     ),
                   ),
+                  const SizedBox(
+                    height: 13,
+                  ),
                   TextField(
                     // Changed from _buildTextField
                     controller: _boundaryDeviationsController,
@@ -4203,11 +4211,11 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                       children: [
                         const Row(
                           children: [
-                            Expanded(flex: 2, child: Text('Directions')),
-                            Expanded(flex: 3, child: Text('As per Actuals')),
-                            Expanded(flex: 3, child: Text('As per Documents')),
+                            Expanded(flex: 3, child: Text('Directions')),
+                            Expanded(flex: 4, child: Text('As per Actuals')),
+                            Expanded(flex: 4, child: Text('As per Documents')),
                             Expanded(
-                                flex: 3, child: Text('Adopted area in Sft')),
+                                flex: 4, child: Text('Adopted area in Sft')),
                           ],
                         ),
                         _buildDimensionsRow(
@@ -4238,6 +4246,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                             isTotalArea: true),
                       ],
                     ),
+                  ),
+                  const SizedBox(
+                    height: 13,
                   ),
                   TextField(
                     // Changed from _buildTextField
@@ -4290,6 +4301,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                       ),
                     ),
                   ),
+                  const SizedBox(
+                    height: 13,
+                  ),
                   TextField(
                     // Changed from _buildTextField
                     controller: _occupiedBySelfTenantController,
@@ -4300,6 +4314,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(
+                    height: 13,
+                  ),
                   TextField(
                     // Changed from _buildTextField
                     controller: _occupiedByTenantSinceController,
@@ -4309,6 +4326,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
+                  ),
+                  const SizedBox(
+                    height: 13,
                   ),
                   TextField(
                     // Changed from _buildTextField
@@ -4408,6 +4428,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(
+                    height: 13,
+                  ),
                   TextField(
                     // Changed from _buildTextField
                     controller: _widthOfRoadController,
@@ -4464,6 +4487,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(
+                    height: 13,
+                  ),
                   TextField(
                     // Changed from _buildTextField
                     controller: _landAreaGuidelineController,
@@ -4473,6 +4499,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
+                  ),
+                  const SizedBox(
+                    height: 13,
                   ),
                   TextField(
                     // Changed from _buildTextField
@@ -4484,6 +4513,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(
+                    height: 13,
+                  ),
                   TextField(
                     // Changed from _buildTextField
                     controller: _valueInRsGuidelineController,
@@ -4493,6 +4525,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
+                  ),
+                  const SizedBox(
+                    height: 13,
                   ),
                   TextField(
                     // Changed from _buildTextField
@@ -4505,6 +4540,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(
+                    height: 13,
+                  ),
                   TextField(
                     // Changed from _buildTextField
                     controller: _ratePerSqFtPrevailingController,
@@ -4514,6 +4552,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
+                  ),
+                  const SizedBox(
+                    height: 13,
                   ),
                   TextField(
                     // Changed from _buildTextField
@@ -4549,6 +4590,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(
+                    height: 13,
+                  ),
                   TextField(
                     // Changed from _buildTextField
                     controller: _typeOfConstructionController,
@@ -4560,6 +4604,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(
+                    height: 13,
+                  ),
                   TextField(
                     // Changed from _buildTextField
                     controller: _ageOfTheBuildingController,
@@ -4569,6 +4616,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
+                  ),
+                  const SizedBox(
+                    height: 13,
                   ),
                   TextField(
                     // Changed from _buildTextField
@@ -4580,6 +4630,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(
+                    height: 13,
+                  ),
                   TextField(
                     // Changed from _buildTextField
                     controller: _approvedMapAuthorityController,
@@ -4589,6 +4642,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
+                  ),
+                  const SizedBox(
+                    height: 13,
                   ),
                   TextField(
                     // Changed from _buildTextField
@@ -4600,6 +4656,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
+                  ),
+                  const SizedBox(
+                    height: 13,
                   ),
                   TextField(
                     // Changed from _buildTextField
@@ -4618,82 +4677,92 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
               const SizedBox(height: 20),
 
               // Collapsible Section: Build up Area Details
-              ExpansionTile(
-                title: const Text(
-                  'Build up Area Details',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                initiallyExpanded: false,
-                children: <Widget>[
-                  const Divider(),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                            flex: 1,
-                            child: Text('S n',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        Expanded(
-                            flex: 2,
-                            child: Text('Particular of item',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        Expanded(
-                            flex: 2,
-                            child: Text('As per approved\nPlan/FSI',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        Expanded(
-                            flex: 2,
-                            child: Text('As per Actual',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        Expanded(
-                            flex: 2,
-                            child: Text('Area Considered\nfor the Valuation',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        Expanded(
-                            flex: 2,
-                            child: Text('Replacement Cost\nin Rs.',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        Expanded(
-                            flex: 2,
-                            child: Text('Depreciation\nin Rs.',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        Expanded(
-                            flex: 2,
-                            child: Text('Net value after\nDepreciations Rs.',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                      ],
+              SingleChildScrollView(
+                child: ExpansionTile(
+                  title: const Text(
+                    'Build up Area Details',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  initiallyExpanded: false,
+                  children: <Widget>[
+                    const Divider(),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                              flex: 1,
+                              child: Text('S n',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold))),
+                          Expanded(
+                              flex: 2,
+                              child: Text('Particular of item',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold))),
+                          Expanded(
+                              flex: 2,
+                              child: Text('As per approved\nPlan/FSI',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold))),
+                          Expanded(
+                              flex: 2,
+                              child: Text('As per Actual',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold))),
+                          Expanded(
+                              flex: 2,
+                              child: Text('Area Considered\nfor the Valuation',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold))),
+                          Expanded(
+                              flex: 2,
+                              child: Text('Replacement Cost\nin Rs.',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold))),
+                          Expanded(
+                              flex: 2,
+                              child: Text('Depreciation\nin Rs.',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold))),
+                          Expanded(
+                              flex: 2,
+                              child: Text('Net value after\nDepreciations Rs.',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold))),
+                        ],
+                      ),
                     ),
-                  ),
-                  _buildBuildUpAreaRow(
-                    'Ground floor',
-                    _groundFloorApprovedPlanController,
-                    _groundFloorActualController,
-                    _groundFloorConsideredValuationController,
-                    _groundFloorReplacementCostController,
-                    _groundFloorDepreciationController,
-                    _groundFloorNetValueController,
-                  ),
-                  _buildBuildUpAreaRow(
-                    'First floor',
-                    _firstFloorApprovedPlanController,
-                    _firstFloorActualController,
-                    _firstFloorConsideredValuationController,
-                    _firstFloorReplacementCostController,
-                    _firstFloorDepreciationController,
-                    _firstFloorNetValueController,
-                  ),
-                  _buildBuildUpAreaRow(
-                    'Total',
-                    _totalApprovedPlanController,
-                    _totalActualController,
-                    _totalConsideredValuationController,
-                    _totalReplacementCostController,
-                    _totalDepreciationController,
-                    _totalNetValueController,
-                    isTotal: true,
-                  ),
-                ],
+                    _buildBuildUpAreaRow(
+                      'Ground floor',
+                      _groundFloorApprovedPlanController,
+                      _groundFloorActualController,
+                      _groundFloorConsideredValuationController,
+                      _groundFloorReplacementCostController,
+                      _groundFloorDepreciationController,
+                      _groundFloorNetValueController,
+                    ),
+                    _buildBuildUpAreaRow(
+                      'First floor',
+                      _firstFloorApprovedPlanController,
+                      _firstFloorActualController,
+                      _firstFloorConsideredValuationController,
+                      _firstFloorReplacementCostController,
+                      _firstFloorDepreciationController,
+                      _firstFloorNetValueController,
+                    ),
+                    _buildBuildUpAreaRow(
+                      'Total',
+                      _totalApprovedPlanController,
+                      _totalActualController,
+                      _totalConsideredValuationController,
+                      _totalReplacementCostController,
+                      _totalDepreciationController,
+                      _totalNetValueController,
+                      isTotal: true,
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 20),
 
@@ -4716,6 +4785,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(
+                    height: 13,
+                  ),
                   TextField(
                     // Changed from _buildTextField
                     controller: _amenitiesController,
@@ -4726,6 +4798,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(
+                    height: 13,
+                  ),
                   TextField(
                     // Changed from _buildTextField
                     controller: _anyOtherAdditionalController,
@@ -4735,6 +4810,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
+                  ),
+                  const SizedBox(
+                    height: 13,
                   ),
                   TextField(
                     // Changed from _buildTextField
@@ -4769,6 +4847,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(
+                    height: 13,
+                  ),
                   TextField(
                     // Changed from _buildTextField
                     controller: _totalAbstractBuildingController,
@@ -4778,6 +4859,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
+                  ),
+                  const SizedBox(
+                    height: 13,
                   ),
                   TextField(
                     // Changed from _buildTextField
@@ -4789,6 +4873,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(
+                    height: 13,
+                  ),
                   TextField(
                     // Changed from _buildTextField
                     controller: _totalAbstractTotalController,
@@ -4798,6 +4885,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
+                  ),
+                  const SizedBox(
+                    height: 13,
                   ),
                   TextField(
                     // Changed from _buildTextField
@@ -4832,6 +4922,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(
+                    height: 13,
+                  ),
                   TextField(
                     // Changed from _buildTextField
                     controller: _remark2Controller,
@@ -4842,6 +4935,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(
+                    height: 13,
+                  ),
                   TextField(
                     // Changed from _buildTextField
                     controller: _remark3Controller,
@@ -4851,6 +4947,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
+                  ),
+                  const SizedBox(
+                    height: 13,
                   ),
                   TextField(
                     // Changed from _buildTextField
@@ -4885,6 +4984,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(
+                    height: 13,
+                  ),
                   TextField(
                     // Changed from _buildTextField
                     controller: _realizableValueController,
@@ -4895,6 +4997,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(
+                    height: 13,
+                  ),
                   TextField(
                     // Changed from _buildTextField
                     controller: _distressValueController,
@@ -4904,6 +5009,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
+                  ),
+                  const SizedBox(
+                    height: 13,
                   ),
                   TextField(
                     // Changed from _buildTextField
@@ -4940,6 +5048,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
+                  ),
+                  const SizedBox(
+                    height: 13,
                   ),
                   TextField(
                     // Changed from _buildTextField

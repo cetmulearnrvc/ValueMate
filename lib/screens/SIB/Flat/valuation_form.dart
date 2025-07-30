@@ -9,15 +9,15 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:login_screen/screens/SIB/Flat/config.dart';
-import 'package:login_screen/screens/SIB/Flat/data_model.dart';
-import 'package:login_screen/screens/SIB/Flat/pdf_generator.dart';
-import 'package:login_screen/screens/SIB/Flat/savedDrafts.dart';
-import 'package:login_screen/screens/nearbyDetails.dart';
+import 'package:ValuMate/screens/SIB/Flat/config.dart';
+import 'package:ValuMate/screens/SIB/Flat/data_model.dart';
+import 'package:ValuMate/screens/SIB/Flat/pdf_generator.dart';
+import 'package:ValuMate/screens/SIB/Flat/savedDrafts.dart';
+import 'package:ValuMate/screens/nearbyDetails.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
 import 'package:path/path.dart' as path;
-import 'package:login_screen/screens/driveAPIconfig.dart';
+import 'package:ValuMate/screens/driveAPIconfig.dart';
 
 class SIBValuationFormScreen extends StatefulWidget {
 
