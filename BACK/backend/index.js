@@ -11,6 +11,8 @@ import land_router from "./router/sib_land_router.js";
 import vacantland_router from "./router/sib_vacantland_router.js";
 import canara_router from "./router/canara_router.js";
 import nearby_router from "./router/nearbyRouter.js";
+import sbi_flat_router from "./router/sbi_flat_router.js";
+import sbi_land_router from "./router/sbi_land_router.js";
 
 dotenv.config();
 
@@ -27,7 +29,8 @@ app.use('/api/v1',federal_router)
 app.use('/api/v1',land_router)
 app.use('/api/v1',vacantland_router);
 app.use('/api/v1',canara_router);
-
+app.use('/api/v1',sbi_flat_router);
+app.use('/api/v1',sbi_land_router);
 
 app.listen(3000,()=>
 {
