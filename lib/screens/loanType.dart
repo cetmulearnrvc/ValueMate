@@ -4,6 +4,8 @@ import 'package:login_screen/screens/Federal/federal.dart';
 import 'package:login_screen/screens/IDBI/valuation_form_ui.dart';
 import 'package:login_screen/screens/LIC/pvr1/valuation_form_screen_pvr1.dart';
 import 'package:login_screen/screens/LIC/pvr3/valuation_form_screen.dart';
+import 'package:login_screen/screens/SBI/Flat/valuation_form.dart';
+import 'package:login_screen/screens/SBI/land_and_building/land_and_building.dart';
 import 'package:login_screen/screens/SIB/Flat/valuation_form.dart';
 import 'package:login_screen/screens/SIB/land_and_building/land_and_building.dart';
 import 'package:login_screen/screens/SIB/vacant_land/vacant_land.dart';
@@ -425,11 +427,11 @@ class LoanType extends StatelessWidget {
                   });
                   if (value == 'VALUATION REPORT (IN RESPECT OF FLATS)') {
                     Navigator.of(ctx).push(MaterialPageRoute(
-                        builder: (_) => const SIBValuationFormScreen()));
+                        builder: (_) => const SBIValuationFormScreen()));
                   } else if (value ==
                       'VALUATION REPORT (IN RESPECT OF LAND / SITE AND BUILDING)') {
                     Navigator.of(ctx).push(MaterialPageRoute(
-                        builder: (_) => const ValuationFormPage()));
+                        builder: (_) => const SBIValuationFormPage()));
                   } else if (value ==
                       'VALUATION REPORT (IN RESPECT OF VACANT LAND / SITE)') {
                     Navigator.of(ctx).push(MaterialPageRoute(
