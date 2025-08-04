@@ -99,36 +99,81 @@ class _PropertyValuationReportPageState
     );
   }
 
-  Future<void> _pickImages() async {
-    setState(() => _isLoadingImages = true);
-    try {
-      if (!kIsWeb) {
-        await _requestPermissions();
-      }
+  // Future<void> _pickImages() async {
+  //   setState(() => _isLoadingImages = true);
+  //   try {
+  //     if (!kIsWeb) {
+  //       await _requestPermissions();
+  //     }
 
-      // This now correctly fetches and SETS the location state
-      await _getCurrentLocation();
+  //     // This now correctly fetches and SETS the location state
+  //     await _getCurrentLocation();
 
-      // Only proceed to pick images if location was fetched successfully or user wants to proceed without it
-      final List<XFile> pickedFiles = await _picker.pickMultiImage();
-      for (var file in pickedFiles) {
-        final bytes = await file.readAsBytes();
-        setState(() {
-          _imagesWithLocation.add(ImageWithLocation(
-            imageBytes: bytes,
-            latitude: _latitude,
-            longitude: _longitude,
-          ));
-        });
+  //     // Only proceed to pick images if location was fetched successfully or user wants to proceed without it
+  //     final List<XFile> pickedFiles = await _picker.pickMultiImage();
+  //     for (var file in pickedFiles) {
+  //       final bytes = await file.readAsBytes();
+  //       setState(() {
+  //         _imagesWithLocation.add(ImageWithLocation(
+  //           imageBytes: bytes,
+  //           latitude: _latitude,
+  //           longitude: _longitude,
+  //         ));
+  //       });
+  //     }
+  //       } catch (e) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text('Error picking images: ${e.toString()}')),
+  //     );
+  //   } finally {
+  //     setState(() => _isLoadingImages = false);
+  //   }
+  // }
+  Future<void> _pickImages(ImageSource source) async {
+  setState(() => _isLoadingImages = true);
+  try {
+    // Get current location ONCE before picking images (you can move this inside the loop for per-image locations)
+    await _getCurrentLocation();
+
+    List<XFile> pickedFiles = [];
+    if (source == ImageSource.gallery) {
+      pickedFiles = await _picker.pickMultiImage();
+    } else {
+      final photo = await _picker.pickImage(source: source, imageQuality: 80);
+      if (photo != null) pickedFiles = [photo];
+    }
+
+    if (pickedFiles.isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No images selected')),
+        );
       }
-        } catch (e) {
+      return;
+    }
+
+    for (var file in pickedFiles) {
+      final bytes = await file.readAsBytes();
+      setState(() {
+        _imagesWithLocation.add(ImageWithLocation(
+          imageBytes: bytes,
+          latitude: _latitude,
+          longitude: _longitude,
+          timestamp: DateTime.now(),
+          description: 'Property Photo',
+        ));
+      });
+    }
+  } catch (e) {
+    if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error picking images: ${e.toString()}')),
       );
-    } finally {
-      setState(() => _isLoadingImages = false);
     }
+  } finally {
+    if (mounted) setState(() => _isLoadingImages = false);
   }
+}
 
   Future<void> _takePhoto() async {
     setState(() => _isLoadingImages = true);
@@ -826,26 +871,42 @@ class _PropertyValuationReportPageState
       });
 
       // Handle images
-      List<Map<String, String>> imageMetadata = [];
-      for (int i = 0; i < _imagesWithLocation.length; i++) {
-        final image = _imagesWithLocation[i];
-        final imageBytes = image.imageBytes is File
-            ? await (image.imageBytes as File).readAsBytes()
-            : image.imageBytes;
+      // List<Map<String, String>> imageMetadata = [];
+      // for (int i = 0; i < _imagesWithLocation.length; i++) {
+      //   final image = _imagesWithLocation[i];
+      //   final imageBytes = image.imageBytes is File
+      //       ? await (image.imageBytes as File).readAsBytes()
+      //       : image.imageBytes;
 
-        request.files.add(http.MultipartFile.fromBytes(
-          'images',
-          imageBytes,
-          filename: 'property_${_ownerNameController.text}_$i.jpg',
-        ));
+      //   request.files.add(http.MultipartFile.fromBytes(
+      //     'images',
+      //     imageBytes,
+      //     filename: 'property_${_ownerNameController.text}_$i.jpg',
+      //   ));
 
-        imageMetadata.add({
-          "latitude": image.latitude.toString(),
-          "longitude": image.longitude.toString(),
-        });
+      //   imageMetadata.add({
+      //     "latitude": image.latitude.toString(),
+      //     "longitude": image.longitude.toString(),
+      //   });
 
-        request.fields['images'] = jsonEncode(imageMetadata);
-      }
+      //   request.fields['images'] = jsonEncode(imageMetadata);
+      // }
+        List<Map<String, String>> imageMetadata = [];
+for (int i = 0; i < _imagesWithLocation.length; i++) {
+  final image = _imagesWithLocation[i];
+  final imageBytes = image.imageBytes;
+  request.files.add(http.MultipartFile.fromBytes(
+    'images',
+    imageBytes,
+    filename: 'property_${_ownerNameController.text}_$i.jpg',
+  ));
+  imageMetadata.add({
+    "latitude": image.latitude?.toString() ?? "",
+    "longitude": image.longitude?.toString() ?? "",
+  });
+}
+// Only set field ONCE here:
+request.fields['images'] = jsonEncode(imageMetadata);
 
       final response = await request.send();
       debugPrint("send req to back");
@@ -3720,18 +3781,19 @@ class _PropertyValuationReportPageState
 
 // Image action buttons
               Row(
-                children: [
-                  ElevatedButton(
-                    onPressed: _isLoadingImages ? null : _pickImages,
-                    child: const Text('Upload Images'),
-                  ),
-                  const SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: _isLoadingImages ? null : _takePhoto,
-                    child: const Text('Take Photo'),
-                  ),
-                ],
-              ),
+  children: [
+    ElevatedButton(
+      onPressed: _isLoadingImages ? null : () => _pickImages(ImageSource.gallery),
+      child: const Text('Upload Images'),
+    ),
+    const SizedBox(width: 10),
+    ElevatedButton(
+      onPressed: _isLoadingImages ? null : () => _pickImages(ImageSource.camera),
+      child: const Text('Take Photo'),
+    ),
+  ],
+),
+
               const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: _isLoadingImages ? null : _getCurrentLocation,

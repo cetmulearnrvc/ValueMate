@@ -1,5 +1,5 @@
-const url = "http://localhost:3000/api/v1/sbi/flat/savepdf";
-//  https://app-backend-1hc9.onrender.com
+const url1 = "http://localhost:3000/api/v1/sbi/flat/savepdf";
+
 const url2 = "http://localhost:3000/api/v1/getNearby";
 
 const url3 = "http://localhost:3000/api/v1/sbi/flat/getByDate";
