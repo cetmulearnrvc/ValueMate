@@ -1,5 +1,7 @@
 import IDBIValuation from "../models/idbi_model.js";
+import crypto from "crypto";
 import mongoose from "mongoose";
+import cloudinary from "../cloudinaryConfig.js";
 
 export const saveIDBIValuation = async (req, res) => {
     console.log("Received IDBI Valuation submission");
@@ -30,19 +32,35 @@ export const saveIDBIValuation = async (req, res) => {
     // Prepare images data
     valuationData.images = [];
     if (req.files && req.files.length > 0) {
-        for (let i = 0; i < req.files.length; i++) {
-            const meta = imagesMeta[i] || {};
-
-            const imageData = {
-                fileName: req.uploadedFiles[i].fileName,
-                fileID:req.uploadedFiles[i].driveId,
-                latitude: meta.latitude ? String(meta.latitude) : null,
-                longitude: meta.longitude ? String(meta.longitude) : null
-            };
-
-            valuationData.images.push(imageData);
+  for (let i = 0; i < req.files.length; i++) {
+    const meta = imagesMeta[i] || {};
+    const hash = crypto.createHash("sha256").update(req.files[i].buffer).digest("hex");
+    // console.log(hash);
+    // Upload file buffer to Cloudinary
+    const result = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        { resource_type: "image",
+            public_id: hash,    // <-- use hash as unique ID
+            overwrite: false    // <-- prevents overwriting if same hash exists
+         },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
         }
-    }
+      );
+      stream.end(req.files[i].buffer); // << file buffer
+    });
+
+    const imageData = {
+      fileName: result.secure_url, // Cloudinary URL
+      latitude: meta.latitude ? String(meta.latitude) : null,
+      longitude: meta.longitude ? String(meta.longitude) : null
+    };
+
+    valuationData.images.push(imageData);
+  }
+}
+
 
     try {
         // Upsert based on application number

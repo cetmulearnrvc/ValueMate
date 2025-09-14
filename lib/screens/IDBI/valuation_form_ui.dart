@@ -121,8 +121,8 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
       'yearsOfOccupancy': TextEditingController(text: _data.yearsOfOccupancy),
       'ownerRelationship': TextEditingController(text: _data.ownerRelationship),
       'areaOfLand': TextEditingController(text: _data.areaOfLand),
-      'plinthArea' : TextEditingController(),
-      'carpetArea' : TextEditingController(),
+      'plinthArea': TextEditingController(),
+      'carpetArea': TextEditingController(),
       'saleableArea': TextEditingController(text: _data.saleableArea),
       'landExtent': TextEditingController(text: _data.landExtent),
       'landRatePerCent': TextEditingController(text: _data.landRatePerCent),
@@ -264,69 +264,72 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
   }
 
   Future<void> _saveToNearbyCollection() async {
-  try {
-    // --- STEP 1: Find the first image with valid coordinates ---
-    ValuationImage? firstImageWithLocation;
     try {
-      // Use .firstWhere to find the first image that satisfies the condition.
-      firstImageWithLocation = _valuationImages.firstWhere(
-        (img) => img.latitude.isNotEmpty && img.longitude.isNotEmpty,
+      // --- STEP 1: Find the first image with valid coordinates ---
+      ValuationImage? firstImageWithLocation;
+      try {
+        // Use .firstWhere to find the first image that satisfies the condition.
+        firstImageWithLocation = _valuationImages.firstWhere(
+          (img) => img.latitude.isNotEmpty && img.longitude.isNotEmpty,
+        );
+      } catch (e) {
+        // .firstWhere throws an error if no element is found. We catch it here.
+        firstImageWithLocation = null;
+      }
+
+      // --- STEP 2: Handle the case where no image has location data ---
+      if (firstImageWithLocation == null) {
+        debugPrint(
+            'No image with location data found. Skipping save to nearby collection.');
+        return; // Exit the function early.
+      }
+
+      final ownerName = _controllers['titleHolderName']!.text ?? '[is null]';
+      final marketValue = _controllers['landMarketValue']!.text ?? '[is null]';
+
+      debugPrint('------------------------------------------');
+      debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
+      debugPrint('Owner Name from Controller: "$ownerName"');
+      debugPrint('Market Value from Controller: "$marketValue"');
+      debugPrint('------------------------------------------');
+      // --- STEP 3: Build the payload with the correct data ---
+      final dataToSave = {
+        // Use the coordinates from the image we found
+        'refNo': _controllers['applicationNo']!.text ?? '',
+        'latitude': firstImageWithLocation.latitude,
+        'longitude': firstImageWithLocation.longitude,
+
+        'landValue': marketValue, // Use the variable we just created
+        'nameOfOwner': ownerName,
+        'bankName': 'IDBI Bank',
+      };
+
+      // --- STEP 4: Send the data to your dedicated server endpoint ---
+      final response = await http.post(
+        Uri.parse(url5), // Use your dedicated URL for saving this data
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(dataToSave),
       );
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        debugPrint('Successfully saved data to nearby collection.');
+      } else {
+        debugPrint(
+            'Failed to save to nearby collection: ${response.statusCode}');
+        debugPrint('Response body: ${response.body}');
+      }
     } catch (e) {
-      // .firstWhere throws an error if no element is found. We catch it here.
-      firstImageWithLocation = null;
+      debugPrint('Error in _saveToNearbyCollection: $e');
     }
-
-    // --- STEP 2: Handle the case where no image has location data ---
-    if (firstImageWithLocation == null) {
-      debugPrint('No image with location data found. Skipping save to nearby collection.');
-      return; // Exit the function early.
-    }
-
-    final ownerName = _controllers['titleHolderName']!.text ?? '[is null]';
-    final marketValue = _controllers['landMarketValue']!.text ?? '[is null]';
-
-    debugPrint('------------------------------------------');
-    debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
-    debugPrint('Owner Name from Controller: "$ownerName"');
-    debugPrint('Market Value from Controller: "$marketValue"');
-    debugPrint('------------------------------------------');
-    // --- STEP 3: Build the payload with the correct data ---
-    final dataToSave = {
-      // Use the coordinates from the image we found
-       'refNo': _controllers['applicationNo']!.text ?? '',
-      'latitude': firstImageWithLocation.latitude,
-      'longitude': firstImageWithLocation.longitude,
-      
-      'landValue': marketValue, // Use the variable we just created
-      'nameOfOwner': ownerName,
-      'bankName': 'IDBI Bank',
-    };
-    
-    // --- STEP 4: Send the data to your dedicated server endpoint ---
-    final response = await http.post(
-      Uri.parse(url5), // Use your dedicated URL for saving this data
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(dataToSave),
-    );
-
-    if (response.statusCode == 201 || response.statusCode == 200) {
-      debugPrint('Successfully saved data to nearby collection.');
-    } else {
-      debugPrint('Failed to save to nearby collection: ${response.statusCode}');
-      debugPrint('Response body: ${response.body}');
-    }
-  } catch (e) {
-    debugPrint('Error in _saveToNearbyCollection: $e');
   }
-}
 
   Future<void> _saveData() async {
     try {
       // Validate required fields
       if (_controllers['applicationNo']!.text.isEmpty) {
         debugPrint("Application number missing");
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill Application number')));
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Please fill Application number')));
         setState(() => _isNotValidState = true);
         return;
       }
@@ -414,7 +417,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
 
         // Area Details
         "areaOfLand": _controllers['areaOfLand']!.text,
-        "plinthArea":_controllers['plinthArea']!.text,
+        "plinthArea": _controllers['plinthArea']!.text,
         "carpetArea": _controllers['carpetArea']!.text,
         "saleableArea": _controllers['saleableArea']!.text,
 
@@ -463,7 +466,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
         "declarationPlace": _controllers['declarationPlace']!.text,
         "valuerName": _controllers['valuerName']!.text,
         "valuerAddress": _controllers['valuerAddress']!.text,
-        "remarks":_controllers['remarks']!.text,
+        "remarks": _controllers['remarks']!.text,
       });
 
       // Handle the image upload
@@ -516,64 +519,72 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
     }
   }
 
-  Future<String> _getAccessToken() async {
-    final response = await http.post(
-      Uri.parse('https://oauth2.googleapis.com/token'),
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: {
-        'client_id': clientId,
-        'client_secret': clientSecret,
-        'refresh_token': refreshToken,
-        'grant_type': 'refresh_token',
-      },
-    );
+  // Future<String> _getAccessToken() async {
+  //   final response = await http.post(
+  //     Uri.parse('https://oauth2.googleapis.com/token'),
+  //     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+  //     body: {
+  //       'client_id': clientId,
+  //       'client_secret': clientSecret,
+  //       'refresh_token': refreshToken,
+  //       'grant_type': 'refresh_token',
+  //     },
+  //   );
 
+  //   if (response.statusCode == 200) {
+  //     return jsonDecode(response.body)['access_token'] as String;
+  //   } else {
+  //     throw Exception('Failed to refresh access token');
+  //   }
+  // }
+
+  // String _getMimeTypeFromExtension(String extension) {
+  //   switch (extension) {
+  //     case '.jpg':
+  //     case '.jpeg':
+  //       return 'image/jpeg';
+  //     case '.png':
+  //       return 'image/png';
+  //     case '.gif':
+  //       return 'image/gif';
+  //     case '.webp':
+  //       return 'image/webp';
+  //     default:
+  //       return 'application/octet-stream';
+  //   }
+  // }
+
+  // Future<Uint8List> fetchImageFromDrive(String fileId) async {
+  //   try {
+  //     // Get access token using refresh token
+  //     final accessToken = await _getAccessToken();
+
+  //     final response = await http.get(
+  //       Uri.parse(
+  //           'https://www.googleapis.com/drive/v3/files/$fileId?alt=media'),
+  //       headers: {'Authorization': 'Bearer $accessToken'},
+  //     );
+
+  //     if (response.statusCode == 200) {
+  //       return response.bodyBytes;
+  //     } else {
+  //       throw Exception('Failed to load image: ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     throw Exception('Error fetching image from Drive: $e');
+  //   }
+  // }
+
+  Future<Uint8List> fetchImageBytes(String url) async {
+    final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
-      return jsonDecode(response.body)['access_token'] as String;
+      return response.bodyBytes; // this is Uint8List
     } else {
-      throw Exception('Failed to refresh access token');
-    }
-  }
-
-  String _getMimeTypeFromExtension(String extension) {
-    switch (extension) {
-      case '.jpg':
-      case '.jpeg':
-        return 'image/jpeg';
-      case '.png':
-        return 'image/png';
-      case '.gif':
-        return 'image/gif';
-      case '.webp':
-        return 'image/webp';
-      default:
-        return 'application/octet-stream';
-    }
-  }
-
-  Future<Uint8List> fetchImageFromDrive(String fileId) async {
-    try {
-      // Get access token using refresh token
-      final accessToken = await _getAccessToken();
-
-      final response = await http.get(
-        Uri.parse(
-            'https://www.googleapis.com/drive/v3/files/$fileId?alt=media'),
-        headers: {'Authorization': 'Bearer $accessToken'},
-      );
-
-      if (response.statusCode == 200) {
-        return response.bodyBytes;
-      } else {
-        throw Exception('Failed to load image: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error fetching image from Drive: $e');
+      throw Exception('Failed to load image');
     }
   }
 
   void _initializeFormWithPropertyData() async {
-    
     if (widget.propertyData != null) {
       final data = widget.propertyData!;
 
@@ -673,7 +684,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
       // Area Details
       _controllers['areaOfLand']!.text = data['areaOfLand']?.toString() ?? '';
       _controllers['plinthArea']!.text = data['plinthArea']?.toString() ?? '';
-      _controllers['carpetArea']!.text = data['carpetArea']?.toString() ?? '';      
+      _controllers['carpetArea']!.text = data['carpetArea']?.toString() ?? '';
 
       _controllers['saleableArea']!.text =
           data['saleableArea']?.toString() ?? '';
@@ -737,8 +748,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
           data['grandTotalRealizableValue']?.toString() ?? '';
       _controllers['grandTotalDistressValue']!.text =
           data['grandTotalDistressValue']?.toString() ?? '';
-      _controllers['remarks']!.text =
-          data['remarks']?.toString() ?? '';
+      _controllers['remarks']!.text = data['remarks']?.toString() ?? '';
       // Declaration
       if (data['declarationDate'] != null) {
         _data.declarationDate = DateTime.parse(data['declarationDate']);
@@ -755,13 +765,9 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
           final List<dynamic> imagesData = data['images'];
           for (var imgData in imagesData) {
             try {
-              String fileID = imgData['fileID'];
               String fileName = imgData['fileName'];
-              debugPrint("Fetching image from Drive with ID: $fileID");
 
-              Uint8List imageBytes = await fetchImageFromDrive(fileID);
-              String extension = path.extension(fileName).toLowerCase();
-              if (extension.isEmpty) extension = '.jpg';
+              Uint8List imageBytes = await fetchImageBytes(fileName);
 
               _valuationImages.add(ValuationImage(
                 imageFile: imageBytes,
@@ -769,7 +775,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
                 longitude: imgData['longitude']?.toString() ?? '',
               ));
             } catch (e) {
-              debugPrint('Error loading image from Drive: $e');
+              debugPrint('Error loading image from Cloudina: $e');
             }
           }
         }
@@ -1006,8 +1012,8 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
       _data.yearsOfOccupancy = _controllers['yearsOfOccupancy']!.text;
       _data.ownerRelationship = _controllers['ownerRelationship']!.text;
       _data.areaOfLand = _controllers['areaOfLand']!.text;
-      _data.plinthArea=_controllers['plinthArea']!.text;
-      _data.carpetArea=_controllers['carpetArea']!.text;
+      _data.plinthArea = _controllers['plinthArea']!.text;
+      _data.carpetArea = _controllers['carpetArea']!.text;
       _data.saleableArea = _controllers['saleableArea']!.text;
       _data.landExtent = _controllers['landExtent']!.text;
       _data.landRatePerCent = _controllers['landRatePerCent']!.text;
@@ -1048,7 +1054,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
       _data.buildingRealizableValue =
           _controllers['buildingRealizableValue']!.text;
       _data.buildingDistressValue = _controllers['buildingDistressValue']!.text;
-      _data.remarks=_controllers['remarks']!.text;
+      _data.remarks = _controllers['remarks']!.text;
       Printing.layoutPdf(
         onLayout: (PdfPageFormat format) => PdfGenerator(_data).generate(),
       );
@@ -1355,11 +1361,11 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    
                   ],
                 ),
-                Row(children: [
-                  Expanded(
+                Row(
+                  children: [
+                    Expanded(
                       child: _buildTextField(
                         'Toilets',
                         _controllers['toilets']!,
@@ -1372,7 +1378,8 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
                         _controllers['kitchen']!,
                       ),
                     ),
-                ],),
+                  ],
+                ),
                 _buildTextField(
                   '7. Type of flooring',
                   _controllers['typeOfFlooring']!,
@@ -1395,8 +1402,10 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
               title: 'III. AREA DETAILS OF THE PROPERTY',
               children: [
                 _buildTextField('1. Area of land', _controllers['areaOfLand']!),
-                _buildTextField('2. Plinth area of proposed building', _controllers['plinthArea']!),
-                _buildTextField('3. Carpet area of building', _controllers['carpetArea']!),
+                _buildTextField('2. Plinth area of proposed building',
+                    _controllers['plinthArea']!),
+                _buildTextField(
+                    '3. Carpet area of building', _controllers['carpetArea']!),
                 _buildTextField(
                   '4. Saleable area',
                   _controllers['saleableArea']!,

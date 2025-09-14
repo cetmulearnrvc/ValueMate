@@ -6,12 +6,13 @@ import {
     getValuationByApplicationNo,
     searchByDate
 } from "../controller/idbi_controller.js";
+import upload from "../multer/upload.js";
 
-import uploadMiddleware from "../multer/upload.js";
+// import uploadMiddleware from "../multer/upload.js";
 
 
 
-idbi_router.post("/idbi/save", uploadMiddleware , saveIDBIValuation);
+idbi_router.post("/idbi/save" ,upload.array("images",10), saveIDBIValuation);
 
 idbi_router.post("/idbi/getByDate", searchByDate);
 

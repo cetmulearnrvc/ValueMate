@@ -1,6 +1,7 @@
 import SIBValuationFlat from "../models/flat_sib_model.js";
-
+import crypto from "crypto";
 import mongoose from "mongoose";
+import cloudinary from "../cloudinaryConfig.js";
 
 export const saveFlatData = async (req, res) => {
   console.log('A post req received');
@@ -37,21 +38,31 @@ export const saveFlatData = async (req, res) => {
   if (req.files && req.files.length > 0) {
     for (let i = 0; i < req.files.length; i++) {
       const meta = imagesMeta[i] || {};
-
+      const hash = crypto.createHash("sha256").update(req.files[i].buffer).digest("hex");
+      // Upload file buffer to Cloudinary
+      const result = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { resource_type: "image",
+              
+              public_id: hash,    // <-- use hash as unique ID
+              overwrite: false    // <-- prevents overwriting if same hash exists
+           },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
+        stream.end(req.files[i].buffer); // << file buffer
+      });
+  
       const imageData = {
-        fileName: req.uploadedFiles[i].fileName,
-          fileID:req.uploadedFiles[i].driveId,
-        latitude: meta.latitude ? parseFloat(meta.latitude) : null,
-        longitude: meta.longitude ? parseFloat(meta.longitude) : null
+        fileName: result.secure_url, // Cloudinary URL
+        latitude: meta.latitude ? String(meta.latitude) : null,
+        longitude: meta.longitude ? String(meta.longitude) : null
       };
-
+  
       flatData.images.push(imageData);
     }
-  } else {
-    return res.status(400).json({
-      success: false,
-      message: "Please add at least one image"
-    });
   }
 
   try {

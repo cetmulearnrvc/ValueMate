@@ -12,9 +12,8 @@ class PdfGenerator {
   final pw.Font boldFont;
 
   PdfGenerator(this.data)
-    : font = pw.Font.helvetica(),
-      boldFont = pw.Font.helveticaBold();
-      
+      : font = pw.Font.helvetica(),
+        boldFont = pw.Font.helveticaBold();
 
   Future<Uint8List> generate() async {
     final pdf = pw.Document();
@@ -35,7 +34,7 @@ class PdfGenerator {
           _buildPhysicalDetailsSection(),
           pw.SizedBox(height: 10),
           _buildPhysicalDetailsOfBuildingSection(),
-pw.SizedBox(height: 10),
+          pw.SizedBox(height: 10),
           _buildAreaDetailsSection(),
           pw.SizedBox(height: 10),
           _buildDetailedValuationSection(),
@@ -57,79 +56,85 @@ pw.SizedBox(height: 10),
     );
 
     if (data.images.isNotEmpty) {
-    pdf.addPage(_buildImagePage(data));
-  }
+      pdf.addPage(_buildImagePage(data));
+    }
 
     return pdf.save();
   }
 
   pw.MultiPage _buildImagePage(ValuationData data) {
-  return pw.MultiPage(
-    pageFormat: PdfPageFormat.a4,
-    margin: const pw.EdgeInsets.all(36),
-    header: (context) => pw.Text('Uploaded Images',
-        style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 16)),
-    build: (context) => [
-      pw.GridView(
-        crossAxisCount: 2,
-        childAspectRatio: 0.65,
-        children: data.images.map((valuationImage) {
-          final image = pw.MemoryImage(valuationImage.imageFile);
-          return pw.Padding(
-            padding: const pw.EdgeInsets.all(4),
-            child: pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: [
-                pw.Expanded(
-                    child: pw.SizedBox(
-                        width: double.infinity,
-                        child: pw.Image(image, fit: pw.BoxFit.contain))),
-                pw.SizedBox(height: 5),
-                pw.Text(
-                    '(Latitude): ${valuationImage.latitude}\n(Longitude): ${valuationImage.longitude}',
-                    style: const pw.TextStyle(fontSize: 8)),
-              ],
-            ),
-          );
-        }).toList(),
-      ),
-    ],
-  );
-}
+    return pw.MultiPage(
+      pageFormat: PdfPageFormat.a4,
+      margin: const pw.EdgeInsets.all(36),
+      header: (context) => pw.Text('Uploaded Images',
+          style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 16)),
+      build: (context) => [
+        pw.GridView(
+          crossAxisCount: 2,
+          childAspectRatio: 0.65,
+          children: data.images.map((valuationImage) {
+            final image = pw.MemoryImage(valuationImage.imageFile);
+            return pw.Padding(
+              padding: const pw.EdgeInsets.all(4),
+              child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Expanded(
+                      child: pw.SizedBox(
+                          width: double.infinity,
+                          child: pw.Image(image, fit: pw.BoxFit.contain))),
+                  pw.SizedBox(height: 5),
+                  pw.Text(
+                      '(Latitude): ${valuationImage.latitude}\n(Longitude): ${valuationImage.longitude}',
+                      style: const pw.TextStyle(fontSize: 8)),
+                ],
+              ),
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
 
   // ============== HELPER WIDGETS ==============
 
   // REPLACE THE EXISTING _buildHeader METHOD WITH THIS
-pw.Widget _buildHeader() {
-  return pw.Column(
-    children: [
-      pw.Row(
-        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              pw.Text(data.valuerNameAndQuals, style: pw.TextStyle(font: boldFont)),
-              // The credentials string from the model might have newlines, so we handle it.
-              ...data.valuerCredentials.split('\n').map((line) => pw.Text(line, style: pw.TextStyle(font: font))),
-            ],
-          ),
-          pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.end,
-            children: [
-              pw.Text('Mob: ${data.valuerMob}', style: pw.TextStyle(font: font)),
-              pw.Text('Email: ${data.valuerEmail}', style: pw.TextStyle(font: font)),
-            ],
-          ),
-        ],
-      ),
-      pw.Divider(thickness: 1, height: 10),
-      pw.Center(child: pw.Text(data.valuerAddressLine1, style: pw.TextStyle(font: font))),
-      pw.Divider(thickness: 1, height: 10),
-    ],
-  );
-}
+  pw.Widget _buildHeader() {
+    return pw.Column(
+      children: [
+        pw.Row(
+          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text(data.valuerNameAndQuals,
+                    style: pw.TextStyle(font: boldFont)),
+                // The credentials string from the model might have newlines, so we handle it.
+                ...data.valuerCredentials.split('\n').map(
+                    (line) => pw.Text(line, style: pw.TextStyle(font: font))),
+              ],
+            ),
+            pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.end,
+              children: [
+                pw.Text('Mob: ${data.valuerMob}',
+                    style: pw.TextStyle(font: font)),
+                pw.Text('Email: ${data.valuerEmail}',
+                    style: pw.TextStyle(font: font)),
+              ],
+            ),
+          ],
+        ),
+        pw.Divider(thickness: 1, height: 10),
+        pw.Center(
+            child: pw.Text(data.valuerAddressLine1,
+                style: pw.TextStyle(font: font))),
+        pw.Divider(thickness: 1, height: 10),
+      ],
+    );
+  }
 
   pw.Widget _buildRecipient() {
     print(data.bankName);
@@ -139,7 +144,6 @@ pw.Widget _buildHeader() {
         pw.Text('TO,', style: pw.TextStyle(font: font)),
         pw.SizedBox(height: 5),
         pw.Text('\t\t${data.bankName}', style: pw.TextStyle(font: boldFont)),
-        
         pw.Text('\t\t${data.branchName}', style: pw.TextStyle(font: boldFont)),
         pw.Text('\t\tTRIVANDRUM', style: pw.TextStyle(font: boldFont)),
       ],
@@ -165,10 +169,13 @@ pw.Widget _buildHeader() {
             _cell('GENERAL', isBold: true),
           ],
         ),
-       
         _buildSimpleRow('Case Type', data.caseType),
         _buildSimpleRow('Application no.', data.applicationNo),
-        _buildSimpleRow('Date of Inspection', data.inspectionDate != null ? formatter.format(data.inspectionDate!) : ''),
+        _buildSimpleRow(
+            'Date of Inspection',
+            data.inspectionDate != null
+                ? formatter.format(data.inspectionDate!)
+                : ''),
         _buildSimpleRow('1. Name of the title holder', data.titleHolderName),
         _buildSimpleRow('2. Name of the borrower', data.borrowerName),
         pw.TableRow(
@@ -185,7 +192,8 @@ pw.Widget _buildHeader() {
                   'b. Possession certificate no.',
                   data.possessionCertNo,
                 ),
-                _buildSimpleRow('c. Location sketch no.', data.locationSketchNo),
+                _buildSimpleRow(
+                    'c. Location sketch no.', data.locationSketchNo),
                 _buildSimpleRow(
                   'd. Thandaper abstract no.',
                   data.thandaperAbstractNo,
@@ -330,28 +338,27 @@ pw.Widget _buildHeader() {
     );
   }
 
-
   // Add this new method inside the PdfGenerator class
-pw.Widget _buildPhysicalDetailsOfBuildingSection() {
-  return pw.Table(
-    border: pw.TableBorder.all(),
-    columnWidths: const {0: pw.FlexColumnWidth(1), 1: pw.FlexColumnWidth(2)},
-    defaultVerticalAlignment: pw.TableCellVerticalAlignment.middle,
-    children: [
-      pw.TableRow(children: [
-        _cell('II', isBold: true),
-        _cell('PHYSICAL DETAILS OF BUILDING', isBold: true),
-      ]),
-      _buildSimpleRow('1. Building no.', data.buildingNo),
-      _buildSimpleRow('2. Approving authority of building plan', data.approvingAuthority),
-      _buildSimpleRow('3. Stage of construction (%)', data.stageOfConstruction),
-      _buildSimpleRow('4. Type of structure', data.typeOfStructure),
-      _buildSimpleRow('5. No. of floors', data.noOfFloors),
-      pw.TableRow(children: [
-        _cell('6. No. of rooms'),
-        pw.Table(
-          border: pw.TableBorder.all(),
-          children: [
+  pw.Widget _buildPhysicalDetailsOfBuildingSection() {
+    return pw.Table(
+      border: pw.TableBorder.all(),
+      columnWidths: const {0: pw.FlexColumnWidth(1), 1: pw.FlexColumnWidth(2)},
+      defaultVerticalAlignment: pw.TableCellVerticalAlignment.middle,
+      children: [
+        pw.TableRow(children: [
+          _cell('II', isBold: true),
+          _cell('PHYSICAL DETAILS OF BUILDING', isBold: true),
+        ]),
+        _buildSimpleRow('1. Building no.', data.buildingNo),
+        _buildSimpleRow(
+            '2. Approving authority of building plan', data.approvingAuthority),
+        _buildSimpleRow(
+            '3. Stage of construction (%)', data.stageOfConstruction),
+        _buildSimpleRow('4. Type of structure', data.typeOfStructure),
+        _buildSimpleRow('5. No. of floors', data.noOfFloors),
+        pw.TableRow(children: [
+          _cell('6. No. of rooms'),
+          pw.Table(border: pw.TableBorder.all(), children: [
             pw.TableRow(children: [
               _cell('Living/dining'),
               _cell('Bedrooms'),
@@ -364,18 +371,16 @@ pw.Widget _buildPhysicalDetailsOfBuildingSection() {
               _cell(data.toilets),
               _cell(data.kitchen),
             ]),
-          ]
-        )
-      ]),
-      _buildSimpleRow('7. Type of flooring', data.typeOfFlooring),
-      _buildSimpleRow('8. Age of the building', data.ageOfBuilding),
-      _buildSimpleRow('9. Residual life of the building', data.residualLife),
-      _buildSimpleRow('10. Violation if any observed', data.violationObserved),
-    ],
-  );
-}
-
- 
+          ])
+        ]),
+        _buildSimpleRow('7. Type of flooring', data.typeOfFlooring),
+        _buildSimpleRow('8. Age of the building', data.ageOfBuilding),
+        _buildSimpleRow('9. Residual life of the building', data.residualLife),
+        _buildSimpleRow(
+            '10. Violation if any observed', data.violationObserved),
+      ],
+    );
+  }
 
   pw.Widget _buildAreaDetailsSection() {
     return pw.Table(
@@ -454,9 +459,6 @@ pw.Widget _buildPhysicalDetailsOfBuildingSection() {
     );
   }
 
-
-
-
   pw.Widget _buildBuildingValuationSection() {
     return pw.Table(
       border: pw.TableBorder.all(),
@@ -511,7 +513,7 @@ pw.Widget _buildPhysicalDetailsOfBuildingSection() {
       columnWidths: const {0: pw.FlexColumnWidth(1), 1: pw.FlexColumnWidth(2)},
       children: [
         pw.TableRow(children: [
-          _cell('3. GRAND TOTAL (Land)',isBold: true),
+          _cell('3. GRAND TOTAL (Land)', isBold: true),
           _cell(''),
         ]),
         _buildSimpleRow(
@@ -549,21 +551,17 @@ pw.Widget _buildPhysicalDetailsOfBuildingSection() {
                 _cell('LIST OF DOCUMENTS ENCLOSED', isBold: true),
               ],
             ),
-            
             _buildSimpleRow(
               '',
               'a. Coordinates (Latitude & Longitude) of the property.',
-              
             ),
             _buildSimpleRow(
               '',
               'b. Route map of the property with nearest landmark.',
-              
             ),
             _buildSimpleRow(
               '',
               'c. Photographs of the property (Interior, front elevation & approach road).',
-              
             ),
           ],
         ),
@@ -623,23 +621,19 @@ pw.Widget _buildPhysicalDetailsOfBuildingSection() {
           ],
         ),
         pw.SizedBox(height: 10),
-        pw.Table(
-          border: pw.TableBorder.all(),
-          columnWidths: const {
-            0: pw.FlexColumnWidth(1),
-            1: pw.FlexColumnWidth(2),
-          },
-          children: [
-            pw.TableRow(children: [
-          _cell('NAME & ADDRESS OF VALUER',isBold: true),
-          _cell('${data.valuerName}\n${data.valuerAddress}'),
+        pw.Table(border: pw.TableBorder.all(), columnWidths: const {
+          0: pw.FlexColumnWidth(1),
+          1: pw.FlexColumnWidth(2),
+        }, children: [
+          pw.TableRow(children: [
+            _cell('NAME & ADDRESS OF VALUER', isBold: true),
+            _cell('${data.valuerName}\n${data.valuerAddress}'),
+          ]),
+          pw.TableRow(children: [
+            _cell('Remarks', isBold: true),
+            _cell('${data.remarks}'),
+          ]),
         ]),
-            pw.TableRow(children: [
-          _cell('Remarks',isBold: true),
-          _cell('${data.remarks}'),
-        ]),
-          ]
-        ),
         pw.SizedBox(height: 70),
         pw.Row(
           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
@@ -672,8 +666,7 @@ pw.Widget _buildPhysicalDetailsOfBuildingSection() {
         _cell(title, isBold: false),
         _cell(
           value,
-          isBold:
-              isValueBold ||
+          isBold: isValueBold ||
               title.contains('borrower') ||
               title.contains('holder'),
         ),
@@ -692,9 +685,8 @@ pw.Widget _buildPhysicalDetailsOfBuildingSection() {
       child: pw.Text(
         text,
         style: pw.TextStyle(font: isBold ? boldFont : font),
-        textAlign: align == pw.Alignment.centerLeft
-            ? null
-            : pw.TextAlign.justify,
+        textAlign:
+            align == pw.Alignment.centerLeft ? null : pw.TextAlign.justify,
       ),
     );
   }

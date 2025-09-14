@@ -168,63 +168,64 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
   bool _isNotValidState = false;
 
   Future<void> _saveToNearbyCollection() async {
-  try {
-    // --- STEP 1: Find the first image with valid coordinates ---
-    ValuationImage? firstImageWithLocation;
     try {
-      // Use .firstWhere to find the first image that satisfies the condition.
-      firstImageWithLocation = _valuationImages.firstWhere(
-        (img) => img.latitude.isNotEmpty && img.longitude.isNotEmpty,
+      // --- STEP 1: Find the first image with valid coordinates ---
+      ValuationImage? firstImageWithLocation;
+      try {
+        // Use .firstWhere to find the first image that satisfies the condition.
+        firstImageWithLocation = _valuationImages.firstWhere(
+          (img) => img.latitude.isNotEmpty && img.longitude.isNotEmpty,
+        );
+      } catch (e) {
+        // .firstWhere throws an error if no element is found. We catch it here.
+        firstImageWithLocation = null;
+      }
+
+      // --- STEP 2: Handle the case where no image has location data ---
+      if (firstImageWithLocation == null) {
+        debugPrint(
+            'No image with location data found. Skipping save to nearby collection.');
+        return; // Exit the function early.
+      }
+
+      final ownerName = _ownerNameCtrl.text ?? '[is null]';
+      final marketValue = _landValueMarketCtrl.text ?? '[is null]';
+
+      debugPrint('------------------------------------------');
+      debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
+      debugPrint('Owner Name from Controller: "$ownerName"');
+      debugPrint('Market Value from Controller: "$marketValue"');
+      debugPrint('------------------------------------------');
+      // --- STEP 3: Build the payload with the correct data ---
+      final dataToSave = {
+        // Use the coordinates from the image we found
+        'refNo': _fileNoCtrl.text ?? '',
+        'latitude': firstImageWithLocation.latitude,
+        'longitude': firstImageWithLocation.longitude,
+
+        'landValue': marketValue, // Use the variable we just created
+        'nameOfOwner': ownerName,
+        'bankName': 'LIC (PVR - 1)',
+      };
+
+      // --- STEP 4: Send the data to your dedicated server endpoint ---
+      final response = await http.post(
+        Uri.parse(url5), // Use your dedicated URL for saving this data
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(dataToSave),
       );
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        debugPrint('Successfully saved data to nearby collection.');
+      } else {
+        debugPrint(
+            'Failed to save to nearby collection: ${response.statusCode}');
+        debugPrint('Response body: ${response.body}');
+      }
     } catch (e) {
-      // .firstWhere throws an error if no element is found. We catch it here.
-      firstImageWithLocation = null;
+      debugPrint('Error in _saveToNearbyCollection: $e');
     }
-
-    // --- STEP 2: Handle the case where no image has location data ---
-    if (firstImageWithLocation == null) {
-      debugPrint('No image with location data found. Skipping save to nearby collection.');
-      return; // Exit the function early.
-    }
-
-    final ownerName = _ownerNameCtrl.text ?? '[is null]';
-    final marketValue = _landValueMarketCtrl.text ?? '[is null]';
-
-    debugPrint('------------------------------------------');
-    debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
-    debugPrint('Owner Name from Controller: "$ownerName"');
-    debugPrint('Market Value from Controller: "$marketValue"');
-    debugPrint('------------------------------------------');
-    // --- STEP 3: Build the payload with the correct data ---
-    final dataToSave = {
-      // Use the coordinates from the image we found
-       'refNo': _fileNoCtrl.text ?? '',
-      'latitude': firstImageWithLocation.latitude,
-      'longitude': firstImageWithLocation.longitude,
-      
-      'landValue': marketValue, // Use the variable we just created
-      'nameOfOwner': ownerName,
-      'bankName': 'LIC (PVR - 1)',
-    };
-    
-    // --- STEP 4: Send the data to your dedicated server endpoint ---
-    final response = await http.post(
-      Uri.parse(url5), // Use your dedicated URL for saving this data
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(dataToSave),
-    );
-
-    if (response.statusCode == 201 || response.statusCode == 200) {
-      debugPrint('Successfully saved data to nearby collection.');
-    } else {
-      debugPrint('Failed to save to nearby collection: ${response.statusCode}');
-      debugPrint('Response body: ${response.body}');
-    }
-  } catch (e) {
-    debugPrint('Error in _saveToNearbyCollection: $e');
   }
-}
-
 
   Future<void> _saveData() async {
     try {
@@ -253,8 +254,6 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
         barrierDismissible: false,
         builder: (context) => const Center(child: CircularProgressIndicator()),
       );
-
-      
 
       var request = http.MultipartRequest('POST', Uri.parse(url));
 
@@ -538,6 +537,15 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
     }
   }
 
+  Future<Uint8List> fetchImageBytes(String url) async {
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      return response.bodyBytes; // this is Uint8List
+    } else {
+      throw Exception('Failed to load image');
+    }
+  }
+
   void _initializeFormWithPropertyData() async {
     if (widget.propertyData != null) {
       final data = widget.propertyData!;
@@ -751,12 +759,11 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
           for (var imgData in imagesData) {
             try {
               // Get the file ID from your data (assuming it's stored as 'fileId')
-              String fileID = imgData['fileID'];
+
               String fileName = imgData['fileName'];
-              debugPrint("Fetching image from Drive with ID: $fileID");
 
               // Fetch image bytes from Google Drive
-              Uint8List imageBytes = await fetchImageFromDrive(fileID);
+              Uint8List imageBytes = await fetchImageBytes(fileName);
 
               // Get file extension from original filename
               String extension = path.extension(fileName).toLowerCase();

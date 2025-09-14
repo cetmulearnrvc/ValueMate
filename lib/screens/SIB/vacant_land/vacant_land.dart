@@ -129,37 +129,6 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
   final TextEditingController _valueInRsGuidelineController = TextEditingController();
   final TextEditingController _valueInRsPrevailingController = TextEditingController();
 
-  // Controllers for the new Building Valuation Table (Part B)
-  final TextEditingController _typeOfBuildingController = TextEditingController();
-  final TextEditingController _typeOfConstructionController = TextEditingController();
-  final TextEditingController _ageOfTheBuildingController = TextEditingController();
-  final TextEditingController _residualAgeOfTheBuildingController = TextEditingController();
-  final TextEditingController _approvedMapAuthorityController = TextEditingController();
-  final TextEditingController _genuinenessVerifiedController = TextEditingController();
-  final TextEditingController _otherCommentsController = TextEditingController();
-
-  // Controllers for the new Build up Area table
-  final TextEditingController _groundFloorApprovedPlanController = TextEditingController();
-  final TextEditingController _groundFloorActualController = TextEditingController();
-  final TextEditingController _groundFloorConsideredValuationController = TextEditingController();
-  final TextEditingController _groundFloorReplacementCostController = TextEditingController();
-  final TextEditingController _groundFloorDepreciationController = TextEditingController();
-  final TextEditingController _groundFloorNetValueController = TextEditingController();
-
-  final TextEditingController _firstFloorApprovedPlanController = TextEditingController();
-  final TextEditingController _firstFloorActualController = TextEditingController();
-  final TextEditingController _firstFloorConsideredValuationController = TextEditingController();
-  final TextEditingController _firstFloorReplacementCostController = TextEditingController();
-  final TextEditingController _firstFloorDepreciationController = TextEditingController();
-  final TextEditingController _firstFloorNetValueController = TextEditingController();
-
-  final TextEditingController _totalApprovedPlanController = TextEditingController();
-  final TextEditingController _totalActualController = TextEditingController();
-  final TextEditingController _totalConsideredValuationController = TextEditingController();
-  final TextEditingController _totalReplacementCostController = TextEditingController();
-  final TextEditingController _totalDepreciationController = TextEditingController();
-  final TextEditingController _totalNetValueController = TextEditingController();
-
   // NEW: Controllers for Part C - Amenities
   final TextEditingController _wardrobesController = TextEditingController();
   final TextEditingController _amenitiesController = TextEditingController();
@@ -202,6 +171,24 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
   final TextEditingController _vcMajorFactors1Controller = TextEditingController();
   final TextEditingController _vcMajorFactors2Controller = TextEditingController();
   final TextEditingController _vcCaveatsLimitationsController = TextEditingController();
+
+
+  final TextEditingController _LandTaxReceipt =
+      TextEditingController();
+  final TextEditingController _TitleDeed =
+      TextEditingController();
+  final TextEditingController _BuildingCertificate =
+      TextEditingController();
+  final TextEditingController _LocationSketch =
+      TextEditingController();
+  final TextEditingController _PossessionCertificate =
+      TextEditingController();
+  final TextEditingController _BuildingCompletionPlan =
+      TextEditingController();
+  final TextEditingController _ThandapperDocument =
+      TextEditingController();
+  final TextEditingController _BuildingTaxReceipt =
+      TextEditingController();
 
 
   Future<pw.MemoryImage> loadLogoImage() async {
@@ -408,24 +395,127 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
       pw.Container(padding: cellPadding, child: pw.Text('')),
       pw.Container(padding: cellPadding, child: pw.Text('')),
     ]));
-    rows.addAll(selectedDocuments.asMap().entries.map((entry) {
-      int idx = entry.key + 1;
-      String doc = entry.value;
-      return pw.TableRow(children: [
-        pw.Container(padding: cellPadding, child: pw.Text('')),
-        pw.Container(padding: cellPadding, child: pw.Text('    ${_toRoman(idx)}) $doc', style: contentTextStyle)),
-        pw.Container(padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-        pw.Container(padding: cellPadding, child: pw.Text('', style: contentTextStyle)),
-      ]);
-    }).toList());
-    if (selectedDocuments.isEmpty) {
-      rows.add(pw.TableRow(children: [
-        pw.Container(padding: cellPadding, child: pw.Text('')),
-        pw.Container(padding: cellPadding, child: pw.Text('    (No documents selected)', style: contentTextStyle)),
-        pw.Container(padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-        pw.Container(padding: cellPadding, child: pw.Text('', style: contentTextStyle)),
-      ]));
-    }
+    
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('i) Land Tax Receipt (${_LandTaxReceipt.text})', style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('ii) Title Deed (${_TitleDeed.text})', style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('iii) Building Certificate (${_BuildingCertificate.text})', style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('iv) Location Sketch (${_LocationSketch.text})', style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('v) Possession Certificate (${_PossessionCertificate.text})', style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('vi) Building Completion Plan (${_BuildingCompletionPlan.text})', style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('vii) Thandapper Document (${_ThandapperDocument.text})', style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('viii) Building Tax Receipt (${_BuildingTaxReceipt.text})', style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+
     rows.add(pw.TableRow(children: [
       pw.Container(padding: cellPadding, child: pw.Text('4.', style: contentTextStyle)),
       pw.Container(padding: cellPadding, child: pw.Text('Name of the owner(s)', style: contentTextStyle)),
@@ -1695,98 +1785,173 @@ Future<void> _saveForm() async {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              
-              Center(
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  margin: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 244, 238, 238), // Light background color
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color.fromARGB(255, 204, 200, 200).withOpacity(0.3),
-                        spreadRadius: 4,
-                        blurRadius: 8,
-                        offset: const Offset(0, 4), // Shadow position
-                      ),
-                    ],
-                  ),
+              Card(
+                elevation: 4,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TextField( // Changed from TextFormField to TextField
+                      Text(
+                        "Search for Nearby Property",
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
                         controller: _latController,
                         decoration: const InputDecoration(
-                          border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))), // Applied new styling
-                          hintText: 'Latitude',
+                          labelText: 'Latitude',
                         ),
                       ),
-                      const SizedBox(height: 20),
-                      TextField( // Changed from TextFormField to TextField
+                      const SizedBox(height: 8),
+                      TextFormField(
                         controller: _lonController,
                         decoration: const InputDecoration(
-                          border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))), // Applied new styling
-                          hintText: 'Longitude',
+                          labelText: 'Longitude',
                         ),
                       ),
-                      const SizedBox(height: 30),
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton.icon(
-                            onPressed: _getCurrentLocation,
-                            icon: const Icon(Icons.my_location),
-                            label: const Text('Get Location', style: TextStyle(fontSize: 15.5)),
-                            style: ButtonStyle(
-                              fixedSize: WidgetStateProperty.all(const Size(200, 40)),
-                              shape: WidgetStateProperty.all(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
+                      const SizedBox(height: 8),
+                      Center(
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    onPressed:
+                                        _getCurrentLocation, // Call our new method
+                                    icon: const Icon(Icons.my_location),
+                                    label: const Text('Get Location'),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 15), // Spacing between buttons
-                          ElevatedButton.icon(
-                            onPressed: () {},
-                            icon: const Icon(Icons.search),
-                            label: const Text('Search', style: TextStyle(fontSize: 15.5)),
-                            style: ButtonStyle(
-                              fixedSize: WidgetStateProperty.all(const Size(150, 40)),
-                              shape: WidgetStateProperty.all(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
+                                const SizedBox(width: 5),
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    onPressed: () {},
+                                    label: const Text('Search'),
+                                    icon: const Icon(Icons.search),
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
-                          ),
-                        ],
-                      )
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
-
 
               const SizedBox(height: 20),
 
               Center(
-                child: ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.search, size: 30,),
-                  label: const Text('Search Saved Drafts', style: TextStyle(fontSize: 20),),
-                  style: ButtonStyle(
-                    fixedSize: WidgetStateProperty.all(const Size(300, 50)),
-                    shape: WidgetStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20), // 👈 Small border radius
-                      ),
-                    ),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    right: 50,
+                    left: 50,
+                    top: 10,
+                    bottom: 10,
+                  ),
+                  child: FloatingActionButton.extended(
+                    icon: const Icon(Icons.search),
+                    label: const Text('Search Saved Drafts'),
+                    onPressed: () {},
                   ),
                 ),
               ),
+              
+              // Center(
+              //   child: Container(
+              //     padding: const EdgeInsets.all(20),
+              //     margin: const EdgeInsets.all(20),
+              //     decoration: BoxDecoration(
+              //       color: const Color.fromARGB(255, 244, 238, 238), // Light background color
+              //       borderRadius: BorderRadius.circular(15),
+              //       boxShadow: [
+              //         BoxShadow(
+              //           color: const Color.fromARGB(255, 204, 200, 200).withOpacity(0.3),
+              //           spreadRadius: 4,
+              //           blurRadius: 8,
+              //           offset: const Offset(0, 4), // Shadow position
+              //         ),
+              //       ],
+              //     ),
+              //     child: Column(
+              //       mainAxisSize: MainAxisSize.min,
+              //       children: [
+              //         TextField( // Changed from TextFormField to TextField
+              //           controller: _latController,
+              //           decoration: const InputDecoration(
+              //             border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))), // Applied new styling
+              //             hintText: 'Latitude',
+              //           ),
+              //         ),
+              //         const SizedBox(height: 20),
+              //         TextField( // Changed from TextFormField to TextField
+              //           controller: _lonController,
+              //           decoration: const InputDecoration(
+              //             border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))), // Applied new styling
+              //             hintText: 'Longitude',
+              //           ),
+              //         ),
+              //         const SizedBox(height: 30),
+
+              //         Row(
+              //           mainAxisAlignment: MainAxisAlignment.center,
+              //           children: [
+              //             ElevatedButton.icon(
+              //               onPressed: _getCurrentLocation,
+              //               icon: const Icon(Icons.my_location),
+              //               label: const Text('Get Location', style: TextStyle(fontSize: 15.5)),
+              //               style: ButtonStyle(
+              //                 fixedSize: WidgetStateProperty.all(const Size(200, 40)),
+              //                 shape: WidgetStateProperty.all(
+              //                   RoundedRectangleBorder(
+              //                     borderRadius: BorderRadius.circular(20),
+              //                   ),
+              //                 ),
+              //               ),
+              //             ),
+              //             const SizedBox(width: 15), // Spacing between buttons
+              //             ElevatedButton.icon(
+              //               onPressed: () {},
+              //               icon: const Icon(Icons.search),
+              //               label: const Text('Search', style: TextStyle(fontSize: 15.5)),
+              //               style: ButtonStyle(
+              //                 fixedSize: WidgetStateProperty.all(const Size(150, 40)),
+              //                 shape: WidgetStateProperty.all(
+              //                   RoundedRectangleBorder(
+              //                     borderRadius: BorderRadius.circular(20),
+              //                   ),
+              //                 ),
+              //               ),
+              //             ),
+              //           ],
+              //         )
+              //       ],
+              //     ),
+              //   ),
+              // ),
+
+
+              // const SizedBox(height: 20),
+
+              // Center(
+              //   child: ElevatedButton.icon(
+              //     onPressed: () {},
+              //     icon: const Icon(Icons.search, size: 30,),
+              //     label: const Text('Search Saved Drafts', style: TextStyle(fontSize: 20),),
+              //     style: ButtonStyle(
+              //       fixedSize: WidgetStateProperty.all(const Size(300, 50)),
+              //       shape: WidgetStateProperty.all(
+              //         RoundedRectangleBorder(
+              //           borderRadius: BorderRadius.circular(20), // 👈 Small border radius
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // ),
 
               const SizedBox(height: 20),
 
@@ -1808,6 +1973,7 @@ Future<void> _saveForm() async {
                 initiallyExpanded: false, // You can set this to false to start collapsed
                 children: <Widget>[
                   const Divider(),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _purposeController,
                     decoration: const InputDecoration(
@@ -1815,6 +1981,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _dateOfInspectionController,
                     readOnly: true,
@@ -1824,6 +1991,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _dateOfValuationController,
                     readOnly: true,
@@ -1838,18 +2006,95 @@ Future<void> _saveForm() async {
                     '3. List of documents produced for perusal',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  ..._documentChecks.keys.map((documentName) {
-                    return CheckboxListTile(
-                      title: Text(documentName),
-                      value: _documentChecks[documentName],
-                      onChanged: (bool? value) {
-                        setState(() {
-                          _documentChecks[documentName] = value!;
-                        });
-                      },
-                    );
-                  }),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 13),
+                  TextField(
+                    // Changed from _buildTextField
+                    controller: _LandTaxReceipt,
+                    decoration: const InputDecoration(
+                      labelText: 'Land Tax Receipt',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 13),
+                   TextField(
+                    // Changed from _buildTextField
+                    controller: _TitleDeed,
+                    decoration: const InputDecoration(
+                      labelText: 'Title Deed',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 13),
+                   TextField(
+                    // Changed from _buildTextField
+                    controller: _BuildingCertificate,
+                    decoration: const InputDecoration(
+                      labelText: 'Building Certificate',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 13),
+                   TextField(
+                    // Changed from _buildTextField
+                    controller: _LocationSketch,
+                    decoration: const InputDecoration(
+                      labelText: 'Location Sketch',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 13),
+                   TextField(
+                    // Changed from _buildTextField
+                    controller: _PossessionCertificate,
+                    decoration: const InputDecoration(
+                      labelText: 'Possession Certificate',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 13),
+                   TextField(
+                    // Changed from _buildTextField
+                    controller: _BuildingCompletionPlan,
+                    decoration: const InputDecoration(
+                      labelText: 'Building Completion Plan',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 13),
+                   TextField(
+                    // Changed from _buildTextField
+                    controller: _ThandapperDocument,
+                    decoration: const InputDecoration(
+                      labelText: 'Thandapper Document',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 13),
+                   TextField(
+                    // Changed from _buildTextField
+                    controller: _BuildingTaxReceipt,
+                    decoration: const InputDecoration(
+                      labelText: 'Building Tax Receipt',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 40),
                   TextField( // Changed from _buildTextField
                     controller: _ownerNameController,
                     decoration: const InputDecoration(
@@ -1857,6 +2102,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _applicantNameController,
                     decoration: const InputDecoration(
@@ -1869,6 +2115,7 @@ Future<void> _saveForm() async {
                     '6. The address of the property (including pin code)',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _addressDocController,
                     decoration: const InputDecoration(
@@ -1876,6 +2123,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _addressActualController,
                     decoration: const InputDecoration(
@@ -1883,6 +2131,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _deviationsController,
                     decoration: const InputDecoration(
@@ -1891,6 +2140,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _propertyTypeController,
                     decoration: const InputDecoration(
@@ -1899,6 +2149,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _propertyZoneController,
                     decoration: const InputDecoration(
@@ -1928,6 +2179,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _urbanSemiUrbanRuralController,
                     decoration: const InputDecoration(
@@ -1936,6 +2188,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _comingUnderCorporationController,
                     decoration: const InputDecoration(
@@ -1944,6 +2197,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _coveredUnderStateCentralGovtController,
                     decoration: const InputDecoration(
@@ -1952,6 +2206,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _agriculturalLandConversionController,
                     decoration: const InputDecoration(
@@ -1984,6 +2239,7 @@ Future<void> _saveForm() async {
                       ],
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _boundaryDeviationsController,
                     decoration: const InputDecoration(
@@ -2017,6 +2273,7 @@ Future<void> _saveForm() async {
                       ],
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _dimDeviationsController,
                     decoration: const InputDecoration(
@@ -2046,6 +2303,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: ElevatedButton.icon(
@@ -2073,6 +2331,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _widthOfRoadController,
                     decoration: const InputDecoration(
@@ -2081,6 +2340,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _isLandLockedController,
                     decoration: const InputDecoration(
@@ -2089,6 +2349,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _isLandLockedController,
                     decoration: const InputDecoration(
@@ -2117,6 +2378,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _landAreaGuidelineController,
                     decoration: const InputDecoration(
@@ -2125,6 +2387,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _ratePerSqFtGuidelineController,
                     decoration: const InputDecoration(
@@ -2133,6 +2396,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _valueInRsGuidelineController,
                     decoration: const InputDecoration(
@@ -2141,6 +2405,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _landAreaPrevailingController,
                     decoration: const InputDecoration(
@@ -2149,6 +2414,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _ratePerSqFtPrevailingController,
                     decoration: const InputDecoration(
@@ -2157,6 +2423,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _valueInRsPrevailingController,
                     decoration: const InputDecoration(
@@ -2186,6 +2453,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _totalAbstractBuildingController,
                     decoration: const InputDecoration(
@@ -2194,6 +2462,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _totalAbstractAmenitiesController,
                     decoration: const InputDecoration(
@@ -2223,6 +2492,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _remark2Controller,
                     maxLines: 2,
@@ -2231,6 +2501,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _remark3Controller,
                     maxLines: 2,
@@ -2239,6 +2510,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _remark4Controller,
                     maxLines: 2,
@@ -2270,6 +2542,7 @@ Future<void> _saveForm() async {
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField( // Changed from _buildTextField
                     controller: _declarationDateCController,
                     readOnly: true,
@@ -2486,20 +2759,13 @@ Future<void> _saveForm() async {
           ),
         ),
       ),
-      floatingActionButton: ElevatedButton.icon(
-        onPressed: _saveForm,
+      floatingActionButton: 
+          FloatingActionButton.extended(
+        onPressed: () 
+        {_saveForm();
+        },
         icon: const Icon(Icons.save),
-        label: const Text('Save', style: TextStyle(fontSize: 15.5)),
-        style: ButtonStyle(
-          fixedSize: WidgetStateProperty.all(const Size(100, 50)),
-          shape: WidgetStateProperty.all(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(3),
-            ),
-          ),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat, // Bottom-right
+        label: const Text('Save'),),
     );
   }
 

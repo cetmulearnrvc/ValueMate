@@ -1,15 +1,5 @@
 import mongoose from "mongoose";
 
-const documentChecksSchema = new mongoose.Schema({
-    landTaxReceipt: Boolean,
-    titleDeed: Boolean,
-    buildingCertificate: Boolean,
-    locationSketch: Boolean,
-    possessionCertificate: Boolean,
-    buildingCompletionPlan: Boolean,
-    thandapperDocument: Boolean,
-    buildingTaxReceipt: Boolean
-}, { _id: false });
 
 const SIBValuationLandSchema = new mongoose.Schema({
     // Location coordinates
@@ -19,7 +9,14 @@ const SIBValuationLandSchema = new mongoose.Schema({
     },
 
     // Document checks
-    documentChecks: documentChecksSchema,
+    landTaxReceipt:String,
+    titleDeed:String,
+    buildingCertificate:String,
+    locationSketch:String,
+    possessionCertificate:String,
+    buildingCompletionPlan:String,
+    thandapperDocument:String,
+    buildingTaxReceipt:String,
 
     // Page 1 fields
     purpose: String,
@@ -187,10 +184,10 @@ const SIBValuationLandSchema = new mongoose.Schema({
             type:String,
             required:true
         },
-        fileID: {
-            type:String,
-            required:true
-        }
+        // fileID: {
+        //     type:String,
+        //     required:true
+        // }
     }]
 }, {
     timestamps: true
