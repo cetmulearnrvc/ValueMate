@@ -387,60 +387,62 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
 
   bool _isNotValidState = false;
 
-    Future<void> _saveToNearbyCollection() async {
-  try {
-    // --- STEP 1: Find the first image with valid coordinates ---
-    // ValuationImage? firstImageWithLocation;
-    // try {
-    //   // Use .firstWhere to find the first image that satisfies the condition.
-    //   firstImageWithLocation = _valuationImages.firstWhere(
-    //     (img) => img.latitude.isNotEmpty && img.longitude.isNotEmpty,
-    //   );
-    // } catch (e) {
-    //   // .firstWhere throws an error if no element is found. We catch it here.
-    //   firstImageWithLocation = null;
-    // }
+  Future<void> _saveToNearbyCollection() async {
+    try {
+      // --- STEP 1: Find the first image with valid coordinates ---
+      // ValuationImage? firstImageWithLocation;
+      // try {
+      //   // Use .firstWhere to find the first image that satisfies the condition.
+      //   firstImageWithLocation = _valuationImages.firstWhere(
+      //     (img) => img.latitude.isNotEmpty && img.longitude.isNotEmpty,
+      //   );
+      // } catch (e) {
+      //   // .firstWhere throws an error if no element is found. We catch it here.
+      //   firstImageWithLocation = null;
+      // }
 
-    var latitude = _latController.text;
-    var longitude = _lonController.text;
+      var latitude = _latController.text;
+      var longitude = _lonController.text;
 
-    final ownerName = controllers['Owner of the Property']!.text;
-    final marketValue = controllers['Present Market Rate of the Property']!.text;
+      final ownerName = controllers['Owner of the Property']!.text;
+      final marketValue =
+          controllers['Present Market Rate of the Property']!.text;
 
-    debugPrint('------------------------------------------');
-    debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
-    debugPrint('Owner Name from Controller: "$ownerName"');
-    debugPrint('Market Value from Controller: "$marketValue"');
-    debugPrint('------------------------------------------');
+      debugPrint('------------------------------------------');
+      debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
+      debugPrint('Owner Name from Controller: "$ownerName"');
+      debugPrint('Market Value from Controller: "$marketValue"');
+      debugPrint('------------------------------------------');
 
-    final dataToSave = {
-      //  'refNo': _fileNoCtrl.text ?? '',
-      'refNo': 111,
-      'latitude': latitude,
-      'longitude': longitude,
-      
-      'landValue': marketValue, // Use the variable we just created
-      'nameOfOwner': ownerName,
-      'bankName': 'Federal Bank',
-    };
-    
-    // --- STEP 4: Send the data to your dedicated server endpoint ---
-    final response = await http.post(
-      Uri.parse(url5), // Use your dedicated URL for saving this data
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(dataToSave),
-    );
+      final dataToSave = {
+        //  'refNo': _fileNoCtrl.text ?? '',
+        'refNo': 111,
+        'latitude': latitude,
+        'longitude': longitude,
 
-    if (response.statusCode == 201 || response.statusCode == 200) {
-      debugPrint('Successfully saved data to nearby collection.');
-    } else {
-      debugPrint('Failed to save to nearby collection: ${response.statusCode}');
-      debugPrint('Response body: ${response.body}');
+        'landValue': marketValue, // Use the variable we just created
+        'nameOfOwner': ownerName,
+        'bankName': 'Federal Bank',
+      };
+
+      // --- STEP 4: Send the data to your dedicated server endpoint ---
+      final response = await http.post(
+        Uri.parse(url5), // Use your dedicated URL for saving this data
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(dataToSave),
+      );
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        debugPrint('Successfully saved data to nearby collection.');
+      } else {
+        debugPrint(
+            'Failed to save to nearby collection: ${response.statusCode}');
+        debugPrint('Response body: ${response.body}');
+      }
+    } catch (e) {
+      debugPrint('Error in _saveToNearbyCollection: $e');
     }
-  } catch (e) {
-    debugPrint('Error in _saveToNearbyCollection: $e');
   }
-}
 
   Future<void> _saveData() async {
     try {
@@ -947,28 +949,6 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
     }
   }
 
-  
-
-  Future<String> _getAccessToken() async {
-    final response = await http.post(
-      Uri.parse('https://oauth2.googleapis.com/token'),
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: {
-        'client_id': clientId,
-        'client_secret': clientSecret,
-        'refresh_token': refreshToken,
-        'grant_type': 'refresh_token',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body)['access_token'] as String;
-    } else {
-      throw Exception('Failed to refresh access token');
-    }
-  }
-
-
 // Helper function to determine MIME type from extension
   String _getMimeTypeFromExtension(String extension) {
     switch (extension) {
@@ -986,26 +966,14 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
     }
   }
 
-  Future<Uint8List> fetchImageFromDrive(String fileId) async {
-    try {
-      // Get access token using refresh token
-      final accessToken = await _getAccessToken();
-      
-      final response = await http.get(
-        Uri.parse('https://www.googleapis.com/drive/v3/files/$fileId?alt=media'),
-        headers: {'Authorization': 'Bearer $accessToken'},
-      );
-
-      if (response.statusCode == 200) {
-        return response.bodyBytes;
-      } else {
-        throw Exception('Failed to load image: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error fetching image from Drive: $e');
+  Future<Uint8List> fetchImageBytes(String url) async {
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      return response.bodyBytes; // this is Uint8List
+    } else {
+      throw Exception('Failed to load image');
     }
   }
-
 
   void _initializeFormWithPropertyData() async {
     if (widget.propertyData != null) {
@@ -1535,13 +1503,11 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
 
           for (var imgData in imagesData) {
             try {
-              // Get the file ID from your data (assuming it's stored as 'fileId')
-              String fileID = imgData['fileID'];
               String fileName = imgData['fileName'];
-              debugPrint("Fetching image from Drive with ID: $fileID");
+              debugPrint("Fetching image from Drive with ID: $fileName");
 
               // Fetch image bytes from Google Drive
-              Uint8List imageBytes = await fetchImageFromDrive(fileID);
+              Uint8List imageBytes = await fetchImageBytes(fileName);
 
               // Get file extension from original filename
               String extension = path.extension(fileName).toLowerCase();
@@ -1551,7 +1517,8 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
                 XFile.fromData(
                   imageBytes,
                   name: fileName, // Use the original filename
-                  mimeType: _getMimeTypeFromExtension(extension), // Detect MIME type
+                  mimeType:
+                      _getMimeTypeFromExtension(extension), // Detect MIME type
                 ),
               );
             } catch (e) {
@@ -1865,6 +1832,59 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
 
   // Method to get current location
   Future<void> _getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please enable location services")),
+      );
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Location permission denied")),
+        );
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Location permission permanently denied")),
+      );
+      return;
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+
+      setState(() {
+        _latController.text = position.latitude.toString();
+        _lonController.text = position.longitude.toString();
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error getting location: $e")),
+      );
+      print(
+          'Error getting location: $e'); // Keep print for debugging in console
+    }
+  }
+
+  Future<void> _getNearbyLocation() async {
     bool serviceEnabled;
     LocationPermission permission;
 
@@ -4664,7 +4684,7 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
                             Expanded(
                               child: ElevatedButton.icon(
                                 onPressed:
-                                    _getCurrentLocation, // Call our new method
+                                    _getNearbyLocation, // Call our new method
                                 icon: const Icon(Icons.my_location),
                                 label: const Text('Get Location'),
                               ),

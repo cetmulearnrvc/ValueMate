@@ -1,4 +1,6 @@
 import federal from "../models/federal_model.js";
+import cloudinary from "../cloudinaryConfig.js";
+import crypto from "crypto";
 
 export const saveFederalData = async(req,res)=>{
 
@@ -20,15 +22,31 @@ export const saveFederalData = async(req,res)=>{
      federalData.images = [];
     if (req.files && req.files.length > 0) {
       for (let i = 0; i < req.files.length; i++) {
-        
-
-        const imageData = {
-          fileName: req.uploadedFiles[i].fileName,
-          fileID:req.uploadedFiles[i].driveId,
-        };
-
-        federalData.images.push(imageData);
-      }
+          
+          const hash = crypto.createHash("sha256").update(req.files[i].buffer).digest("hex");
+          // console.log(hash);
+          // Upload file buffer to Cloudinary
+          const result = await new Promise((resolve, reject) => {
+            const stream = cloudinary.uploader.upload_stream(
+              { resource_type: "image",
+                  public_id: hash,    // <-- use hash as unique ID
+                  overwrite: false    // <-- prevents overwriting if same hash exists
+               },
+              (error, result) => {
+                if (error) reject(error);
+                else resolve(result);
+              }
+            );
+            stream.end(req.files[i].buffer); // << file buffer
+          });
+      
+          const imageData = {
+            fileName: result.secure_url, // Cloudinary URL
+            
+          };
+      
+          federalData.images.push(imageData);
+        }
     }
 
     /* const newfederalData=new federal(federalData); */

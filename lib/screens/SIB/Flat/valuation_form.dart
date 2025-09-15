@@ -1052,9 +1052,10 @@ class _SIBValuationFormScreenState extends State<SIBValuationFormScreen> {
         setState(() {});
       }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('Failed to pick images: $e')));
+      }
     }
   }
 

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:login_screen/screens/Canara/savedDraftsCanara.dart';
@@ -16,7 +15,6 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'config.dart';
 import 'package:login_screen/screens/driveAPIconfig.dart';
 import 'package:path/path.dart' as path;
-import 'package:universal_html/html.dart' as html;
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:async';
@@ -130,50 +128,50 @@ class _PropertyValuationReportPageState
   //   }
   // }
   Future<void> _pickImages(ImageSource source) async {
-  setState(() => _isLoadingImages = true);
-  try {
-    // Get current location ONCE before picking images (you can move this inside the loop for per-image locations)
-    await _getCurrentLocation();
+    setState(() => _isLoadingImages = true);
+    try {
+      // Get current location ONCE before picking images (you can move this inside the loop for per-image locations)
+      await _getCurrentLocation();
 
-    List<XFile> pickedFiles = [];
-    if (source == ImageSource.gallery) {
-      pickedFiles = await _picker.pickMultiImage();
-    } else {
-      final photo = await _picker.pickImage(source: source, imageQuality: 80);
-      if (photo != null) pickedFiles = [photo];
-    }
+      List<XFile> pickedFiles = [];
+      if (source == ImageSource.gallery) {
+        pickedFiles = await _picker.pickMultiImage();
+      } else {
+        final photo = await _picker.pickImage(source: source, imageQuality: 80);
+        if (photo != null) pickedFiles = [photo];
+      }
 
-    if (pickedFiles.isEmpty) {
+      if (pickedFiles.isEmpty) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('No images selected')),
+          );
+        }
+        return;
+      }
+
+      for (var file in pickedFiles) {
+        final bytes = await file.readAsBytes();
+        setState(() {
+          _imagesWithLocation.add(ImageWithLocation(
+            imageBytes: bytes,
+            latitude: _latitude,
+            longitude: _longitude,
+            timestamp: DateTime.now(),
+            description: 'Property Photo',
+          ));
+        });
+      }
+    } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No images selected')),
+          SnackBar(content: Text('Error picking images: ${e.toString()}')),
         );
       }
-      return;
+    } finally {
+      if (mounted) setState(() => _isLoadingImages = false);
     }
-
-    for (var file in pickedFiles) {
-      final bytes = await file.readAsBytes();
-      setState(() {
-        _imagesWithLocation.add(ImageWithLocation(
-          imageBytes: bytes,
-          latitude: _latitude,
-          longitude: _longitude,
-          timestamp: DateTime.now(),
-          description: 'Property Photo',
-        ));
-      });
-    }
-  } catch (e) {
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error picking images: ${e.toString()}')),
-      );
-    }
-  } finally {
-    if (mounted) setState(() => _isLoadingImages = false);
   }
-}
 
   Future<void> _takePhoto() async {
     setState(() => _isLoadingImages = true);
@@ -522,10 +520,11 @@ class _PropertyValuationReportPageState
           //     builder: (ctx) => Nearbydetails(responseData: responseData),
           //   ),
           // );
-          showModalBottomSheet(context: context, builder: (ctx)
-          {
-            return Nearbydetails(responseData: responseData);
-          });
+          showModalBottomSheet(
+              context: context,
+              builder: (ctx) {
+                return Nearbydetails(responseData: responseData);
+              });
         }
       }
 
@@ -545,10 +544,10 @@ class _PropertyValuationReportPageState
       );
     }
   }
-  
+
   Future<void> _saveToNearbyCollection() async {
-  try {
-    String fullCoordinates = _latitudelongitudeController.text;
+    try {
+      String fullCoordinates = _latitudelongitudeController.text;
       String latitude = '';
       String longitude = '';
 
@@ -575,43 +574,44 @@ class _PropertyValuationReportPageState
         return; // Exit the function early if coordinates are not valid.
       }
 
-    final ownerName = _ownerNameController.text ?? '[is null]';
-    final marketValue = _presentValueController.text ?? '[is null]';
+      final ownerName = _ownerNameController.text ?? '[is null]';
+      final marketValue = _presentValueController.text ?? '[is null]';
 
-    debugPrint('------------------------------------------');
-    debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
-    debugPrint('Owner Name from Controller: "$ownerName"');
-    debugPrint('Market Value from Controller: "$marketValue"');
-    debugPrint('------------------------------------------');
-    // --- STEP 3: Build the payload with the correct data ---
-    final dataToSave = {
-      // Use the coordinates from the image we found
-       'refNo': 111 ?? '',
-      'latitude': latitude,
-      'longitude': longitude,
-      
-      'landValue': marketValue, // Use the variable we just created
-      'nameOfOwner': ownerName,
-      'bankName': 'Canara Bank',
-    };
-    
-    // --- STEP 4: Send the data to your dedicated server endpoint ---
-    final response = await http.post(
-      Uri.parse(url5), // Use your dedicated URL for saving this data
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(dataToSave),
-    );
+      debugPrint('------------------------------------------');
+      debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
+      debugPrint('Owner Name from Controller: "$ownerName"');
+      debugPrint('Market Value from Controller: "$marketValue"');
+      debugPrint('------------------------------------------');
+      // --- STEP 3: Build the payload with the correct data ---
+      final dataToSave = {
+        // Use the coordinates from the image we found
+        'refNo': 111 ?? '',
+        'latitude': latitude,
+        'longitude': longitude,
 
-    if (response.statusCode == 201 || response.statusCode == 200) {
-      debugPrint('Successfully saved data to nearby collection.');
-    } else {
-      debugPrint('Failed to save to nearby collection: ${response.statusCode}');
-      debugPrint('Response body: ${response.body}');
+        'landValue': marketValue, // Use the variable we just created
+        'nameOfOwner': ownerName,
+        'bankName': 'Canara Bank',
+      };
+
+      // --- STEP 4: Send the data to your dedicated server endpoint ---
+      final response = await http.post(
+        Uri.parse(url5), // Use your dedicated URL for saving this data
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(dataToSave),
+      );
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        debugPrint('Successfully saved data to nearby collection.');
+      } else {
+        debugPrint(
+            'Failed to save to nearby collection: ${response.statusCode}');
+        debugPrint('Response body: ${response.body}');
+      }
+    } catch (e) {
+      debugPrint('Error in _saveToNearbyCollection: $e');
     }
-  } catch (e) {
-    debugPrint('Error in _saveToNearbyCollection: $e');
   }
-}
 
   Future<void> _saveData() async {
     try {
@@ -891,22 +891,22 @@ class _PropertyValuationReportPageState
 
       //   request.fields['images'] = jsonEncode(imageMetadata);
       // }
-        List<Map<String, String>> imageMetadata = [];
-for (int i = 0; i < _imagesWithLocation.length; i++) {
-  final image = _imagesWithLocation[i];
-  final imageBytes = image.imageBytes;
-  request.files.add(http.MultipartFile.fromBytes(
-    'images',
-    imageBytes,
-    filename: 'property_${_ownerNameController.text}_$i.jpg',
-  ));
-  imageMetadata.add({
-    "latitude": image.latitude?.toString() ?? "",
-    "longitude": image.longitude?.toString() ?? "",
-  });
-}
+      List<Map<String, String>> imageMetadata = [];
+      for (int i = 0; i < _imagesWithLocation.length; i++) {
+        final image = _imagesWithLocation[i];
+        final imageBytes = image.imageBytes;
+        request.files.add(http.MultipartFile.fromBytes(
+          'images',
+          imageBytes,
+          filename: 'property_${_ownerNameController.text}_$i.jpg',
+        ));
+        imageMetadata.add({
+          "latitude": image.latitude?.toString() ?? "",
+          "longitude": image.longitude?.toString() ?? "",
+        });
+      }
 // Only set field ONCE here:
-request.fields['images'] = jsonEncode(imageMetadata);
+      request.fields['images'] = jsonEncode(imageMetadata);
 
       final response = await request.send();
       debugPrint("send req to back");
@@ -936,27 +936,8 @@ request.fields['images'] = jsonEncode(imageMetadata);
     }
   }
 
-  Future<String> _getAccessToken() async {
-    final response = await http.post(
-      Uri.parse('https://oauth2.googleapis.com/token'),
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: {
-        'client_id': clientId,
-        'client_secret': clientSecret,
-        'refresh_token': refreshToken,
-        'grant_type': 'refresh_token',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body)['access_token'] as String;
-    } else {
-      throw Exception('Failed to refresh access token');
-    }
-  }
-
 // Helper function to determine MIME type from extension
-  String _getMimeTypeFromExtension(String extension) {
+  /* String _getMimeTypeFromExtension(String extension) {
     switch (extension) {
       case '.jpg':
       case '.jpeg':
@@ -970,26 +951,14 @@ request.fields['images'] = jsonEncode(imageMetadata);
       default:
         return 'application/octet-stream';
     }
-  }
+  } */
 
-  Future<Uint8List> fetchImageFromDrive(String fileId) async {
-    try {
-      // Get access token using refresh token
-      final accessToken = await _getAccessToken();
-
-      final response = await http.get(
-        Uri.parse(
-            'https://www.googleapis.com/drive/v3/files/$fileId?alt=media'),
-        headers: {'Authorization': 'Bearer $accessToken'},
-      );
-
-      if (response.statusCode == 200) {
-        return response.bodyBytes;
-      } else {
-        throw Exception('Failed to load image: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error fetching image from Drive: $e');
+  Future<Uint8List> fetchImageBytes(String url) async {
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      return response.bodyBytes; // this is Uint8List
+    } else {
+      throw Exception('Failed to load image');
     }
   }
 
@@ -1362,12 +1331,12 @@ request.fields['images'] = jsonEncode(imageMetadata);
           for (var imgData in imagesData) {
             try {
               // Get the file ID from your data (assuming it's stored as 'fileId')
-              String fileID = imgData['fileID'];
+
               String fileName = imgData['fileName'];
-              debugPrint("Fetching image from Drive with ID: $fileID");
+              debugPrint("Fetching image from Drive with ID: $fileName");
 
               // Fetch image bytes from Google Drive
-              Uint8List imageBytes = await fetchImageFromDrive(fileID);
+              Uint8List imageBytes = await fetchImageBytes(fileName);
 
               // Get file extension from original filename
               String extension = path.extension(fileName).toLowerCase();
@@ -3781,18 +3750,22 @@ request.fields['images'] = jsonEncode(imageMetadata);
 
 // Image action buttons
               Row(
-  children: [
-    ElevatedButton(
-      onPressed: _isLoadingImages ? null : () => _pickImages(ImageSource.gallery),
-      child: const Text('Upload Images'),
-    ),
-    const SizedBox(width: 10),
-    ElevatedButton(
-      onPressed: _isLoadingImages ? null : () => _pickImages(ImageSource.camera),
-      child: const Text('Take Photo'),
-    ),
-  ],
-),
+                children: [
+                  ElevatedButton(
+                    onPressed: _isLoadingImages
+                        ? null
+                        : () => _pickImages(ImageSource.gallery),
+                    child: const Text('Upload Images'),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton(
+                    onPressed: _isLoadingImages
+                        ? null
+                        : () => _pickImages(ImageSource.camera),
+                    child: const Text('Take Photo'),
+                  ),
+                ],
+              ),
 
               const SizedBox(height: 10),
               ElevatedButton(

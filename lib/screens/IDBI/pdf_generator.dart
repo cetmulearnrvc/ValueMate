@@ -631,7 +631,7 @@ class PdfGenerator {
           ]),
           pw.TableRow(children: [
             _cell('Remarks', isBold: true),
-            _cell('${data.remarks}'),
+            _cell(data.remarks),
           ]),
         ]),
         pw.SizedBox(height: 70),
