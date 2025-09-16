@@ -14,8 +14,6 @@ import 'valuation_data_model.dart';
 import 'pdf_generator.dart';
 import 'package:http/http.dart' as http;
 import 'config.dart';
-import 'package:login_screen/screens/driveAPIconfig.dart';
-import 'package:path/path.dart' as path;
 
 class ValuationFormScreenIDBI extends StatefulWidget {
   final Map<String, dynamic>? propertyData;

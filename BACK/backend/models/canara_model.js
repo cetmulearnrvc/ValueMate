@@ -262,10 +262,10 @@ const canaraSchema = new mongoose.Schema({
             type:String,
             required:true
         },
-        fileID: {
+        /* fileID: {
             type:String,
             required:true
-        },
+        }, */
         latitude: Number,
         longitude: Number,
     }]

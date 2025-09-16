@@ -642,7 +642,7 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
         } */
 
       for (int i = 0; i < _images.length; i++) {
-        final imageBytes;
+        final Uint8List imageBytes;
         if (_images[i] is File) {
           // Convert File → Uint8List
           imageBytes = await (_images[i] as File).readAsBytes();
