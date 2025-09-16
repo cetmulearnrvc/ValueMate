@@ -1034,8 +1034,6 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
 
               Uint8List imageBytes = await fetchImageBytes(fileName);
 
-              // Get file extension from original filename
-
               _images.add(imageBytes);
             } catch (e) {
               debugPrint('Error loading image from Drive: $e');

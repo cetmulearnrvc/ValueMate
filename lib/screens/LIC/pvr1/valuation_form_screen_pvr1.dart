@@ -765,10 +765,6 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
               // Fetch image bytes from Google Drive
               Uint8List imageBytes = await fetchImageBytes(fileName);
 
-              // Get file extension from original filename
-              String extension = path.extension(fileName).toLowerCase();
-              if (extension.isEmpty) extension = '.jpg'; // default fallback
-
               _valuationImages.add(ValuationImage(
                 imageFile: imageBytes,
                 latitude: imgData['latitude']?.toString() ?? '',

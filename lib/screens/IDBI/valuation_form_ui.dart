@@ -775,7 +775,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
                 longitude: imgData['longitude']?.toString() ?? '',
               ));
             } catch (e) {
-              debugPrint('Error loading image from Cloudina: $e');
+              debugPrint('Error loading image from Cloudinary: $e');
             }
           }
         }

@@ -1,34 +1,66 @@
 import VacantLandValuation from "../models/vacantland_sib_model.js";
+import crypto from "crypto";
 import mongoose from "mongoose";
+import cloudinary from "../cloudinaryConfig.js";
 
 // Save vacant land valuation with file uploads
 export const saveVacantLand = async (req, res) => {
   try {
     const landData = req.body;
-    landData.typo = 'sibVacantLand';
+    // landData.typo = "sibVacantLand";
 
-    // Parse JSON fields if they exist as strings
-    const jsonFields = ['landValuationDetails', 'boundaries', 'dimensions', 'valuerComments'];
-    jsonFields.forEach(field => {
-      if (landData[field] && typeof landData[field] === 'string') {
-        landData[field] = JSON.parse(landData[field]);
-      }
-    });
+    // // Parse JSON fields if they exist as strings
+    // const jsonFields = ['landValuationDetails', 'boundaries', 'dimensions', 'valuerComments'];
+    // jsonFields.forEach(field => {
+    //   if (landData[field] && typeof landData[field] === 'string') {
+    //     landData[field] = JSON.parse(landData[field]);
+    //   }
+    // });
 
     // Process uploaded images
+    // if (req.files && req.files.length > 0) {
+    //   landData.images = req.files.map(file => ({
+    //     fileName: file.filename,
+    //     filePath: file.path,
+    //     latitude: req.body.imageLatitude ? parseFloat(req.body.imageLatitude) : null,
+    //     longitude: req.body.imageLongitude ? parseFloat(req.body.imageLongitude) : null
+    //   }));
+    // } else {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "At least one image is required"
+    //   });
+    // }
+    landData.images=[];
     if (req.files && req.files.length > 0) {
-      landData.images = req.files.map(file => ({
-        fileName: file.filename,
-        filePath: file.path,
-        latitude: req.body.imageLatitude ? parseFloat(req.body.imageLatitude) : null,
-        longitude: req.body.imageLongitude ? parseFloat(req.body.imageLongitude) : null
-      }));
-    } else {
-      return res.status(400).json({
-        success: false,
-        message: "At least one image is required"
-      });
-    }
+          for (let i = 0; i < req.files.length; i++) {
+            // const meta = imagesMeta[i] || {};
+            const hash = crypto.createHash("sha256").update(req.files[i].buffer).digest("hex");
+            // console.log(hash);
+            // Upload file buffer to Cloudinary
+            const result = await new Promise((resolve, reject) => {
+              const stream = cloudinary.uploader.upload_stream(
+                { resource_type: "image",
+                    public_id: hash,    // <-- use hash as unique ID
+                    overwrite: false    // <-- prevents overwriting if same hash exists
+                 },
+                (error, result) => {
+                  if (error) reject(error);
+                  else resolve(result);
+                }
+              );
+              stream.end(req.files[i].buffer); // << file buffer
+            });
+        
+            const imageData = {
+              fileName: result.secure_url, // Cloudinary URL
+              // latitude: meta.latitude ? String(meta.latitude) : null,
+              // longitude: meta.longitude ? String(meta.longitude) : null
+            };
+        
+            landData.images.push(imageData);
+          }
+        }
 
     // Check if document exists and update or create new
     const existingDoc = await VacantLandValuation.findOne({ refNo: landData.refNo });

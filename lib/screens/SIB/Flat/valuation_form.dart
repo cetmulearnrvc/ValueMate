@@ -338,9 +338,9 @@ class _SIBValuationFormScreenState extends State<SIBValuationFormScreen> {
 
             Uint8List imageBytes = await fetchImageBytes(fileName);
 
-            // Get file extension from original filename
-            String extension = path.extension(fileName).toLowerCase();
-            if (extension.isEmpty) extension = '.jpg'; // default fallback
+            // // Get file extension from original filename
+            // String extension = path.extension(fileName).toLowerCase();
+            // if (extension.isEmpty) extension = '.jpg'; // default fallback
 
             _valuationImages.add(ValuationImage(
               imageFile: imageBytes,

@@ -5,10 +5,10 @@ import {
   getNearbyVacantLands,
   getVacantLandsByDate 
 } from "../controller/sib_vacantland_controller.js";
-// import uploadMiddleware from "../multer/upload.js";
+ import upload from "../multer/upload.js";
 
 // Save vacant land data with images
-vacantLandRouter.post("/vacant-land/save", saveVacantLand);
+vacantLandRouter.post("/vacant-land/save", upload.array("images",10), saveVacantLand);
 
 // Get nearby vacant lands (changed to POST to match your example)
 vacantLandRouter.post("/vacant-land/nearby", getNearbyVacantLands);

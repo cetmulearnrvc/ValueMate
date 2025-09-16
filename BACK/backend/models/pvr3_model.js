@@ -123,10 +123,10 @@ const pvr3Schema = new mongoose.Schema({
         type: String,
         required: true
     },
-        fileID: {
-        type: String,
-        required: true
-    },
+    //     fileID: {
+    //     type: String,
+    //     required: true
+    // },
         latitude: Number,
         longitude: Number
     }]
