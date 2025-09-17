@@ -65,6 +65,10 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
 
   final TextEditingController _latController = TextEditingController();
   final TextEditingController _lonController = TextEditingController();
+
+  final TextEditingController _latitude = TextEditingController();
+  final TextEditingController _longitude = TextEditingController();
+
   final TextEditingController _refId = TextEditingController();
 
   // Controllers for text input fields (Page 1)
@@ -642,7 +646,7 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
         } */
 
       for (int i = 0; i < _images.length; i++) {
-        final Uint8List imageBytes;
+        final imageBytes;
         if (_images[i] is File) {
           // Convert File → Uint8List
           imageBytes = await (_images[i] as File).readAsBytes();
@@ -1056,6 +1060,7 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
               String fileName = imgData['fileName'];
 
               String signedUrl = await fetchSignedUrl(fileName);
+              // debugPrint(signedUrl);
               Uint8List imageBytes = await fetchImageBytes(signedUrl);
 
               _images.add(imageBytes);
@@ -1194,6 +1199,73 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
           'dd-MM-yyyy',
         ).format(picked); // Formatted date
       });
+    }
+  }
+
+  Future<void> _getNearbyLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users to enable the location services.
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Location services are disabled. Please enable them.'),
+        ),
+      );
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // a dialog should be shown to the user explaining why permission is needed)
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Location permissions are denied.')),
+        );
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Location permissions are permanently denied, we cannot request permissions.',
+          ),
+        ),
+      );
+      return;
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      setState(() {
+        // _latitudeLongitudeController.text =
+        //     '${position.latitude}, ${position.longitude}';
+        _latitude.text = '${position.latitude}';
+        _longitude.text = '${position.longitude}';
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Location fetched successfully!')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error fetching location: $e')));
     }
   }
 
@@ -1982,15 +2054,15 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
           ),
           pw.Container(
             padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ), // colon added for consistency
+          pw.Container(
+            padding: cellPadding,
             child: pw.Text(
               _boundaryNorthTitleController.text,
               style: contentTextStyle,
             ),
           ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(':', style: contentTextStyle),
-          ), // colon added for consistency
           pw.Container(
             padding: cellPadding,
             child: pw.Text(
@@ -3529,7 +3601,7 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
           pw.Container(
             padding: cellPadding,
             child: pw.Text(
-              '₹ ${_totalAbstractLandController.text}',
+              'Rs ${_totalAbstractLandController.text}',
               style: contentTextStyle,
             ),
           ),
@@ -3554,7 +3626,7 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
           pw.Container(
             padding: cellPadding,
             child: pw.Text(
-              '₹ ${_totalAbstractBuildingController.text}',
+              'Rs ${_totalAbstractBuildingController.text}',
               style: contentTextStyle,
             ),
           ),
@@ -3579,7 +3651,7 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
           pw.Container(
             padding: cellPadding,
             child: pw.Text(
-              '₹ ${_totalAbstractAmenitiesController.text}',
+              'Rs ${_totalAbstractAmenitiesController.text}',
               style: contentTextStyle,
             ),
           ),
@@ -3604,7 +3676,7 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
           pw.Container(
             padding: cellPadding,
             child: pw.Text(
-              '₹ ${_totalAbstractTotalController.text}',
+              'Rs ${_totalAbstractTotalController.text}',
               style: contentTextStyle,
             ),
           ),
@@ -3629,7 +3701,7 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
           pw.Container(
             padding: cellPadding,
             child: pw.Text(
-              '₹ ${_totalAbstractSayController.text}',
+              'Rs ${_totalAbstractSayController.text}',
               style: contentTextStyle,
             ),
           ),
@@ -4960,14 +5032,14 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
-                        controller: _latController,
+                        controller: _latitude,
                         decoration: const InputDecoration(
                           labelText: 'Latitude',
                         ),
                       ),
                       const SizedBox(height: 8),
                       TextFormField(
-                        controller: _lonController,
+                        controller: _longitude,
                         decoration: const InputDecoration(
                           labelText: 'Longitude',
                         ),
@@ -4982,7 +5054,7 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                                 Expanded(
                                   child: ElevatedButton.icon(
                                     onPressed:
-                                        _getCurrentLocation, // Call our new method
+                                        _getNearbyLocation, // Call our new method
                                     icon: const Icon(Icons.my_location),
                                     label: const Text('Get Location'),
                                   ),
