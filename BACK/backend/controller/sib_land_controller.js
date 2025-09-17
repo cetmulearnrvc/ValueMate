@@ -30,6 +30,7 @@ export const savelandData = async(req,res)=>{
         const result = await new Promise((resolve, reject) => {
           const stream = cloudinary.uploader.upload_stream(
             { resource_type: "image",
+              type:"authenticated",
                 public_id: hash,    // <-- use hash as unique ID
                 overwrite: false    // <-- prevents overwriting if same hash exists
              },
@@ -42,7 +43,7 @@ export const savelandData = async(req,res)=>{
         });
     
         const imageData = {
-          fileName: result.secure_url, // Cloudinary URL
+          fileName: result.public_id, // Cloudinary URL
           
         };
     

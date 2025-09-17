@@ -517,7 +517,28 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
     }
   }
 
-  // Future<String> _getAccessToken() async {
+  Future<String> fetchSignedUrl(String imagePublicId) async {
+    // --- YOU MUST CUSTOMIZE THESE VALUES ---
+    const String apiKey =
+        "db74f0da81338f1ad24d0be8298f90f4e6be5f0df5b53aca2f95ead470665641";
+    const String apiBaseUrl = 'http://localhost:3000'; // For Android emulator
+    // -----------------------------------------
+
+    final url = Uri.parse('$apiBaseUrl/api/images/secure-url/$imagePublicId');
+
+    final response = await http.get(
+      url,
+      headers: {'x-api-key': apiKey},
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['signedUrl'];
+    } else {
+      throw Exception(
+          'Failed to load signed URL. Status code: ${response.statusCode}');
+    }
+  } // Future<String> _getAccessToken() async {
   //   final response = await http.post(
   //     Uri.parse('https://oauth2.googleapis.com/token'),
   //     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -764,8 +785,9 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
           for (var imgData in imagesData) {
             try {
               String fileName = imgData['fileName'];
-
-              Uint8List imageBytes = await fetchImageBytes(fileName);
+              String signedUrl = await fetchSignedUrl(fileName);
+              debugPrint("url:$signedUrl");
+              Uint8List imageBytes = await fetchImageBytes(signedUrl);
 
               _valuationImages.add(ValuationImage(
                 imageFile: imageBytes,

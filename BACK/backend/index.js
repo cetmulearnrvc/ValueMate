@@ -13,6 +13,7 @@ import canara_router from "./router/canara_router.js";
 import nearby_router from "./router/nearbyRouter.js";
 import sbi_flat_router from "./router/sbi_flat_router.js";
 import sbi_land_router from "./router/sbi_land_router.js";
+import router from "./imagesRoute.js";
 
 dotenv.config();
 
@@ -32,7 +33,7 @@ app.use('/api/v1',canara_router);
 app.use('/api/v1',sbi_flat_router);
 app.use('/api/v1',sbi_land_router);
 
-
+app.use('/api/images',router)
 app.listen(3000,()=>
 {
     console.log("server started at localhost 3000")
