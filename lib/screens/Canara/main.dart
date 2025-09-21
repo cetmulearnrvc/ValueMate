@@ -225,6 +225,8 @@ class _PropertyValuationReportPageState
   final _formKey = GlobalKey<FormState>();
 
   // Part A - Basic Data
+  final _referenceNoController = TextEditingController();
+  final _reportDateController = TextEditingController();
   final _purposeController = TextEditingController();
   final _inspectionDateController = TextEditingController();
   final _valuationDateController = TextEditingController();
@@ -641,6 +643,8 @@ class _PropertyValuationReportPageState
 
       // Add text fields from controllers
       request.fields.addAll({
+        "referenceNo": _referenceNoController.text,
+        "Date": DateFormat('yyyy-MM-dd').format(DateTime.now()),
         "purpose": _purposeController.text,
         "inspectionDate": _inspectionDateController.text,
         "valuationDate": _valuationDateController.text,
@@ -989,6 +993,8 @@ class _PropertyValuationReportPageState
       final data = widget.propertyData!;
 
       // Basic information
+      _referenceNoController.text = data['referenceNo']?.toString() ?? '';
+      _reportDateController.text = data['Date']?.toString() ?? '';
       _purposeController.text = data['purpose']?.toString() ?? '';
       _inspectionDateController.text = data['inspectionDate']?.toString() ?? '';
       _valuationDateController.text = data['valuationDate']?.toString() ?? '';
@@ -1386,6 +1392,8 @@ class _PropertyValuationReportPageState
   @override
   void dispose() {
     // Dispose all controllers
+    _referenceNoController.dispose();
+    _reportDateController.dispose();
     _purposeController.dispose();
     _inspectionDateController.dispose();
     _valuationDateController.dispose();
@@ -1783,6 +1791,20 @@ class _PropertyValuationReportPageState
               // Part A - Basic Data
 
               _buildSection(title: 'A. BASIC DATA', children: [
+                TextFormField(
+                  controller: _referenceNoController,
+                  decoration: const InputDecoration(
+                    labelText: 'Reference Number',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                TextFormField(
+                  controller: _reportDateController,
+                  decoration: const InputDecoration(
+                    labelText: 'Date of report',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
                 TextFormField(
                   controller: _purposeController,
                   decoration: const InputDecoration(
@@ -4098,15 +4120,19 @@ class _PropertyValuationReportPageState
       pw.SizedBox(height: 8),
 
 // Ref. No. and Date row
-      pw.Row(
-        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-        children: [
-          pw.Text('Ref. No. 24250802',
-              style: pw.TextStyle(font: boldTtf, fontSize: 10)),
-          pw.Text('Date: 01-08-2024',
-              style: pw.TextStyle(font: boldTtf, fontSize: 10)),
-        ],
-      ),
+       pw.Row(
+  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+  children: [
+    pw.Text(
+      'Ref. No. ${_referenceNoController.text.isNotEmpty ? _referenceNoController.text : "______"}',
+      style: pw.TextStyle(font: boldTtf, fontSize: 10),
+    ),
+    pw.Text(
+      'Date: ${_reportDateController.text.isNotEmpty ? _reportDateController.text : "_____"}', // Or dynamically use _inspectionDateController.text or similar
+      style: pw.TextStyle(font: boldTtf, fontSize: 10),
+    ),
+  ],
+),
 
       pw.SizedBox(height: 5),
 

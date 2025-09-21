@@ -116,10 +116,12 @@ class _SavedDraftsCanaraState extends State<SavedDraftsCanara> {
                       margin: const EdgeInsets.symmetric(vertical: 8),
                       child: ListTile(
                         title: Text(
-                            'Owner Name: ${property['ownerName']}'),
+                            'Ref.No: ${property['referenceNo'] ?? 'N/A'} | Owner Name: ${property['ownerName']}'),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Text('Reference No: ${property['referenceNo'] ?? 'N/A'}'),
+                            Text('Report Date: ${property['reportDate'] ?? 'N/A'}'),
                             const Text(
                                 'Bank: Canara Bank'), // Always shows Canara Bank
                             const SizedBox(height: 4),
