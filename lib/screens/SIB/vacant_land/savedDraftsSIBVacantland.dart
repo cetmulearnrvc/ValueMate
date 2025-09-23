@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'package:login_screen/screens/SIB/vacant_land/vacant_land.dart';
 import 'dart:convert';
+import 'config.dart';
 
-import 'package:login_screen/screens/SIB/Flat/config.dart';
-import 'package:login_screen/screens/SIB/Flat/valuation_form.dart';
-
-class SavedDrafts extends StatefulWidget {
-  const SavedDrafts({super.key});
+class SavedDraftsSIBVacantLand extends StatefulWidget {
+  const SavedDraftsSIBVacantLand({super.key});
 
   @override
-  State<SavedDrafts> createState() => _SavedDraftsState();
+  State<SavedDraftsSIBVacantLand> createState() => _SavedDraftsSIBVacantLandState();
 }
 
-class _SavedDraftsState extends State<SavedDrafts> {
+class _SavedDraftsSIBVacantLandState extends State<SavedDraftsSIBVacantLand> {
   DateTime date = DateTime.now();
   List<dynamic> searchResults = [];
   bool isLoading = false;
@@ -29,19 +28,28 @@ class _SavedDraftsState extends State<SavedDrafts> {
       final response = await http.post(
         Uri.parse(url3),
         headers: {'Content-Type': 'application/json'},
-        body: json.encode({'date': formattedDate}),
+        body: json.encode({
+          'date': formattedDate,
+          'type': 'sibVacantLand' // Filter for vacant land records
+        }),
       );
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+        debugPrint(response.body);
+
         setState(() {
           searchResults = data;
         });
       } else {
-        showErrorSnackBar('Server error: ${response.statusCode}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${response.statusCode}')),
+        );
       }
     } catch (e) {
-      showErrorSnackBar('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
     } finally {
       setState(() {
         isLoading = false;
@@ -49,20 +57,11 @@ class _SavedDraftsState extends State<SavedDrafts> {
     }
   }
 
-  void showErrorSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: Colors.redAccent,
-        content: Text(message),
-      ),
-    );
-  }
-
   void navigateToValuationForm(Map<String, dynamic> propertyData) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SIBValuationFormScreen(
+        builder: (context) => VacantLandFormPage(
           propertyData: propertyData,
         ),
       ),
@@ -77,7 +76,7 @@ class _SavedDraftsState extends State<SavedDrafts> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: const Text(
-          'Saved Drafts',
+          'SIB Vacant Land Drafts',
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w500,
@@ -105,10 +104,9 @@ class _SavedDraftsState extends State<SavedDrafts> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                // Date field with gradient style
+                // Stylish Date Picker Container
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     gradient: const LinearGradient(
@@ -140,8 +138,7 @@ class _SavedDraftsState extends State<SavedDrafts> {
                         ),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.edit_calendar,
-                            color: Colors.black54),
+                        icon: const Icon(Icons.edit_calendar, color: Colors.black54),
                         onPressed: () async {
                           final picked = await showDatePicker(
                             context: context,
@@ -150,7 +147,9 @@ class _SavedDraftsState extends State<SavedDrafts> {
                             lastDate: DateTime(2200),
                           );
                           if (picked != null) {
-                            setState(() => date = picked);
+                            setState(() {
+                              date = picked;
+                            });
                           }
                         },
                       )
@@ -183,14 +182,14 @@ class _SavedDraftsState extends State<SavedDrafts> {
                 ),
                 const SizedBox(height: 20),
 
-                // Search Results
+                // Results Section
                 Expanded(
                   child: isLoading
                       ? const Center(child: CircularProgressIndicator())
                       : searchResults.isEmpty
                           ? const Center(
                               child: Text(
-                                'No drafts found!',
+                                'No SIB Vacant Land drafts found',
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w500,
@@ -204,31 +203,17 @@ class _SavedDraftsState extends State<SavedDrafts> {
                               itemBuilder: (context, index) {
                                 final property = searchResults[index];
 
-                                // Rotating pastel gradient backgrounds
                                 final gradients = [
-                                  [
-                                    const Color(0xFFDAF1F5),
-                                    const Color(0xFFC7E8F3)
-                                  ],
-                                  [
-                                    const Color(0xFFF6E9F8),
-                                    const Color(0xFFEBD8F5)
-                                  ],
-                                  [
-                                    const Color(0xFFFFF2D8),
-                                    const Color(0xFFFFE8B8)
-                                  ],
-                                  [
-                                    const Color(0xFFDFF6DD),
-                                    const Color(0xFFBDE7BE)
-                                  ],
+                                  [const Color(0xFFDAF1F5), const Color(0xFFC7E8F3)],
+                                  [const Color(0xFFF6E9F8), const Color(0xFFEBD8F5)],
+                                  [const Color(0xFFFFF2D8), const Color(0xFFFFE8B8)],
+                                  [const Color(0xFFDFF6DD), const Color(0xFFBDE7BE)],
                                 ];
                                 final gradientColors =
                                     gradients[index % gradients.length];
 
                                 return Container(
-                                  margin:
-                                      const EdgeInsets.symmetric(vertical: 8),
+                                  margin: const EdgeInsets.symmetric(vertical: 8),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
                                     gradient: LinearGradient(
@@ -247,7 +232,7 @@ class _SavedDraftsState extends State<SavedDrafts> {
                                   child: ListTile(
                                     contentPadding: const EdgeInsets.all(16),
                                     title: Text(
-                                      'File No: ${property['refNo']}',
+                                      'Ref ID: ${property['refNo'] ?? property['refId'] ?? 'N/A'}',
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18,
@@ -257,23 +242,43 @@ class _SavedDraftsState extends State<SavedDrafts> {
                                     subtitle: Padding(
                                       padding: const EdgeInsets.only(top: 6.0),
                                       child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            'Owner: ${property['nameOfOwner']}',
-                                            style: const TextStyle(
-                                                fontSize: 15,
-                                                fontFamily: 'Poppins'),
+                                          const Text(
+                                            'Bank: South Indian Bank - Vacant Land',
+                                            style: TextStyle(fontSize: 15, fontFamily: 'Poppins'),
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
-                                            'Location: ${property['docLocationSketch']}',
+                                            'Owner: ${property['ownerName'] ?? 'N/A'}',
+                                            style: const TextStyle(fontSize: 14, fontFamily: 'Poppins'),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            'Applicant: ${property['applicantName'] ?? 'N/A'}',
+                                            style: const TextStyle(fontSize: 14, fontFamily: 'Poppins'),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            'Location: ${property['addressAsPerActual'] ?? property['addressActual'] ?? property['addressAsPerDocument'] ?? property['addressDocument'] ?? 'N/A'}',
                                             maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(fontSize: 14, fontFamily: 'Poppins'),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            'Inspection Date: ${property['dateOfInspection'] ?? 'N/A'}',
+                                            style: const TextStyle(fontSize: 12, fontFamily: 'Poppins'),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            'Market Value: ₹${property['presentMarketValue'] ?? property['totalAbstractLand'] ?? 'N/A'}',
                                             style: const TextStyle(
-                                                fontSize: 14,
-                                                fontFamily: 'Poppins'),
+                                              fontSize: 14,
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.green,
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -283,8 +288,7 @@ class _SavedDraftsState extends State<SavedDrafts> {
                                       size: 18,
                                       color: Colors.black54,
                                     ),
-                                    onTap: () =>
-                                        navigateToValuationForm(property),
+                                    onTap: () => navigateToValuationForm(property),
                                   ),
                                 );
                               },

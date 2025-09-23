@@ -1082,8 +1082,8 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
   }
 
   Future<void> _getNearbyProperty() async {
-    final latitude = _latController.text.trim();
-    final longitude = _lonController.text.trim();
+    final latitude = _latitude.text.trim();
+    final longitude = _longitude.text.trim();
 
     debugPrint(latitude);
 
