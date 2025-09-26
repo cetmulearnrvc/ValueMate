@@ -10,7 +10,7 @@ export const savePVR1Data = async(req,res)=>{
     
     const pvr1Data=req.body;
     pvr1Data.typo="pvr1"
-    if(!pvr1Data.valuerName || !pvr1Data.valuationCode || !pvr1Data.fileNo || !pvr1Data.applicantName || !pvr1Data.ownerName || !pvr1Data.propertyLocation )
+    if(!pvr1Data.valuerName || !pvr1Data.valuationCode || !pvr1Data.fileNo )
     {
         
         return res.status(400).json({success:false,message:"please enter all fields"})

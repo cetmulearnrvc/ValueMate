@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:login_screen/screens/SIB/vacant_land/savedDraftsSIBVacantland.dart';
+import 'package:login_screen/screens/nearbyDetails.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart' as pdfLib;
 import 'package:printing/printing.dart';
@@ -12,6 +14,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'config.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+// import 'C:\flutter development\valuemate_1\ValueMate\lib\screens\SIB\vacant_land\savedDraftsSIBVacantland.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,19 +33,36 @@ class MyApp extends StatelessWidget {
         // Use Inter font if available, otherwise default
         fontFamily: 'Inter',
       ),
-      home: const VacantLandFormPage(),
+      home: const VacantLandFormPage(propertyData: {}),
     );
   }
 }
 
 class VacantLandFormPage extends StatefulWidget {
-  const VacantLandFormPage({super.key});
+  // const VacantLandFormPage({super.key});
+  final Map<String, dynamic>? propertyData;
+  const VacantLandFormPage({super.key, this.propertyData});
 
   @override
   State<VacantLandFormPage> createState() => _ValuationFormPageState();
 }
 
 class _ValuationFormPageState extends State<VacantLandFormPage> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.propertyData != null) {
+      // Use the passed data to initialize your form only if it exists
+      debugPrint('Received property data: ${widget.propertyData}');
+      // Example:
+      // _fileNoController.text = widget.propertyData!['fileNo'].toString();
+    } else {
+      debugPrint('No property data received - creating new valuation');
+      // Initialize with empty/default values
+    }
+    _initializeFormWithPropertyData();
+  }
+
   final TextEditingController _latController = TextEditingController();
   final TextEditingController _lonController = TextEditingController();
   final TextEditingController _refId = TextEditingController();
@@ -330,6 +350,381 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
         controller.text =
             DateFormat('dd-MM-yyyy').format(picked); // Formatted date
       });
+    }
+  }
+
+  Future<String> fetchSignedUrl(String imagePublicId) async {
+    // --- YOU MUST CUSTOMIZE THESE VALUES ---
+    const String apiKey =
+        "db74f0da81338f1ad24d0be8298f90f4e6be5f0df5b53aca2f95ead470665641";
+    const String apiBaseUrl = 'http://localhost:3000'; // For Android emulator
+    // -----------------------------------------
+
+    final url = Uri.parse('$apiBaseUrl/api/images/secure-url/$imagePublicId');
+
+    final response = await http.get(
+      url,
+      headers: {'x-api-key': apiKey},
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['signedUrl'];
+    } else {
+      throw Exception(
+          'Failed to load signed URL. Status code: ${response.statusCode}');
+    }
+  }
+
+  Future<Uint8List> fetchImageBytes(String url) async {
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      return response.bodyBytes; // this is Uint8List
+    } else {
+      throw Exception('Failed to load image');
+    }
+  }
+
+  void _initializeFormWithPropertyData() async {
+    if (widget.propertyData != null) {
+      final data = widget.propertyData!;
+
+      // Set coordinates and refId
+      _refId.text = data['refNo']?.toString() ?? '';
+
+      // Set document checks
+      _LandTaxReceipt.text = data['landTaxReceipt']?.toString() ?? '';
+      _TitleDeed.text = data['titleDeed']?.toString() ?? '';
+      _BuildingCertificate.text = data['buildingCertificate']?.toString() ?? '';
+      _LocationSketch.text = data['locationSketch']?.toString() ?? '';
+      _PossessionCertificate.text =
+          data['possessionCertificate']?.toString() ?? '';
+      _BuildingCompletionPlan.text =
+          data['buildingCompletionPlan']?.toString() ?? '';
+      _ThandapperDocument.text = data['thandapperDocument']?.toString() ?? '';
+      _BuildingTaxReceipt.text = data['buildingTaxReceipt']?.toString() ?? '';
+
+      // Page 1 fields
+      _purposeController.text = data['purpose']?.toString() ?? '';
+
+      // Handle date formatting
+      if (data['dateOfInspection'] != null) {
+        try {
+          final inspectionDate = DateTime.parse(data['dateOfInspection']);
+          _dateOfInspectionController.text =
+              DateFormat('dd-MM-yyyy').format(inspectionDate);
+        } catch (e) {
+          _dateOfInspectionController.text =
+              data['dateOfInspection']?.toString() ?? '';
+        }
+      }
+
+      if (data['dateOfValuation'] != null) {
+        try {
+          final valuationDate = DateTime.parse(data['dateOfValuation']);
+          _dateOfValuationController.text =
+              DateFormat('dd-MM-yyyy').format(valuationDate);
+        } catch (e) {
+          _dateOfValuationController.text =
+              data['dateOfValuation']?.toString() ?? '';
+        }
+      }
+
+      _ownerNameController.text = data['ownerName']?.toString() ?? '';
+      _applicantNameController.text = data['applicantName']?.toString() ?? '';
+      _addressDocController.text =
+          data['addressAsPerDocument']?.toString() ?? '';
+      _addressActualController.text =
+          data['addressAsPerActual']?.toString() ?? '';
+      _deviationsController.text = data['deviations']?.toString() ?? '';
+      _propertyTypeController.text = data['propertyType']?.toString() ?? '';
+      _propertyZoneController.text = data['propertyZone']?.toString() ?? '';
+
+      // Page 2 fields
+      _classificationAreaController.text =
+          data['classificationArea']?.toString() ?? '';
+      _urbanSemiUrbanRuralController.text =
+          data['urbanSemiUrbanRural']?.toString() ?? '';
+      _comingUnderCorporationController.text =
+          data['comingUnderCorporation']?.toString() ?? '';
+      _coveredUnderStateCentralGovtController.text =
+          data['coveredUnderStateCentralGovt']?.toString() ?? '';
+      _agriculturalLandConversionController.text =
+          data['agriculturalLandConversion']?.toString() ?? '';
+
+      // Boundaries - handle both direct fields and JSON boundaries
+      if (data['boundaries'] is String) {
+        try {
+          final boundaries = json.decode(data['boundaries']);
+          _boundaryNorthTitleController.text =
+              boundaries['north']?['titleDeed']?.toString() ?? '';
+          _boundaryNorthSketchController.text =
+              boundaries['north']?['sketch']?.toString() ?? '';
+          _boundarySouthTitleController.text =
+              boundaries['south']?['titleDeed']?.toString() ?? '';
+          _boundarySouthSketchController.text =
+              boundaries['south']?['sketch']?.toString() ?? '';
+          _boundaryEastTitleController.text =
+              boundaries['east']?['titleDeed']?.toString() ?? '';
+          _boundaryEastSketchController.text =
+              boundaries['east']?['sketch']?.toString() ?? '';
+          _boundaryWestTitleController.text =
+              boundaries['west']?['titleDeed']?.toString() ?? '';
+          _boundaryWestSketchController.text =
+              boundaries['west']?['sketch']?.toString() ?? '';
+          _boundaryDeviationsController.text =
+              boundaries['deviations']?.toString() ?? '';
+        } catch (e) {
+          debugPrint('Error parsing boundaries JSON: $e');
+        }
+      } else {
+        _boundaryNorthTitleController.text =
+            data['boundaryNorthTitle']?.toString() ?? '';
+        _boundaryNorthSketchController.text =
+            data['boundaryNorthSketch']?.toString() ?? '';
+        _boundarySouthTitleController.text =
+            data['boundarySouthTitle']?.toString() ?? '';
+        _boundarySouthSketchController.text =
+            data['boundarySouthSketch']?.toString() ?? '';
+        _boundaryEastTitleController.text =
+            data['boundaryEastTitle']?.toString() ?? '';
+        _boundaryEastSketchController.text =
+            data['boundaryEastSketch']?.toString() ?? '';
+        _boundaryWestTitleController.text =
+            data['boundaryWestTitle']?.toString() ?? '';
+        _boundaryWestSketchController.text =
+            data['boundaryWestSketch']?.toString() ?? '';
+        _boundaryDeviationsController.text =
+            data['boundaryDeviations']?.toString() ?? '';
+      }
+
+      // Dimensions
+      _dimNorthActualsController.text =
+          data['dimNorthActuals']?.toString() ?? '';
+      _dimSouthActualsController.text =
+          data['dimSouthActuals']?.toString() ?? '';
+      _dimEastActualsController.text = data['dimEastActuals']?.toString() ?? '';
+      _dimWestActualsController.text = data['dimWestActuals']?.toString() ?? '';
+      _dimTotalAreaActualsController.text =
+          data['dimTotalAreaActuals']?.toString() ?? '';
+      _dimNorthDocumentsController.text =
+          data['dimNorthDocuments']?.toString() ?? '';
+      _dimSouthDocumentsController.text =
+          data['dimSouthDocuments']?.toString() ?? '';
+      _dimEastDocumentsController.text =
+          data['dimEastDocuments']?.toString() ?? '';
+      _dimWestDocumentsController.text =
+          data['dimWestDocuments']?.toString() ?? '';
+      _dimTotalAreaDocumentsController.text =
+          data['dimTotalAreaDocuments']?.toString() ?? '';
+      _dimNorthAdoptedController.text =
+          data['dimNorthAdopted']?.toString() ?? '';
+      _dimSouthAdoptedController.text =
+          data['dimSouthAdopted']?.toString() ?? '';
+      _dimEastAdoptedController.text = data['dimEastAdopted']?.toString() ?? '';
+      _dimWestAdoptedController.text = data['dimWestAdopted']?.toString() ?? '';
+      _dimTotalAreaAdoptedController.text =
+          data['dimTotalAreaAdopted']?.toString() ?? '';
+      _dimDeviationsController.text = data['dimDeviations']?.toString() ?? '';
+
+      // Location and coordinates
+      _latitudeLongitudeController.text =
+          data['latitudeLongitude']?.toString() ?? '';
+
+      // Set lat/lon controllers if coordinates exist
+      if (_latitudeLongitudeController.text.contains(',')) {
+        final parts = _latitudeLongitudeController.text.split(',');
+        if (parts.length >= 2) {
+          _latController.text = parts[0].trim();
+          _lonController.text = parts[1].trim();
+        }
+      }
+
+      // Road details
+      _typeOfRoadController.text = data['typeOfRoad']?.toString() ?? '';
+      _widthOfRoadController.text = data['widthOfRoad']?.toString() ?? '';
+      _isLandLockedController.text = data['isLandLocked']?.toString() ?? '';
+
+      // Land Valuation
+      _landAreaDetailsController.text =
+          data['landAreaDetails']?.toString() ?? '';
+      _landAreaGuidelineController.text =
+          data['landAreaGuideline']?.toString() ?? '';
+      _landAreaPrevailingController.text =
+          data['landAreaPrevailing']?.toString() ?? '';
+      _ratePerSqFtGuidelineController.text =
+          data['ratePerSqFtGuideline']?.toString() ?? '';
+      _ratePerSqFtPrevailingController.text =
+          data['ratePerSqFtPrevailing']?.toString() ?? '';
+      _valueInRsGuidelineController.text =
+          data['valueInRsGuideline']?.toString() ?? '';
+      _valueInRsPrevailingController.text =
+          data['valueInRsPrevailing']?.toString() ?? '';
+
+      // Total abstract values
+      _totalAbstractLandController.text =
+          data['totalAbstractLand']?.toString() ?? '';
+      _totalAbstractBuildingController.text =
+          data['totalAbstractBuilding']?.toString() ?? '';
+      _totalAbstractAmenitiesController.text =
+          data['totalAbstractAmenities']?.toString() ?? '';
+      _totalAbstractTotalController.text =
+          data['totalAbstractTotal']?.toString() ?? '';
+      _totalAbstractSayController.text =
+          data['totalAbstractSay']?.toString() ?? '';
+
+      // Final valuation
+      _presentMarketValueController.text =
+          data['presentMarketValue']?.toString() ?? '';
+      _realizableValueController.text =
+          data['realizableValue']?.toString() ?? '';
+      _distressValueController.text = data['distressValue']?.toString() ?? '';
+      _insurableValueController.text = data['insurableValue']?.toString() ?? '';
+
+      // Remarks
+      _remark1Controller.text = data['remark1']?.toString() ?? '';
+      _remark2Controller.text = data['remark2']?.toString() ?? '';
+      _remark3Controller.text = data['remark3']?.toString() ?? '';
+      _remark4Controller.text = data['remark4']?.toString() ?? '';
+
+      // Declaration dates
+      if (data['declarationDateA'] != null) {
+        try {
+          final dateA = DateTime.parse(data['declarationDateA']);
+          _declarationDateAController.text =
+              DateFormat('dd-MM-yyyy').format(dateA);
+        } catch (e) {
+          _declarationDateAController.text =
+              data['declarationDateA']?.toString() ?? '';
+        }
+      }
+
+      if (data['declarationDateC'] != null) {
+        try {
+          final dateC = DateTime.parse(data['declarationDateC']);
+          _declarationDateCController.text =
+              DateFormat('dd-MM-yyyy').format(dateC);
+        } catch (e) {
+          _declarationDateCController.text =
+              data['declarationDateC']?.toString() ?? '';
+        }
+      }
+
+      // Valuer Comments
+      _vcBackgroundInfoController.text =
+          data['vcBackgroundInfo']?.toString() ?? '';
+      _vcPurposeOfValuationController.text =
+          data['vcPurposeOfValuation']?.toString() ?? '';
+      _vcIdentityOfValuerController.text =
+          data['vcIdentityOfValuer']?.toString() ?? '';
+      _vcDisclosureOfInterestController.text =
+          data['vcDisclosureOfInterest']?.toString() ?? '';
+      _vcDateOfAppointmentController.text =
+          data['vcDateOfAppointment']?.toString() ?? '';
+      _vcInspectionsUndertakenController.text =
+          data['vcInspectionsUndertaken']?.toString() ?? '';
+      _vcNatureAndSourcesController.text =
+          data['vcNatureAndSources']?.toString() ?? '';
+      _vcProceduresAdoptedController.text =
+          data['vcProceduresAdopted']?.toString() ?? '';
+      _vcRestrictionsOnUseController.text =
+          data['vcRestrictionsOnUse']?.toString() ?? '';
+      _vcMajorFactors1Controller.text =
+          data['vcMajorFactors1']?.toString() ?? '';
+      _vcMajorFactors2Controller.text =
+          data['vcMajorFactors2']?.toString() ?? '';
+      _vcCaveatsLimitationsController.text =
+          data['vcCaveatsLimitations']?.toString() ?? '';
+
+      // Load images if available
+      try {
+        if (data['images'] != null && data['images'] is List) {
+          final List<dynamic> imagesData = data['images'];
+          for (var imgData in imagesData) {
+            try {
+              String fileName = imgData['fileName']?.toString() ?? '';
+              String signedUrl = await fetchSignedUrl(fileName);
+              // debugPrint(signedUrl);
+              Uint8List imageBytes = await fetchImageBytes(signedUrl);
+              _images.add(imageBytes);
+            } catch (e) {
+              debugPrint('Error loading image: $e');
+            }
+          }
+        }
+      } catch (e) {
+        debugPrint('Error in fetchImages: $e');
+      }
+
+      if (mounted) setState(() {});
+      debugPrint('SIB Vacant Land form initialized with property data');
+    } else {
+      debugPrint(
+          'No property data - SIB Vacant Land form will use default values');
+    }
+  }
+
+  Future<void> _getNearbyProperty() async {
+    final latitude = _latController.text.trim();
+    final longitude = _lonController.text.trim();
+
+    debugPrint('Searching nearby properties at: $latitude, $longitude');
+
+    if (latitude.isEmpty || longitude.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter both latitude and longitude'),
+        ),
+      );
+      return;
+    }
+
+    try {
+      final url = Uri.parse(url2);
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'latitude': latitude,
+          'longitude': longitude,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        // Decode the JSON response
+        final List<dynamic> responseData = jsonDecode(response.body);
+
+        // Debug print the results
+        debugPrint('Nearby Properties Found: ${responseData.length}');
+        for (var item in responseData) {
+          debugPrint(
+              'Property: ${item['refNo'] ?? item['refId'] ?? 'N/A'} - ${item['ownerName'] ?? 'Unknown Owner'}');
+        }
+
+        if (context.mounted) {
+          showModalBottomSheet(
+            context: context,
+            builder: (ctx) {
+              return Nearbydetails(responseData: responseData);
+            },
+          );
+        }
+      } else if (response.statusCode == 404) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('No nearby properties found'),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Server error: ${response.statusCode}')),
+        );
+      }
+    } catch (e) {
+      debugPrint('Error fetching nearby properties: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Network error: Please check your connection')),
+      );
     }
   }
 
@@ -2248,6 +2643,78 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
     );
   }
 
+  Future<void> _saveToNearbyCollection() async {
+    try {
+      String fullCoordinates = _latitudeLongitudeController.text;
+      String latitude = '';
+      String longitude = '';
+
+      if (fullCoordinates.isNotEmpty && fullCoordinates.contains(',')) {
+        final parts = fullCoordinates.split(',');
+        // Ensure the split resulted in exactly two parts
+        if (parts.length == 2) {
+          latitude =
+              parts[0].trim(); // Get the first part and remove whitespace
+          longitude =
+              parts[1].trim(); // Get the second part and remove whitespace
+        }
+      }
+
+      if (latitude.isEmpty || longitude.isEmpty) {
+        debugPrint(
+          'Latitude or Longitude is missing from the controller. Skipping save to nearby collection.',
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Location data is missing, cannot save to nearby properties.',
+            ),
+          ),
+        );
+        return; // Exit the function early if coordinates are not valid.
+      }
+
+      final ownerName = _ownerNameController.text ?? '[is null]';
+      final marketValue = _totalAbstractLandController.text ?? '[is null]';
+
+      debugPrint('------------------------------------------');
+      debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
+      debugPrint('Owner Name from Controller: "$ownerName"');
+      debugPrint('Market Value from Controller: "$marketValue"');
+      debugPrint('------------------------------------------');
+      // --- STEP 3: Build the payload with the correct data ---
+      final dataToSave = {
+        // Use the coordinates from the image we found
+        'refNo': _refId.text ?? '',
+        'latitude': latitude,
+        'longitude': longitude,
+
+        'landValue': marketValue, // Use the variable we just created
+        'nameOfOwner': ownerName,
+        'bankName': 'South Indian Bank (Vacant Land)',
+      };
+
+      // --- STEP 4: Send the data to your dedicated server endpoint ---
+      final response = await http.post(
+        Uri.parse(url5), // Use your dedicated URL for saving this data
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(dataToSave),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        debugPrint('Successfully saved data to nearby collection.');
+      } else {
+        debugPrint(
+          'Failed to save to nearby collection: ${response.statusCode}',
+        );
+        debugPrint('Response body: ${response.body}');
+      }
+    } catch (e) {
+      debugPrint('Error in _saveToNearbyCollection: $e');
+    }
+  }
+
   Future<void> _saveForm() async {
     if (_formKey.currentState!.validate()) {
       try {
@@ -2451,6 +2918,7 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
                       'Valuation saved successfully!')),
             );
           }
+          await _saveToNearbyCollection();
         } else {
           final errorBody =
               await response.stream.transform(utf8.decoder).join();
@@ -2532,7 +3000,7 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
                                 const SizedBox(width: 5),
                                 Expanded(
                                   child: ElevatedButton.icon(
-                                    onPressed: () {},
+                                    onPressed: _getNearbyProperty,
                                     label: const Text('Search'),
                                     icon: const Icon(Icons.search),
                                   ),
@@ -2558,10 +3026,17 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
                     bottom: 10,
                   ),
                   child: FloatingActionButton.extended(
-                    icon: const Icon(Icons.search),
-                    label: const Text('Search Saved Drafts'),
-                    onPressed: () {},
-                  ),
+                      icon: const Icon(Icons.search),
+                      label: const Text('Search Saved Drafts'),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (ctx) {
+                              return const SavedDraftsSIBVacantLand();
+                            },
+                          ),
+                        );
+                      }),
                 ),
               ),
 

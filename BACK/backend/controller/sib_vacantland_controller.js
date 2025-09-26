@@ -152,30 +152,26 @@ export const getNearbyVacantLands = async (req, res) => {
 };
 
 // Get valuations by date
-export const getVacantLandsByDate = async (req, res) => {
+export const searchByDate = async (req, res) => {
   try {
-    const { date } = req.query;
+    const { date } = req.body;
 
-    if (!date) {
-      return res.status(400).json({
-        success: false,
-        message: "Date parameter is required"
-      });
-    }
+    // if (!date) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Date parameter is required"
+    //   });
+    // }
 
     const targetDate = new Date(date);
     const start = new Date(targetDate.setUTCHours(0, 0, 0, 0));
     const end = new Date(targetDate.setUTCHours(23, 59, 59, 999));
 
     const lands = await VacantLandValuation.find({
-      createdAt: { $gte: start, $lte: end }
-    }).sort({ createdAt: -1 });
-
-    res.status(200).json({
-      success: true,
-      count: lands.length,
-      data: lands
+      updatedAt: { $gte: start, $lte: end }
     });
+
+    res.status(200).json(lands);
 
   } catch (error) {
     console.error("Date search error:", error);

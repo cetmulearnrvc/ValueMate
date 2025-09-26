@@ -3,7 +3,7 @@ const vacantLandRouter = express.Router();
 import { 
   saveVacantLand,
   getNearbyVacantLands,
-  getVacantLandsByDate 
+  searchByDate
 } from "../controller/sib_vacantland_controller.js";
  import upload from "../multer/upload.js";
 
@@ -14,6 +14,6 @@ vacantLandRouter.post("/vacant-land/save", upload.array("images",10), saveVacant
 vacantLandRouter.post("/vacant-land/nearby", getNearbyVacantLands);
 
 // Get vacant lands by date (changed to POST to match your example)
-vacantLandRouter.post("/vacant-land/by-date", getVacantLandsByDate);
+vacantLandRouter.post("/vacant-land/by-date", searchByDate);
 
 export default vacantLandRouter;

@@ -58,112 +58,96 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
   final List<ValuationImage> _valuationImages = [];
 
   // --- ALL CONTROLLERS AND STATE VARIABLES ---
-  final _valuerNameCtrl = TextEditingController(text: 'VIGNESH S');
-  final _valuerCodeCtrl = TextEditingController(text: 'TVV0001');
+  final _valuerNameCtrl = TextEditingController();
+  final _valuerCodeCtrl = TextEditingController();
   DateTime _inspectionDate = DateTime(2025, 5, 20);
-  final _fileNoCtrl = TextEditingController(text: '5002050002876');
-  final _applicantNameCtrl = TextEditingController(text: 'SUBHA A');
-  final _ownerNameCtrl = TextEditingController(text: 'SUBHA A');
-  final _documentsPerusedCtrl = TextEditingController(text: 'Minor');
-  final _propertyLocationCtrl = TextEditingController(
-      text:
-          '121 ARES RS N 277 16 3 BLDG NO 15 66 MARANALLOOR VILLAGE KATTAKADA TALUK RS N 277 16 3 MARANALLOOR MARANALLOOR THIRUVANANTHAPURAM 695501');
-  bool _addressTallies = true;
-  bool _locationSketchVerified = true;
-  final _surroundingDevCtrl = TextEditingController(text: 'Middle Class');
-  bool _basicAmenitiesAvailable = true;
-  final _negativesToLocalityCtrl = TextEditingController(text: 'NIL');
-  final _favorableConsiderationsCtrl = TextEditingController(text: 'NIL');
-  final _nearbyLandmarkCtrl = TextEditingController(text: 'RUSSELPURAM');
-  final _otherFeaturesCtrl = TextEditingController(text: 'NIL');
-  final _northBoundaryCtrl = TextEditingController(text: 'PROPERTY OF GOPAN');
-  final _northDimCtrl = TextEditingController(text: '1460 CM');
-  final _southBoundaryCtrl =
-      TextEditingController(text: 'PROPERTY OF AYAPPAN NAIR');
-  final _southDimCtrl = TextEditingController(text: '1400 CM');
-  final _eastBoundaryCtrl =
-      TextEditingController(text: 'PANCHAYATH ROAD HAVING CAR ACCESS');
-  final _eastDimCtrl = TextEditingController(text: '850 CM');
-  final _westBoundaryCtrl =
-      TextEditingController(text: 'PROPERTY OF AYAPPAN NAIR');
-  final _westDimCtrl = TextEditingController(text: '850 CM');
-  final _totalExtent1Ctrl = TextEditingController(text: '1.21');
-  final _totalExtent2Ctrl = TextEditingController(text: '2.98');
-  bool _boundariesTally = true;
-  final _existingLandUseCtrl = TextEditingController(
-      text: 'GROUND FLOOR TO BE RENOVATED HAVING A PLINTH AREA OF 393 SQFT');
-  final _proposedLandUseCtrl = TextEditingController(
-      text:
-          'EXTENSION OF GF AND ADDITIONAL FF HAVING A TOTAL PLINTH AREA OF 524 SQFT');
+  final _fileNoCtrl = TextEditingController();
+  final _applicantNameCtrl = TextEditingController();
+  final _ownerNameCtrl = TextEditingController();
+  final _documentsPerusedCtrl = TextEditingController();
+  final _propertyLocationCtrl = TextEditingController();
+  bool _addressTallies = false;
+  bool _locationSketchVerified = false;
+  final _surroundingDevCtrl = TextEditingController();
+  bool _basicAmenitiesAvailable = false;
+  final _negativesToLocalityCtrl = TextEditingController();
+  final _favorableConsiderationsCtrl = TextEditingController();
+  final _nearbyLandmarkCtrl = TextEditingController();
+  final _otherFeaturesCtrl = TextEditingController();
+  final _northBoundaryCtrl = TextEditingController();
+  final _northDimCtrl = TextEditingController();
+  final _southBoundaryCtrl = TextEditingController();
+  final _southDimCtrl = TextEditingController();
+  final _eastBoundaryCtrl = TextEditingController();
+  final _eastDimCtrl = TextEditingController();
+  final _westBoundaryCtrl = TextEditingController();
+  final _westDimCtrl = TextEditingController();
+  final _totalExtent1Ctrl = TextEditingController();
+  final _totalExtent2Ctrl = TextEditingController();
+  bool _boundariesTally = false;
+  final _existingLandUseCtrl = TextEditingController();
+  final _proposedLandUseCtrl = TextEditingController();
   bool _naPermissionRequired = false;
-  final _approvalNoCtrl =
-      TextEditingController(text: 'A1/BA/134572/2025 DATED 26-04-2025');
-  final _validityPeriodCtrl =
-      TextEditingController(text: 'VALID UP TO 25-04-2030');
+  final _approvalNoCtrl = TextEditingController();
+  final _validityPeriodCtrl = TextEditingController();
   bool _isValidityExpiredRenewed = false;
-  final _approvalAuthorityCtrl =
-      TextEditingController(text: 'MARANALLOOR GRAMA PANCHAYATH');
-  final _approvedGfCtrl = TextEditingController(text: '65');
-  final _approvedFfCtrl = TextEditingController(text: '459');
-  final _approvedSfCtrl = TextEditingController(text: '0');
-  final _actualGfCtrl = TextEditingController(text: '65');
-  final _actualFfCtrl = TextEditingController(text: '459');
-  final _actualSfCtrl = TextEditingController(text: '0');
-  final _estimateCostCtrl = TextEditingController(text: '1193150');
-  final _costPerSqFtCtrl = TextEditingController(text: '2277 per sqft');
-  bool _isEstimateReasonable = true;
-  final _marketabilityCtrl = TextEditingController(text: 'Good');
-  final _fsiCtrl = TextEditingController(text: '0.7');
-  final _dwellingUnitsCtrl = TextEditingController(text: '1');
-  bool _isConstructionAsPerPlan = true;
-  final _deviationsCtrl = TextEditingController(text: 'NIL');
-  final _deviationNatureCtrl = TextEditingController(text: 'Minor');
+  final _approvalAuthorityCtrl = TextEditingController();
+  final _approvedGfCtrl = TextEditingController();
+  final _approvedFfCtrl = TextEditingController();
+  final _approvedSfCtrl = TextEditingController();
+  final _actualGfCtrl = TextEditingController();
+  final _actualFfCtrl = TextEditingController();
+  final _actualSfCtrl = TextEditingController();
+  final _estimateCostCtrl = TextEditingController();
+  final _costPerSqFtCtrl = TextEditingController();
+  bool _isEstimateReasonable = false;
+  final _marketabilityCtrl = TextEditingController();
+  final _fsiCtrl = TextEditingController();
+  final _dwellingUnitsCtrl = TextEditingController();
+  bool _isConstructionAsPerPlan = false;
+  final _deviationsCtrl = TextEditingController();
+  final _deviationNatureCtrl = TextEditingController();
   bool _revisedApprovalNecessary = false;
-  final _worksCompletedPercentageCtrl = TextEditingController(text: '0');
-  final _worksCompletedValue = TextEditingController(text: '0');
-  bool _adheresToSafety = true;
+  final _worksCompletedPercentageCtrl = TextEditingController();
+  final _worksCompletedValue = TextEditingController();
+  bool _adheresToSafety = false;
   bool _highTensionImpact = false;
-  final _plinthApprovedCtrl = TextEditingController(text: '524');
-  final _plinthActualCtrl = TextEditingController(text: '524');
-  final _landValueAppCtrl = TextEditingController(text: '1043000');
-  final _landValueGuideCtrl = TextEditingController(text: '47916');
-  final _landValueMarketCtrl = TextEditingController(text: '1043000');
-  final _buildingStageValueAppCtrl = TextEditingController(text: '0');
-  final _buildingCompletionValueCtrl = TextEditingController(text: '2236150');
-  final _marketValueSourceCtrl =
-      TextEditingController(text: 'LOCAL MARKET ENQUIRY');
-  final _buildingUsageCtrl = TextEditingController(text: 'RESIDENTIAL');
-  final _recBackgroundCtrl = TextEditingController(text: 'SUBMITTED DOCUMENTS');
-  final _recSourcesCtrl = TextEditingController(text: 'LOCAL MARKET ENQUIRY');
-  final _recProceduresCtrl = TextEditingController(text: 'MARKET APPROACH');
-  final _recMethodologyCtrl =
-      TextEditingController(text: 'COMPARISON METHOD AND COST OF CONSTRUCTION');
-  final _recFactorsCtrl =
-      TextEditingController(text: 'AMENITIES AND ACCESSIBILITY');
-  final _stageOfConstructionCtrl =
-      TextEditingController(text: 'NOT YET STARTED');
-  final _progressPercentageCtrl = TextEditingController(text: '0');
-  final _certificatePlaceCtrl =
-      TextEditingController(text: 'THIRUVANANTHAPURAM');
-  final _annexLandAreaCtrl = TextEditingController(text: '2.98');
-  final _annexLandUnitRateMarketCtrl = TextEditingController(text: '350000');
-  final _annexLandUnitRateGuideCtrl = TextEditingController(text: '39600');
-  final _annexGfAreaCtrl = TextEditingController(text: '393');
-  final _annexGfUnitRateMarketCtrl = TextEditingController(text: '1000');
-  final _annexGfUnitRateGuideCtrl = TextEditingController(text: '1000');
-  final _annexFfAreaCtrl = TextEditingController(text: '0');
-  final _annexFfUnitRateMarketCtrl = TextEditingController(text: '0');
-  final _annexFfUnitRateGuideCtrl = TextEditingController(text: '0');
-  final _annexSfAreaCtrl = TextEditingController(text: '0');
-  final _annexSfUnitRateMarketCtrl = TextEditingController(text: '0');
-  final _annexSfUnitRateGuideCtrl = TextEditingController(text: '0');
-  final _annexAmenitiesMarketCtrl = TextEditingController(text: '0');
-  final _annexAmenitiesGuideCtrl = TextEditingController(text: '0');
-  final _annexYearOfConstructionCtrl = TextEditingController(text: '2025');
-  final _annexBuildingAgeCtrl = TextEditingController(text: '15 AND 35 YEARS');
-  final _natureOflandUse = TextEditingController(text: 'Others');
-  final _buildingStageValueGuide = TextEditingController(text: '0');
-  final _buildingStageValueMarket = TextEditingController(text: '0');
+  final _plinthApprovedCtrl = TextEditingController();
+  final _plinthActualCtrl = TextEditingController();
+  final _landValueAppCtrl = TextEditingController();
+  final _landValueGuideCtrl = TextEditingController();
+  final _landValueMarketCtrl = TextEditingController();
+  final _buildingStageValueAppCtrl = TextEditingController();
+  final _buildingCompletionValueCtrl = TextEditingController();
+  final _marketValueSourceCtrl = TextEditingController();
+  final _buildingUsageCtrl = TextEditingController();
+  final _recBackgroundCtrl = TextEditingController();
+  final _recSourcesCtrl = TextEditingController();
+  final _recProceduresCtrl = TextEditingController();
+  final _recMethodologyCtrl = TextEditingController();
+  final _recFactorsCtrl = TextEditingController();
+  final _stageOfConstructionCtrl = TextEditingController();
+  final _progressPercentageCtrl = TextEditingController();
+  final _certificatePlaceCtrl = TextEditingController();
+  final _annexLandAreaCtrl = TextEditingController();
+  final _annexLandUnitRateMarketCtrl = TextEditingController();
+  final _annexLandUnitRateGuideCtrl = TextEditingController();
+  final _annexGfAreaCtrl = TextEditingController();
+  final _annexGfUnitRateMarketCtrl = TextEditingController();
+  final _annexGfUnitRateGuideCtrl = TextEditingController();
+  final _annexFfAreaCtrl = TextEditingController();
+  final _annexFfUnitRateMarketCtrl = TextEditingController();
+  final _annexFfUnitRateGuideCtrl = TextEditingController();
+  final _annexSfAreaCtrl = TextEditingController();
+  final _annexSfUnitRateMarketCtrl = TextEditingController();
+  final _annexSfUnitRateGuideCtrl = TextEditingController();
+  final _annexAmenitiesMarketCtrl = TextEditingController();
+  final _annexAmenitiesGuideCtrl = TextEditingController();
+  final _annexYearOfConstructionCtrl = TextEditingController();
+  final _annexBuildingAgeCtrl = TextEditingController();
+  final _natureOflandUse = TextEditingController();
+  final _buildingStageValueGuide = TextEditingController();
+  final _buildingStageValueMarket = TextEditingController();
 
   bool _isNotValidState = false;
 
@@ -233,9 +217,9 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
       if (_valuerNameCtrl.text.isEmpty ||
           _valuerCodeCtrl.text.isEmpty ||
           _fileNoCtrl.text.isEmpty ||
-          _applicantNameCtrl.text.isEmpty ||
-          _ownerNameCtrl.text.isEmpty ||
-          _propertyLocationCtrl.text.isEmpty ||
+          // _applicantNameCtrl.text.isEmpty ||
+          // _ownerNameCtrl.text.isEmpty ||
+          // _propertyLocationCtrl.text.isEmpty ||
           _landValueMarketCtrl.text.isEmpty) {
         debugPrint("not all field available");
         setState(() => _isNotValidState = true);
@@ -402,8 +386,8 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
         await _saveToNearbyCollection();
       } else {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text('Upload failed: ${response.reasonPhrase}')));
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Upload failed: ${response.statusCode}')));
         }
       }
     } catch (e) {

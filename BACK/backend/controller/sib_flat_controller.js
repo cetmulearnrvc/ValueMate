@@ -22,8 +22,9 @@ export const saveFlatData = async (req, res) => {
     });
   }
 }
-  // Validate images metadata
+
   let imagesMeta = [];
+if (flatData.images) {
   try {
     imagesMeta = JSON.parse(flatData.images);
   } catch (err) {
@@ -32,6 +33,7 @@ export const saveFlatData = async (req, res) => {
       message: "Invalid images metadata format"
     });
   }
+}
 
   // Process uploaded images
   flatData.images = [];
