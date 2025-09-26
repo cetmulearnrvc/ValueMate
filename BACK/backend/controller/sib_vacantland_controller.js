@@ -80,7 +80,7 @@ export const saveVacantLand = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Save error:", error);
+    // console.error("Save error:", error);
     res.status(500).json({
       success: false,
       message: "Server error",
@@ -142,7 +142,7 @@ export const getNearbyVacantLands = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Nearby search error:", error);
+    // console.error("Nearby search error:", error);
     res.status(500).json({
       success: false,
       message: "Failed to find nearby lands",
@@ -174,7 +174,7 @@ export const searchByDate = async (req, res) => {
     res.status(200).json(lands);
 
   } catch (error) {
-    console.error("Date search error:", error);
+    // console.error("Date search error:", error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch by date",
