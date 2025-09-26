@@ -199,7 +199,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
     final latitude = _controllers['nearbyLatitude']!.text.trim();
     final longitude = _controllers['nearbyLongitude']!.text.trim();
 
-    debugPrint(latitude);
+    //debugPrint(latitude);
 
     if (latitude.isEmpty || longitude.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -225,10 +225,10 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
         final List<dynamic> responseData = jsonDecode(response.body);
 
         // Debug print the array
-        debugPrint('Response Data (Array):');
-        for (var item in responseData) {
-          debugPrint(item.toString()); // Print each item in the array
-        }
+        // debugPrint('Response Data (Array):');
+        // for (var item in responseData) {
+        //   debugPrint(item.toString()); // Print each item in the array
+        // }
 
         if (context.mounted) {
           // Navigator.of(context).push(
@@ -285,11 +285,11 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
       final ownerName = _controllers['titleHolderName']!.text ?? '[is null]';
       final marketValue = _controllers['landMarketValue']!.text ?? '[is null]';
 
-      debugPrint('------------------------------------------');
-      debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
-      debugPrint('Owner Name from Controller: "$ownerName"');
-      debugPrint('Market Value from Controller: "$marketValue"');
-      debugPrint('------------------------------------------');
+      // debugPrint('------------------------------------------');
+      // debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
+      // debugPrint('Owner Name from Controller: "$ownerName"');
+      // debugPrint('Market Value from Controller: "$marketValue"');
+      // debugPrint('------------------------------------------');
       // --- STEP 3: Build the payload with the correct data ---
       final dataToSave = {
         // Use the coordinates from the image we found
