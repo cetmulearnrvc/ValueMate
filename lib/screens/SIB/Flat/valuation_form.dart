@@ -153,7 +153,6 @@ class _SIBValuationFormScreenState extends State<SIBValuationFormScreen> {
       'remarks2': TextEditingController(text: _data.remarks2),
       'remarks3': TextEditingController(text: _data.remarks3),
       'remarks4': TextEditingController(text: _data.remarks4),
-      'valuationApproach': TextEditingController(text: _data.valuationApproach),
       'presentMarketValue':
           TextEditingController(text: _data.presentMarketValue),
       'realizableValue': TextEditingController(text: _data.realizableValue),
@@ -296,11 +295,11 @@ class _SIBValuationFormScreenState extends State<SIBValuationFormScreen> {
 
           _valuationDetails = (data['valuationDetails'] as List)
               .map((item) => ValuationDetailItem(
-                    description: item['description'] ?? '',
-                    area: item['area'] ?? '',
-                    ratePerUnit: item['ratePerUnit'] ?? '',
-                    estimatedValue: item['estimatedValue'] ?? '',
-                  ))
+                  description: item['description'] ?? '',
+                  area: item['area'] ?? '',
+                  ratePerUnit: item['ratePerUnit'] ?? '',
+                  estimatedValue: item['estimatedValue'] ?? '',
+                  total: item['total'] ?? ''))
               .toList();
         }
       });
@@ -630,9 +629,6 @@ class _SIBValuationFormScreenState extends State<SIBValuationFormScreen> {
         case 'remarks4':
           _data.remarks4 = controller.text;
           break;
-        case 'valuationApproach':
-          _data.valuationApproach = controller.text;
-          break;
         case 'presentMarketValue':
           _data.presentMarketValue = controller.text;
           break;
@@ -864,6 +860,7 @@ class _SIBValuationFormScreenState extends State<SIBValuationFormScreen> {
                 'area': item.area,
                 'ratePerUnit': item.ratePerUnit,
                 'estimatedValue': item.estimatedValue,
+                'total': item.total
               })
           .toList();
 
@@ -1226,7 +1223,8 @@ class _SIBValuationFormScreenState extends State<SIBValuationFormScreen> {
               _buildTextField('Property type (Leasehold/Freehold)',
                   'propertyTypeLeaseholdFreehold'),
               _buildTextField(
-                  'Property Zone (Residential/etc)', 'propertyZone'),
+                  'Property Zone (Residential/Commercial/Industrial/Agricultural)',
+                  'propertyZone'),
               const Text("Classification of the area",
                   style: TextStyle(fontWeight: FontWeight.bold)),
               _buildTextField('i) High / Middle / Poor',
@@ -1368,9 +1366,7 @@ class _SIBValuationFormScreenState extends State<SIBValuationFormScreen> {
                   _buildTextField('Remark 4', 'remarks4', maxLines: 2),
                 ]),
             _buildSection(title: 'Final Valuation Summary', children: [
-              _buildTextField('Valuation Approach Details', 'valuationApproach',
-                  maxLines: 5),
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
               _buildTextField(
                   'Present Market Value of The Property', 'presentMarketValue'),
               _buildTextField(

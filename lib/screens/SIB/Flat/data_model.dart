@@ -19,13 +19,13 @@ class ValuationDetailItem {
   String area;
   String ratePerUnit;
   String estimatedValue;
-
-  ValuationDetailItem({
-    this.description = '',
-    this.area = '',
-    this.ratePerUnit = '',
-    this.estimatedValue = '',
-  });
+  String total;
+  ValuationDetailItem(
+      {this.description = '',
+      this.area = '',
+      this.ratePerUnit = '',
+      this.estimatedValue = '',
+      this.total = ''});
 }
 
 class SIBValuationData {
@@ -131,7 +131,6 @@ class SIBValuationData {
   String remarks4;
 
   // === Page 4 - Final Valuation Summary ===
-  String valuationApproach;
   String presentMarketValue;
   String realizableValue;
   String distressValue;
@@ -234,9 +233,9 @@ class SIBValuationData {
     this.saleDeedName = '',
     this.undividedLandArea = '',
     this.flatArea = '',
-    this.flatClass = 'Medium',
-    this.flatUsage = 'Residential',
-    this.flatOccupancy = 'Owner-occupied',
+    this.flatClass = '',
+    this.flatUsage = '',
+    this.flatOccupancy = '',
     this.flatMonthlyRent = '',
     this.rateComparable = '',
     this.rateNewConstruction = '',
@@ -246,7 +245,6 @@ class SIBValuationData {
     this.remarks2 = '',
     this.remarks3 = '',
     this.remarks4 = '',
-    this.valuationApproach = '',
     this.presentMarketValue = '',
     this.realizableValue = '',
     this.distressValue = '',
@@ -263,7 +261,7 @@ class SIBValuationData {
     this.p7nature = 'Documents submitted for verification',
     this.p7procedures = 'Comparable Sale Method & Replacement Method',
     this.p7restrictions =
-        'This report shall be used to determine the present market value of the property only for the purpose of bank’s security',
+        'This report shall be used to determine the present market value of the property only for the purpose of bank\'s security',
     this.p7majorFactors1 =
         'The Land extent considered is as per the revenue records produced for verification, separated using compound wall',
     this.p7majorFactors2 =
@@ -284,5 +282,6 @@ class SIBValuationData {
               ValuationDetailItem(description: 'Car park'),
               ValuationDetailItem(description: 'Wardrobes'),
               ValuationDetailItem(description: 'Any additional'),
+              ValuationDetailItem(description: 'Total'),
             ];
 }
