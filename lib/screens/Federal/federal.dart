@@ -53,11 +53,11 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
     super.initState();
     if (widget.propertyData != null) {
       // Use the passed data to initialize your form only if it exists
-      debugPrint('Received property data: ${widget.propertyData}');
+      // debugPrint('Received property data: ${widget.propertyData}');
       // Example:
       // _fileNoController.text = widget.propertyData!['fileNo'].toString();
     } else {
-      debugPrint('No property data received - creating new valuation');
+      // debugPrint('No property data received - creating new valuation');
       // Initialize with empty/default values
     }
     _initializeFormWithPropertyData();
@@ -408,11 +408,11 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
       final marketValue =
           controllers['Present Market Rate of the Property']!.text;
 
-      debugPrint('------------------------------------------');
-      debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
-      debugPrint('Owner Name from Controller: "$ownerName"');
-      debugPrint('Market Value from Controller: "$marketValue"');
-      debugPrint('------------------------------------------');
+      // debugPrint('------------------------------------------');
+      // debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
+      // debugPrint('Owner Name from Controller: "$ownerName"');
+      // debugPrint('Market Value from Controller: "$marketValue"');
+      // debugPrint('------------------------------------------');
 
       final dataToSave = {
         //  'refNo': _fileNoCtrl.text ?? '',
@@ -437,7 +437,7 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
       } else {
         debugPrint(
             'Failed to save to nearby collection: ${response.statusCode}');
-        debugPrint('Response body: ${response.body}');
+        // debugPrint('Response body: ${response.body}');
       }
     } catch (e) {
       debugPrint('Error in _saveToNearbyCollection: $e');
@@ -924,7 +924,7 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
 
       final response = await request.send();
 
-      debugPrint("send req to backend");
+      // debugPrint("send req to backend");
 
       if (context.mounted) Navigator.of(context).pop();
 
@@ -1561,7 +1561,7 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
     final latitude = _nearBylatController.text.trim();
     final longitude = _nearBylonController.text.trim();
 
-    debugPrint(latitude);
+    // debugPrint(latitude);
 
     if (latitude.isEmpty || longitude.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -1587,10 +1587,10 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
         final List<dynamic> responseData = jsonDecode(response.body);
 
         // Debug print the array
-        debugPrint('Response Data (Array):');
-        for (var item in responseData) {
-          debugPrint(item.toString()); // Print each item in the array
-        }
+        // debugPrint('Response Data (Array):');
+        // for (var item in responseData) {
+        //   debugPrint(item.toString()); // Print each item in the array
+        // }
 
         if (context.mounted) {
           // Navigator.of(context).push(
@@ -1898,8 +1898,8 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Error getting location: $e")),
       );
-      print(
-          'Error getting location: $e'); // Keep print for debugging in console
+      // print(
+      //     'Error getting location: $e'); // Keep print for debugging in console
     }
   }
 
@@ -1951,8 +1951,8 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Error getting location: $e")),
       );
-      print(
-          'Error getting location: $e'); // Keep print for debugging in console
+      // print(
+      //     'Error getting location: $e'); // Keep print for debugging in console
     }
   }
 
@@ -4451,7 +4451,7 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
               ),
             );
           } catch (e) {
-            print('Error loading image: ${imageFile.name}, Error: $e');
+            // print('Error loading image: ${imageFile.name}, Error: $e');
             pageImages.add(
               pw.SizedBox(
                 width: targetImageWidth,
@@ -4663,6 +4663,7 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: "f1",
         onPressed: _saveData,
         label: const Text('Save'),
         icon: const Icon(Icons.save),
@@ -4740,6 +4741,7 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
               padding: const EdgeInsets.only(
                   right: 50, left: 50, top: 10, bottom: 10),
               child: FloatingActionButton.extended(
+                heroTag: "f2",
                 icon: const Icon(Icons.search),
                 label: const Text('Search Saved Drafts'),
                 onPressed: () {
@@ -5917,6 +5919,7 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
             Padding(
               padding: const EdgeInsets.only(left: 50, right: 50, top: 10),
               child: FloatingActionButton.extended(
+                heroTag: "f3",
                 onPressed: _generatePdf,
                 icon: const Icon(Icons.picture_as_pdf),
                 label: const Text('Generate PDF'),

@@ -53,11 +53,11 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
     super.initState();
     if (widget.propertyData != null) {
       // Use the passed data to initialize your form only if it exists
-      debugPrint('Received property data: ${widget.propertyData}');
+      // debugPrint('Received property data: ${widget.propertyData}');
       // Example:
       // _fileNoController.text = widget.propertyData!['fileNo'].toString();
     } else {
-      debugPrint('No property data received - creating new valuation');
+      // debugPrint('No property data received - creating new valuation');
       // Initialize with empty/default values
     }
     _initializeFormWithPropertyData();
@@ -475,7 +475,7 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
           _boundaryDeviationsController.text =
               boundaries['deviations']?.toString() ?? '';
         } catch (e) {
-          debugPrint('Error parsing boundaries JSON: $e');
+          // debugPrint('Error parsing boundaries JSON: $e');
         }
       } else {
         _boundaryNorthTitleController.text =
@@ -648,19 +648,18 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
               Uint8List imageBytes = await fetchImageBytes(signedUrl);
               _images.add(imageBytes);
             } catch (e) {
-              debugPrint('Error loading image: $e');
+              // debugPrint('Error loading image: $e');
             }
           }
         }
       } catch (e) {
-        debugPrint('Error in fetchImages: $e');
+        // debugPrint('Error in fetchImages: $e');
       }
 
       if (mounted) setState(() {});
-      debugPrint('SIB Vacant Land form initialized with property data');
+      // debugPrint('SIB Vacant Land form initialized with property data');
     } else {
-      debugPrint(
-          'No property data - SIB Vacant Land form will use default values');
+      // debugPrint( 'No property data - SIB Vacant Land form will use default values');
     }
   }
 
@@ -668,7 +667,7 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
     final latitude = _latController.text.trim();
     final longitude = _lonController.text.trim();
 
-    debugPrint('Searching nearby properties at: $latitude, $longitude');
+    // debugPrint('Searching nearby properties at: $latitude, $longitude');
 
     if (latitude.isEmpty || longitude.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -695,10 +694,10 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
         final List<dynamic> responseData = jsonDecode(response.body);
 
         // Debug print the results
-        debugPrint('Nearby Properties Found: ${responseData.length}');
+        // debugPrint('Nearby Properties Found: ${responseData.length}');
         for (var item in responseData) {
-          debugPrint(
-              'Property: ${item['refNo'] ?? item['refId'] ?? 'N/A'} - ${item['ownerName'] ?? 'Unknown Owner'}');
+          // debugPrint(
+          //     'Property: ${item['refNo'] ?? item['refId'] ?? 'N/A'} - ${item['ownerName'] ?? 'Unknown Owner'}');
         }
 
         if (context.mounted) {
@@ -721,7 +720,7 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
         );
       }
     } catch (e) {
-      debugPrint('Error fetching nearby properties: $e');
+      // debugPrint('Error fetching nearby properties: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Network error: Please check your connection')),
       );
@@ -2661,9 +2660,9 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
       }
 
       if (latitude.isEmpty || longitude.isEmpty) {
-        debugPrint(
-          'Latitude or Longitude is missing from the controller. Skipping save to nearby collection.',
-        );
+        // debugPrint(
+        //   'Latitude or Longitude is missing from the controller. Skipping save to nearby collection.';
+        // );
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -2678,11 +2677,11 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
       final ownerName = _ownerNameController.text ?? '[is null]';
       final marketValue = _totalAbstractLandController.text ?? '[is null]';
 
-      debugPrint('------------------------------------------');
-      debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
-      debugPrint('Owner Name from Controller: "$ownerName"');
-      debugPrint('Market Value from Controller: "$marketValue"');
-      debugPrint('------------------------------------------');
+      // debugPrint('------------------------------------------');
+      // debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
+      // debugPrint('Owner Name from Controller: "$ownerName"');
+      // debugPrint('Market Value from Controller: "$marketValue"');
+      // debugPrint('------------------------------------------');
       // --- STEP 3: Build the payload with the correct data ---
       final dataToSave = {
         // Use the coordinates from the image we found
@@ -2702,16 +2701,16 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
         body: jsonEncode(dataToSave),
       );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        debugPrint('Successfully saved data to nearby collection.');
-      } else {
-        debugPrint(
-          'Failed to save to nearby collection: ${response.statusCode}',
-        );
-        debugPrint('Response body: ${response.body}');
-      }
+      // if (response.statusCode == 200 || response.statusCode == 201) {
+      //   debugPrint('Successfully saved data to nearby collection.');
+      // } else {
+      //   debugPrint(
+      //     'Failed to save to nearby collection: ${response.statusCode}',
+      //   );
+      //   debugPrint('Response body: ${response.body}');
+      // }
     } catch (e) {
-      debugPrint('Error in _saveToNearbyCollection: $e');
+      // debugPrint('Error in _saveToNearbyCollection: $e');
     }
   }
 
@@ -3026,6 +3025,7 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
                     bottom: 10,
                   ),
                   child: FloatingActionButton.extended(
+                      heroTag: "f1",
                       icon: const Icon(Icons.search),
                       label: const Text('Search Saved Drafts'),
                       onPressed: () {
@@ -4074,6 +4074,7 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: "f2",
         onPressed: () {
           _saveForm();
         },

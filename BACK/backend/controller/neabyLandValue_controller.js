@@ -15,7 +15,7 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
 
 
 export const saveToNearby = async (req, res) => {
-    console.log("Request to save/update to nearby collection:", req.body);
+    // console.log("Request to save/update to nearby collection:", req.body);
     try {
         const { refNo, latitude, longitude, landValue, nameOfOwner, bankName } = req.body;
 
@@ -45,7 +45,7 @@ export const saveToNearby = async (req, res) => {
             }
         );
 
-        console.log("Successfully upserted document:", updatedEntry);
+        // console.log("Successfully upserted document:", updatedEntry);
         res.status(200).json({ 
             message: "Successfully saved or updated nearby data.",
             data: updatedEntry 
@@ -59,7 +59,7 @@ export const saveToNearby = async (req, res) => {
 
 export const getNearby = async (req, res) => {
     const SEARCH_RADIUS_KM = 20;
-    console.log("Received request to get nearby properties:", req.body);
+    // console.log("Received request to get nearby properties:", req.body);
 
     try {
         const { latitude, longitude } = req.body;
@@ -93,7 +93,7 @@ export const getNearby = async (req, res) => {
         
         responseData.sort((a, b) => a.distance - b.distance);
         
-        console.log("Sending back nearby data:", responseData); // Add this log to see what is being sent
+        // console.log("Sending back nearby data:", responseData); // Add this log to see what is being sent
         res.status(200).json(responseData);
 
     } catch (error) {

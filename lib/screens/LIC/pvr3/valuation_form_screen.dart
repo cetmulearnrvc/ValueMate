@@ -1100,6 +1100,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreen> {
               padding: const EdgeInsets.only(
                   right: 40, left: 40, top: 10, bottom: 10),
               child: FloatingActionButton.extended(
+                heroTag: "f1",
                 icon: const Icon(Icons.search),
                 label: const Text('Search Saved Drafts'),
                 onPressed: () {
@@ -1472,6 +1473,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreen> {
                 ]),
             const SizedBox(height: 15),
             FloatingActionButton.extended(
+                heroTag: "f2",
                 icon: const Icon(Icons.picture_as_pdf),
                 label: const Text('Generate PDF'),
                 onPressed: _generatePdf),
@@ -1482,6 +1484,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton.extended(
+            heroTag: "f3",
             icon: const Icon(Icons.save),
             label: const Text('Save'),
             onPressed: _saveData,

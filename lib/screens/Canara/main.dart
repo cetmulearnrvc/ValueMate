@@ -1774,6 +1774,7 @@ class _PropertyValuationReportPageState
                 padding: const EdgeInsets.only(
                     right: 50, left: 50, top: 10, bottom: 10),
                 child: FloatingActionButton.extended(
+                  heroTag: "f2",
                   icon: const Icon(Icons.search),
                   label: const Text('Search Saved Drafts'),
                   onPressed: () {
@@ -3945,6 +3946,7 @@ class _PropertyValuationReportPageState
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
+          heroTag: "f1",
           icon: const Icon(Icons.save),
           label: const Text('Save data'),
           onPressed: () {

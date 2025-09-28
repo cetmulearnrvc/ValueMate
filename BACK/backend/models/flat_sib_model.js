@@ -18,6 +18,10 @@ const valuationDetailItemSchema = new mongoose.Schema({
     estimatedValue: {
         type: String,
         default: ''
+    },
+    total:{
+        type: String,
+        default: ''
     }
 }, { _id: false }); // _id is not needed for these sub-documents
 
@@ -139,7 +143,6 @@ const sibValuationSchemaFlat = new mongoose.Schema({
     remarks4: String,
 
     // === Page 4 - Final Valuation Summary ===
-    valuationApproach: String,
     presentMarketValue: String,
     realizableValue: String,
     distressValue: String,
