@@ -264,7 +264,7 @@ class _SIBValuationFormScreenState extends State<SIBValuationFormScreen> {
   }
 
   void _initializeFormWithPropertyData() async {
-    print('PROPERTY DATA: ${widget.propertyData}');
+    // print('PROPERTY DATA: ${widget.propertyData}');
     if (widget.propertyData != null) {
       final data = widget.propertyData!;
 
@@ -274,24 +274,24 @@ class _SIBValuationFormScreenState extends State<SIBValuationFormScreen> {
           controller.text = data[key].toString();
         }
       });
-      print(data['images']);
+      // print(data['images']);
       _loadInitialImages(data);
       // Initialize images if available
       //
-      print('Valuation : ${data['valuationDetails']}');
+      // print('Valuation : ${data['valuationDetails']}');
       setState(() {
         if (data.containsKey('valuationDetails') &&
             data['valuationDetails'] is List) {
           var detailsList = data['valuationDetails'] as List;
-          debugPrint(
-              "Received valuation details list with ${detailsList.length} items.");
-          debugPrint("Raw list content: $detailsList");
+          // debugPrint(
+          //     "Received valuation details list with ${detailsList.length} items.");
+          // debugPrint("Raw list content: $detailsList");
           detailsList = detailsList
               .where((item) => item != null && item is Map<String, dynamic>)
               .toList();
 
-          debugPrint(
-              "Filtered valuation details list with ${detailsList.length} valid items.");
+          // debugPrint(
+          //     "Filtered valuation details list with ${detailsList.length} valid items.");
 
           _valuationDetails = (data['valuationDetails'] as List)
               .map((item) => ValuationDetailItem(
@@ -321,8 +321,8 @@ class _SIBValuationFormScreenState extends State<SIBValuationFormScreen> {
         }
       }
 
-      print('dateOfInspection: ${_data.dateOfInspection}');
-      print('dateOfValuation: ${_data.dateOfValuation}');
+      // print('dateOfInspection: ${_data.dateOfInspection}');
+      // print('dateOfValuation: ${_data.dateOfValuation}');
 
       if (data['finalValuationDate'] != null) {
         try {
@@ -340,9 +340,9 @@ class _SIBValuationFormScreenState extends State<SIBValuationFormScreen> {
         }
       }
 
-      debugPrint('Form initialized with SIB property data');
+      // debugPrint('Form initialized with SIB property data');
     } else {
-      debugPrint('No property data - using default values');
+      // debugPrint('No property data - using default values');
     }
   }
 
@@ -702,7 +702,7 @@ class _SIBValuationFormScreenState extends State<SIBValuationFormScreen> {
     final latitude = _controllers['nearbyLatitude']!.text.trim();
     final longitude = _controllers['nearbyLongitude']!.text.trim();
 
-    debugPrint(latitude);
+    // debugPrint(latitude);
 
     if (latitude.isEmpty || longitude.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -728,10 +728,10 @@ class _SIBValuationFormScreenState extends State<SIBValuationFormScreen> {
         final List<dynamic> responseData = jsonDecode(response.body);
 
         // Debug print the array
-        debugPrint('Response Data (Array):');
-        for (var item in responseData) {
-          debugPrint(item.toString()); // Print each item in the array
-        }
+        // debugPrint('Response Data (Array):');
+        // for (var item in responseData) {
+        //   debugPrint(item.toString()); // Print each item in the array
+        // }
 
         if (context.mounted) {
           // Navigator.of(context).push(
@@ -784,8 +784,8 @@ class _SIBValuationFormScreenState extends State<SIBValuationFormScreen> {
 
       // --- STEP 2: Handle the case where no image has location data ---
       if (firstImageWithLocation == null) {
-        debugPrint(
-            'No image with location data found. Skipping save to nearby collection.');
+        // debugPrint(
+        //     'No image with location data found. Skipping save to nearby collection.');
         return; // Exit the function early.
       }
 
@@ -793,11 +793,11 @@ class _SIBValuationFormScreenState extends State<SIBValuationFormScreen> {
       final marketValue =
           _controllers['presentMarketValue']?.text ?? '[is null]';
 
-      debugPrint('------------------------------------------');
-      debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
-      debugPrint('Owner Name from Controller: "$ownerName"');
-      debugPrint('Market Value from Controller: "$marketValue"');
-      debugPrint('------------------------------------------');
+      // debugPrint('------------------------------------------');
+      // debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
+      // debugPrint('Owner Name from Controller: "$ownerName"');
+      // debugPrint('Market Value from Controller: "$marketValue"');
+      // debugPrint('------------------------------------------');
       // --- STEP 3: Build the payload with the correct data ---
       final dataToSave = {
         // Use the coordinates from the image we found
@@ -817,12 +817,12 @@ class _SIBValuationFormScreenState extends State<SIBValuationFormScreen> {
         body: jsonEncode(dataToSave),
       );
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 201 || response.statusCode == 200) {
         debugPrint('Successfully saved data to nearby collection.');
       } else {
         debugPrint(
             'Failed to save to nearby collection: ${response.statusCode}');
-        debugPrint('Response body: ${response.body}');
+        // debugPrint('Response body: ${response.body}');
       }
     } catch (e) {
       debugPrint('Error in _saveToNearbyCollection: $e');
@@ -843,8 +843,8 @@ class _SIBValuationFormScreenState extends State<SIBValuationFormScreen> {
         _controllers.map((key, controller) => MapEntry(key, controller.text)),
       );
 
-      debugPrint('Saving dateOfInspection: ${_data.dateOfInspection}');
-      debugPrint('Saving dateOfValuation: ${_data.dateOfValuation}');
+      // debugPrint('Saving dateOfInspection: ${_data.dateOfInspection}');
+      // debugPrint('Saving dateOfValuation: ${_data.dateOfValuation}');
 
       request.fields['dateOfInspection'] =
           DateFormat('yyyy-MM-dd').format(_data.dateOfInspection!);
@@ -890,7 +890,7 @@ class _SIBValuationFormScreenState extends State<SIBValuationFormScreen> {
 
       final response = await request.send();
 
-      debugPrint("send req to back");
+      // debugPrint("send req to back");
 
       if (context.mounted) Navigator.of(context).pop();
       // debugPrint("${response.statusCode}");
@@ -1155,6 +1155,7 @@ class _SIBValuationFormScreenState extends State<SIBValuationFormScreen> {
               padding: const EdgeInsets.only(
                   right: 50, left: 50, top: 10, bottom: 10),
               child: FloatingActionButton.extended(
+                heroTag: "f1",
                 icon: const Icon(Icons.search),
                 label: const Text('Search Saved Drafts'),
                 onPressed: () {
@@ -1562,6 +1563,7 @@ class _SIBValuationFormScreenState extends State<SIBValuationFormScreen> {
             Padding(
               padding: const EdgeInsets.only(left: 50, right: 50, top: 10),
               child: FloatingActionButton.extended(
+                heroTag: "f2",
                 onPressed: _generatePdf,
                 icon: const Icon(Icons.picture_as_pdf),
                 label: const Text('Generate PDF'),
@@ -1571,6 +1573,7 @@ class _SIBValuationFormScreenState extends State<SIBValuationFormScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: "f3",
         onPressed: () {
           _saveData();
         },

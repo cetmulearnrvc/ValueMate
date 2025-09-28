@@ -38,11 +38,11 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
 
     if (widget.propertyData != null) {
       // Use the passed data to initialize your form only if it exists
-      debugPrint('Received property data: ${widget.propertyData}');
+      // debugPrint('Received property data: ${widget.propertyData}');
       // Example:
       // _fileNoController.text = widget.propertyData!['fileNo'].toString();
     } else {
-      debugPrint('No property data received - creating new valuation');
+      // debugPrint('No property data received - creating new valuation');
       // Initialize with empty/default values
     }
     _initializeControllers();
@@ -277,8 +277,8 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
 
       // --- STEP 2: Handle the case where no image has location data ---
       if (firstImageWithLocation == null) {
-        debugPrint(
-            'No image with location data found. Skipping save to nearby collection.');
+        // debugPrint(
+        //     'No image with location data found. Skipping save to nearby collection.');
         return; // Exit the function early.
       }
 
@@ -786,7 +786,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
             try {
               String fileName = imgData['fileName'];
               String signedUrl = await fetchSignedUrl(fileName);
-              debugPrint("url:$signedUrl");
+              // debugPrint("url:$signedUrl");
               Uint8List imageBytes = await fetchImageBytes(signedUrl);
 
               _valuationImages.add(ValuationImage(
@@ -1146,6 +1146,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
               padding: const EdgeInsets.only(
                   top: 10, right: 50, left: 50, bottom: 10),
               child: FloatingActionButton.extended(
+                heroTag: "f1",
                 icon: const Icon(Icons.search),
                 label: const Text('Search Saved Drafts'),
                 onPressed: () {
@@ -1644,6 +1645,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
             Padding(
               padding: const EdgeInsets.only(top: 10, right: 50, left: 50),
               child: FloatingActionButton.extended(
+                heroTag: "f2",
                 icon: const Icon(Icons.picture_as_pdf),
                 label: const Text('Generate PDF'),
                 onPressed: _generatePdf,
@@ -1656,6 +1658,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton.extended(
+            heroTag: "f3",
             icon: const Icon(Icons.save),
             label: const Text('Save'),
             onPressed: () {

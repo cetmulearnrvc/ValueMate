@@ -1140,6 +1140,7 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
               padding: const EdgeInsets.only(
                   right: 50, left: 50, top: 10, bottom: 10),
               child: FloatingActionButton.extended(
+                heroTag: "f1",
                 icon: const Icon(Icons.search),
                 label: const Text('Search Saved Drafts'),
                 onPressed: () {
@@ -1657,6 +1658,7 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
             Padding(
               padding: const EdgeInsets.only(left: 50, right: 50, top: 10),
               child: FloatingActionButton.extended(
+                  heroTag: "f2",
                   icon: const Icon(Icons.picture_as_pdf),
                   label: const Text('Generate PDF'),
                   onPressed: () {
@@ -1667,6 +1669,7 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
+          heroTag: "f3",
           icon: const Icon(Icons.save),
           label: const Text('Save data'),
           onPressed: () {

@@ -3026,6 +3026,7 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
                     bottom: 10,
                   ),
                   child: FloatingActionButton.extended(
+                      heroTag: "f1",
                       icon: const Icon(Icons.search),
                       label: const Text('Search Saved Drafts'),
                       onPressed: () {
@@ -4074,6 +4075,7 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: "f2",
         onPressed: () {
           _saveForm();
         },

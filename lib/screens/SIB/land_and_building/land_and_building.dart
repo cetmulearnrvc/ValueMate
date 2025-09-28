@@ -5096,6 +5096,7 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
                     bottom: 10,
                   ),
                   child: FloatingActionButton.extended(
+                    heroTag: "f1",
                     icon: const Icon(Icons.search),
                     label: const Text('Search Saved Drafts'),
                     onPressed: () {
@@ -6838,6 +6839,7 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: "f2",
         onPressed: () {
           _saveData();
         },

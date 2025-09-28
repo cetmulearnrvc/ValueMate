@@ -4,8 +4,8 @@ import mongoose from "mongoose";
 import cloudinary from "../cloudinaryConfig.js";
 
 export const saveFlatData = async (req, res) => {
-  console.log('A post req received');
-  console.log(req.body);
+  // console.log('A post req received');
+  // console.log(req.body);
 
   const flatData = req.body;
   flatData.typo = 'sibFlat';
@@ -13,7 +13,7 @@ export const saveFlatData = async (req, res) => {
   if (flatData.valuationDetails) {
   try {
     flatData.valuationDetails = JSON.parse(flatData.valuationDetails);
-    console.log('Parsed valuationDetails:', flatData.valuationDetails);
+    // console.log('Parsed valuationDetails:', flatData.valuationDetails);
   } catch (err) {
     console.error('Failed to parse valuationDetails:', err);
     return res.status(400).json({
@@ -78,14 +78,14 @@ if (flatData.images) {
         { $set: flatData },
         { new: true }  // Return the updated document
       );
-      console.log('Document updated:', savedDoc._id);
+      // console.log('Document updated:', savedDoc._id);
       res.status(200).json({ status: true, data: savedDoc, message: "Existing record updated successfully" });
 
     } else {
       // If not exists ➔ Create new
       const newFlatData = new SIBValuationFlat(flatData);
       savedDoc = await newFlatData.save();
-      console.log('New document created:', savedDoc._id);
+      // console.log('New document created:', savedDoc._id);
       res.status(201).json({ status: true, data: savedDoc, message: "New record created successfully" });
     }
   } catch (err) {
@@ -167,7 +167,7 @@ export async function searchByDate(req,res){
 
     const {date}=req.body
 
-    console.log(date)
+    // console.log(date)
 
     const targetDate = new Date(date);
 
