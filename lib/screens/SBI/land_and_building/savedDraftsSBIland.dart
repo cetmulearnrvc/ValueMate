@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
-import 'package:login_screen/screens/SBI/land_and_building/land_and_building.dart'; // Updated import path
+import 'package:login_screen/screens/SBI/land_and_building/land_and_building.dart';
 import 'dart:convert';
 import 'config.dart';
 
-class SavedDraftsSBILand extends StatefulWidget { // Changed class name
+class SavedDraftsSBILand extends StatefulWidget {
   const SavedDraftsSBILand({super.key});
 
   @override
@@ -71,7 +71,7 @@ class _SavedDraftsSBILandState extends State<SavedDraftsSBILand> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: const Text(
-          'SBI Land Drafts', // Changed title
+          'SBI Land Drafts',
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w500,
@@ -101,7 +101,8 @@ class _SavedDraftsSBILandState extends State<SavedDraftsSBILand> {
               children: [
                 // Stylish Date Picker Container
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     gradient: const LinearGradient(
@@ -133,7 +134,8 @@ class _SavedDraftsSBILandState extends State<SavedDraftsSBILand> {
                         ),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.edit_calendar, color: Colors.black54),
+                        icon: const Icon(Icons.edit_calendar,
+                            color: Colors.black54),
                         onPressed: () async {
                           final picked = await showDatePicker(
                             context: context,
@@ -184,7 +186,7 @@ class _SavedDraftsSBILandState extends State<SavedDraftsSBILand> {
                       : searchResults.isEmpty
                           ? const Center(
                               child: Text(
-                                'No SBI Land drafts found', // Changed text
+                                'No SBI Land drafts found',
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w500,
@@ -199,16 +201,29 @@ class _SavedDraftsSBILandState extends State<SavedDraftsSBILand> {
                                 final property = searchResults[index];
 
                                 final gradients = [
-                                  [const Color(0xFFDAF1F5), const Color(0xFFC7E8F3)],
-                                  [const Color(0xFFF6E9F8), const Color(0xFFEBD8F5)],
-                                  [const Color(0xFFFFF2D8), const Color(0xFFFFE8B8)],
-                                  [const Color(0xFFDFF6DD), const Color(0xFFBDE7BE)],
+                                  [
+                                    const Color(0xFFDAF1F5),
+                                    const Color(0xFFC7E8F3)
+                                  ],
+                                  [
+                                    const Color(0xFFF6E9F8),
+                                    const Color(0xFFEBD8F5)
+                                  ],
+                                  [
+                                    const Color(0xFFFFF2D8),
+                                    const Color(0xFFFFE8B8)
+                                  ],
+                                  [
+                                    const Color(0xFFDFF6DD),
+                                    const Color(0xFFBDE7BE)
+                                  ],
                                 ];
                                 final gradientColors =
                                     gradients[index % gradients.length];
 
                                 return Container(
-                                  margin: const EdgeInsets.symmetric(vertical: 8),
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 8),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
                                     gradient: LinearGradient(
@@ -237,33 +252,44 @@ class _SavedDraftsSBILandState extends State<SavedDraftsSBILand> {
                                     subtitle: Padding(
                                       padding: const EdgeInsets.only(top: 6.0),
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           const Text(
-                                            'Bank: State Bank of India - Land', // Changed bank name
-                                            style: TextStyle(fontSize: 15, fontFamily: 'Poppins'),
+                                            'Bank: South Indian Bank - Land',
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                fontFamily: 'Poppins'),
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
                                             'Owner: ${property['ownerName'] ?? 'N/A'}',
-                                            style: const TextStyle(fontSize: 14, fontFamily: 'Poppins'),
+                                            style: const TextStyle(
+                                                fontSize: 14,
+                                                fontFamily: 'Poppins'),
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
                                             'Applicant: ${property['applicantName'] ?? 'N/A'}',
-                                            style: const TextStyle(fontSize: 14, fontFamily: 'Poppins'),
+                                            style: const TextStyle(
+                                                fontSize: 14,
+                                                fontFamily: 'Poppins'),
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
                                             'Location: ${property['addressActual'] ?? property['addressDocument'] ?? 'N/A'}',
                                             maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(fontSize: 14, fontFamily: 'Poppins'),
+                                            style: const TextStyle(
+                                                fontSize: 14,
+                                                fontFamily: 'Poppins'),
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
                                             'Inspection Date: ${property['dateOfInspection'] ?? 'N/A'}',
-                                            style: const TextStyle(fontSize: 12, fontFamily: 'Poppins'),
+                                            style: const TextStyle(
+                                                fontSize: 12,
+                                                fontFamily: 'Poppins'),
                                           ),
                                         ],
                                       ),
@@ -273,7 +299,8 @@ class _SavedDraftsSBILandState extends State<SavedDraftsSBILand> {
                                       size: 18,
                                       color: Colors.black54,
                                     ),
-                                    onTap: () => navigateToValuationForm(property),
+                                    onTap: () =>
+                                        navigateToValuationForm(property),
                                   ),
                                 );
                               },

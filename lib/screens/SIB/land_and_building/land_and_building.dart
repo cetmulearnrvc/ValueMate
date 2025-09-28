@@ -53,11 +53,11 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
     super.initState();
     if (widget.propertyData != null) {
       // Use the passed data to initialize your form only if it exists
-      debugPrint('Received property data: ${widget.propertyData}');
+      //debugPrint('Received property data: ${widget.propertyData}');
       // Example:
       // _fileNoController.text = widget.propertyData!['fileNo'].toString();
     } else {
-      debugPrint('No property data received - creating new valuation');
+      //debugPrint('No property data received - creating new valuation');
       // Initialize with empty/default values
     }
     _initializeFormWithPropertyData();
@@ -382,9 +382,9 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
       }
 
       if (latitude.isEmpty || longitude.isEmpty) {
-        debugPrint(
-          'Latitude or Longitude is missing from the controller. Skipping save to nearby collection.',
-        );
+        // debugPrint(
+        //   'Latitude or Longitude is missing from the controller. Skipping save to nearby collection.',
+        // );
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -399,11 +399,11 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
       final ownerName = _ownerNameController.text ?? '[is null]';
       final marketValue = _presentMarketValueController.text ?? '[is null]';
 
-      debugPrint('------------------------------------------');
-      debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
-      debugPrint('Owner Name from Controller: "$ownerName"');
-      debugPrint('Market Value from Controller: "$marketValue"');
-      debugPrint('------------------------------------------');
+      // debugPrint('------------------------------------------');
+      // debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
+      // debugPrint('Owner Name from Controller: "$ownerName"');
+      // debugPrint('Market Value from Controller: "$marketValue"');
+      // debugPrint('------------------------------------------');
       // --- STEP 3: Build the payload with the correct data ---
       final dataToSave = {
         // Use the coordinates from the image we found
@@ -424,15 +424,15 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        debugPrint('Successfully saved data to nearby collection.');
+        //debugPrint('Successfully saved data to nearby collection.');
       } else {
-        debugPrint(
-          'Failed to save to nearby collection: ${response.statusCode}',
-        );
-        debugPrint('Response body: ${response.body}');
+        // debugPrint(
+        //   'Failed to save to nearby collection: ${response.statusCode}',
+        // );
+        //debugPrint('Response body: ${response.body}');
       }
     } catch (e) {
-      debugPrint('Error in _saveToNearbyCollection: $e');
+      //debugPrint('Error in _saveToNearbyCollection: $e');
     }
   }
 
@@ -441,7 +441,7 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
     try {
       // Validate required fields
       if (_refId.text.isEmpty || _ownerNameController.text.isEmpty) {
-        debugPrint("Not all required fields are filled");
+        //debugPrint("Not all required fields are filled");
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Please fill all required fields')),
         );
@@ -666,7 +666,7 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
       }
 
       final response = await request.send();
-      debugPrint("Request sent to backend");
+      //debugPrint("Request sent to backend");
 
       if (context.mounted) Navigator.of(context).pop();
 
@@ -1065,19 +1065,19 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
 
               _images.add(imageBytes);
             } catch (e) {
-              debugPrint('Error loading image from Drive: $e');
+              //debugPrint('Error loading image from Drive: $e');
             }
           }
         }
       } catch (e) {
-        debugPrint('Error in fetchImages: $e');
+        //debugPrint('Error in fetchImages: $e');
       }
 
       if (mounted) setState(() {});
 
-      debugPrint('SIB Land form initialized with property data');
+      //debugPrint('SIB Land form initialized with property data');
     } else {
-      debugPrint('No property data - SIB Land form will use default values');
+      //debugPrint('No property data - SIB Land form will use default values');
     }
   }
 
@@ -1085,7 +1085,7 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
     final latitude = _latitude.text.trim();
     final longitude = _longitude.text.trim();
 
-    debugPrint(latitude);
+    //debugPrint(latitude);
 
     if (latitude.isEmpty || longitude.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -1109,10 +1109,10 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
         final List<dynamic> responseData = jsonDecode(response.body);
 
         // Debug print the array
-        debugPrint('Response Data (Array):');
-        for (var item in responseData) {
-          debugPrint(item.toString()); // Print each item in the array
-        }
+        //debugPrint('Response Data (Array):');
+        // for (var item in responseData) {
+        //   debugPrint(item.toString()); // Print each item in the array
+        // }
 
         if (context.mounted) {
           // Navigator.of(context).push(

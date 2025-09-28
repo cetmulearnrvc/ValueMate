@@ -1,21 +1,20 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:login_screen/screens/SBI/land_and_building/savedDraftsSBILand.dart';
+import 'package:login_screen/screens/SBI/land_and_building/savedDraftsSBIland.dart';
 import 'package:login_screen/screens/nearbyDetails.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart' as pdfLib;
 import 'package:printing/printing.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'dart:typed_data';
-import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb; // Needed for kIsWeb check
+import 'dart:typed_data'; // For Uint8List
+import 'dart:io'; // For File class (used conditionally for non-web)
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'config.dart';
-import 'package:login_screen/screens/driveAPIconfig.dart';
+// import 'package:login_screen/screens/driveAPIconfig.dart';
 import 'package:path/path.dart' as path;
 
 void main() {
@@ -32,11 +31,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        // Use Inter font if available, otherwise default
         fontFamily: 'Inter',
       ),
-      home: const SBIValuationFormPage(
-        propertyData: {},
-      ),
+      home: const SBIValuationFormPage(propertyData: {}),
     );
   }
 }
@@ -46,26 +44,31 @@ class SBIValuationFormPage extends StatefulWidget {
   const SBIValuationFormPage({super.key, this.propertyData});
 
   @override
-  State<SBIValuationFormPage> createState() => _SBIValuationFormPageState();
+  State<SBIValuationFormPage> createState() => _ValuationFormPageState();
 }
 
-class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
-  // ... [all code remains the same except for SIB -> SBI replacements] ...
-
+class _ValuationFormPageState extends State<SBIValuationFormPage> {
   @override
   void initState() {
     super.initState();
     if (widget.propertyData != null) {
-      debugPrint('Received property data: ${widget.propertyData}');
+      // Use the passed data to initialize your form only if it exists
+      //debugPrint('Received property data: ${widget.propertyData}');
+      // Example:
+      // _fileNoController.text = widget.propertyData!['fileNo'].toString();
     } else {
-      debugPrint('No property data received - creating new valuation');
+      //debugPrint('No property data received - creating new valuation');
+      // Initialize with empty/default values
     }
     _initializeFormWithPropertyData();
   }
 
-  // ... [all controller and variable declarations remain unchanged] ...
   final TextEditingController _latController = TextEditingController();
   final TextEditingController _lonController = TextEditingController();
+
+  final TextEditingController _latitude = TextEditingController();
+  final TextEditingController _longitude = TextEditingController();
+
   final TextEditingController _refId = TextEditingController();
 
   // Controllers for text input fields (Page 1)
@@ -327,8 +330,16 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
       TextEditingController();
   final TextEditingController _vcCaveatsLimitationsController =
       TextEditingController();
-  
-  //
+
+  final TextEditingController _LandTaxReceipt = TextEditingController();
+  final TextEditingController _TitleDeed = TextEditingController();
+  final TextEditingController _BuildingCertificate = TextEditingController();
+  final TextEditingController _LocationSketch = TextEditingController();
+  final TextEditingController _PossessionCertificate = TextEditingController();
+  final TextEditingController _BuildingCompletionPlan = TextEditingController();
+  final TextEditingController _ThandapperDocument = TextEditingController();
+  final TextEditingController _BuildingTaxReceipt = TextEditingController();
+
   Future<pw.MemoryImage> loadLogoImage() async {
     final Uint8List bytes = await rootBundle
         .load('assets/images/logo.png')
@@ -337,22 +348,22 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
   }
 
   // Checkbox states for documents (Page 1)
-  final Map<String, bool> _documentChecks = {
-    'Land Tax Receipt': false,
-    'Title Deed': false,
-    'Building Certificate': false,
-    'Location Sketch': false,
-    'Possession Certificate': false,
-    'Building Completion Plan': false,
-    'Thandapper Document': false,
-    'Building Tax Receipt': false,
-  };
+  // final Map<String, bool> _documentChecks = {
+  //   'Land Tax Receipt': false,
+  //   'Title Deed': false,
+  //   'Building Certificate': false,
+  //   'Location Sketch': false,
+  //   'Possession Certificate': false,
+  //   'Building Completion Plan': false,
+  //   'Thandapper Document': false,
+  //   'Building Tax Receipt': false,
+  // };
 
   // MODIFIED: List to store uploaded images. Now dynamic to handle both File and Uint8List.
   final List<dynamic> _images = [];
 
-  final _formKey = GlobalKey<FormState>();
-  // In _saveToNearbyCollection change the bankName for SBI
+  final _formKey = GlobalKey<FormState>(); // Global key for form validation
+
   Future<void> _saveToNearbyCollection() async {
     try {
       String fullCoordinates = _latitudeLongitudeController.text;
@@ -361,65 +372,76 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
 
       if (fullCoordinates.isNotEmpty && fullCoordinates.contains(',')) {
         final parts = fullCoordinates.split(',');
+        // Ensure the split resulted in exactly two parts
         if (parts.length == 2) {
-          latitude = parts[0].trim();
-          longitude = parts[1].trim();
+          latitude =
+              parts[0].trim(); // Get the first part and remove whitespace
+          longitude =
+              parts[1].trim(); // Get the second part and remove whitespace
         }
       }
 
       if (latitude.isEmpty || longitude.isEmpty) {
-        debugPrint(
-            'Latitude or Longitude is missing from the controller. Skipping save to nearby collection.');
+        // debugPrint(
+        //   'Latitude or Longitude is missing from the controller. Skipping save to nearby collection.',
+        // );
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-              content: Text(
-                  'Location data is missing, cannot save to nearby properties.')),
+            content: Text(
+              'Location data is missing, cannot save to nearby properties.',
+            ),
+          ),
         );
-        return;
+        return; // Exit the function early if coordinates are not valid.
       }
 
       final ownerName = _ownerNameController.text ?? '[is null]';
       final marketValue = _presentMarketValueController.text ?? '[is null]';
 
-      debugPrint('------------------------------------------');
-      debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
-      debugPrint('Owner Name from Controller: "$ownerName"');
-      debugPrint('Market Value from Controller: "$marketValue"');
-      debugPrint('------------------------------------------');
+      // debugPrint('------------------------------------------');
+      // debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
+      // debugPrint('Owner Name from Controller: "$ownerName"');
+      // debugPrint('Market Value from Controller: "$marketValue"');
+      // debugPrint('------------------------------------------');
+      // --- STEP 3: Build the payload with the correct data ---
       final dataToSave = {
+        // Use the coordinates from the image we found
         'refNo': _refId.text ?? '',
         'latitude': latitude,
         'longitude': longitude,
-        'landValue': marketValue,
+
+        'landValue': marketValue, // Use the variable we just created
         'nameOfOwner': ownerName,
         'bankName': 'State Bank of India (Land & Building)',
       };
 
+      // --- STEP 4: Send the data to your dedicated server endpoint ---
       final response = await http.post(
-        Uri.parse(url5),
+        Uri.parse(url5), // Use your dedicated URL for saving this data
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(dataToSave),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        debugPrint('Successfully saved data to nearby collection.');
+        //debugPrint('Successfully saved data to nearby collection.');
       } else {
-        debugPrint(
-            'Failed to save to nearby collection: ${response.statusCode}');
-        debugPrint('Response body: ${response.body}');
+        // debugPrint(
+        //   'Failed to save to nearby collection: ${response.statusCode}',
+        // );
+        //debugPrint('Response body: ${response.body}');
       }
     } catch (e) {
-      debugPrint('Error in _saveToNearbyCollection: $e');
+      //debugPrint('Error in _saveToNearbyCollection: $e');
     }
   }
- // ... [rest of the code is identical except for SIB -> SBI changes, e.g. import path, debugPrints, and references to SIB become SBI] ...
-    //SaveData function
+
+  //SaveData function
   Future<void> _saveData() async {
     try {
       // Validate required fields
       if (_refId.text.isEmpty || _ownerNameController.text.isEmpty) {
-        debugPrint("Not all required fields are filled");
+        //debugPrint("Not all required fields are filled");
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Please fill all required fields')),
         );
@@ -433,26 +455,18 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
       );
 
       var request = http.MultipartRequest('POST', Uri.parse(url1));
-      debugPrint(url1);
 
       // Add all text fields from controllers
       request.fields.addAll({
         // Document checks
-        "documentChecks[landTaxReceipt]":
-            _documentChecks['Land Tax Receipt'].toString(),
-        "documentChecks[titleDeed]": _documentChecks['Title Deed'].toString(),
-        "documentChecks[buildingCertificate]":
-            _documentChecks['Building Certificate'].toString(),
-        "documentChecks[locationSketch]":
-            _documentChecks['Location Sketch'].toString(),
-        "documentChecks[possessionCertificate]":
-            _documentChecks['Possession Certificate'].toString(),
-        "documentChecks[buildingCompletionPlan]":
-            _documentChecks['Building Completion Plan'].toString(),
-        "documentChecks[thandapperDocument]":
-            _documentChecks['Thandapper Document'].toString(),
-        "documentChecks[buildingTaxReceipt]":
-            _documentChecks['Building Tax Receipt'].toString(),
+        "landTaxReceipt": _LandTaxReceipt.text,
+        "titleDeed": _TitleDeed.text,
+        "buildingCertificate": _BuildingCertificate.text,
+        "locationSketch": _LocationSketch.text,
+        "possessionCertificate": _PossessionCertificate.text,
+        "buildingCompletionPlan": _BuildingCompletionPlan.text,
+        "thandapperDocument": _ThandapperDocument.text,
+        "buildingTaxReceipt": _BuildingTaxReceipt.text,
 
         // Page 1 fields
         "refId": _refId.text,
@@ -632,94 +646,140 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
         } */
 
       for (int i = 0; i < _images.length; i++) {
-        final imageBytes =
-            _images[i] as Uint8List; // Direct cast if you're sure
-        request.files.add(http.MultipartFile.fromBytes(
-          'images',
-          imageBytes,
-          filename: 'property_${_refId.text}_$i.jpg',
-        ));
+        final imageBytes;
+        if (_images[i] is File) {
+          // Convert File → Uint8List
+          imageBytes = await (_images[i] as File).readAsBytes();
+        } else if (_images[i] is Uint8List) {
+          // Already Uint8List
+          imageBytes = _images[i] as Uint8List;
+        } else {
+          throw Exception("Unsupported image type: ${_images[i].runtimeType}");
+        }
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'images',
+            imageBytes,
+            filename: 'property_${_refId.text}_$i.jpg',
+          ),
+        );
       }
 
       final response = await request.send();
-      debugPrint("Request sent to backend");
+      //debugPrint("Request sent to backend");
 
       if (context.mounted) Navigator.of(context).pop();
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Data saved successfully!')));
+            const SnackBar(content: Text('Data saved successfully!')),
+          );
         }
         await _saveToNearbyCollection();
       } else {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text('Upload failed: ${response.reasonPhrase}')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Upload failed: ${response.reasonPhrase}')),
+          );
         }
       }
     } catch (e) {
       if (context.mounted) {
         Navigator.of(context).pop();
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
       }
     }
   }
 
-  Future<String> _getAccessToken() async {
-    final response = await http.post(
-      Uri.parse('https://oauth2.googleapis.com/token'),
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: {
-        'client_id': clientId,
-        'client_secret': clientSecret,
-        'refresh_token': refreshToken,
-        'grant_type': 'refresh_token',
-      },
+  // Future<String> _getAccessToken() async {
+  //   final response = await http.post(
+  //     Uri.parse('https://oauth2.googleapis.com/token'),
+  //     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+  //     body: {
+  //       'client_id': clientId,
+  //       'client_secret': clientSecret,
+  //       'refresh_token': refreshToken,
+  //       'grant_type': 'refresh_token',
+  //     },
+  //   );
+
+  //   if (response.statusCode == 200) {
+  //     return jsonDecode(response.body)['access_token'] as String;
+  //   } else {
+  //     throw Exception('Failed to refresh access token');
+  //   }
+  // }
+
+  // String _getMimeTypeFromExtension(String extension) {
+  //   switch (extension) {
+  //     case '.jpg':
+  //     case '.jpeg':
+  //       return 'image/jpeg';
+  //     case '.png':
+  //       return 'image/png';
+  //     case '.gif':
+  //       return 'image/gif';
+  //     case '.webp':
+  //       return 'image/webp';
+  //     default:
+  //       return 'application/octet-stream';
+  //   }
+  // }
+
+  // Future<Uint8List> fetchImageFromDrive(String fileId) async {
+  //   try {
+  //     // Get access token using refresh token
+  //     final accessToken = await _getAccessToken();
+
+  //     final response = await http.get(
+  //       Uri.parse(
+  //         'https://www.googleapis.com/drive/v3/files/$fileId?alt=media',
+  //       ),
+  //       headers: {'Authorization': 'Bearer $accessToken'},
+  //     );
+
+  //     if (response.statusCode == 200) {
+  //       return response.bodyBytes;
+  //     } else {
+  //       throw Exception('Failed to load image: ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     throw Exception('Error fetching image from Drive: $e');
+  //   }
+  // }
+
+  Future<String> fetchSignedUrl(String imagePublicId) async {
+    // --- YOU MUST CUSTOMIZE THESE VALUES ---
+    const String apiKey =
+        "db74f0da81338f1ad24d0be8298f90f4e6be5f0df5b53aca2f95ead470665641";
+    const String apiBaseUrl = 'http://localhost:3000'; // For Android emulator
+    // -----------------------------------------
+
+    final url = Uri.parse('$apiBaseUrl/api/images/secure-url/$imagePublicId');
+
+    final response = await http.get(
+      url,
+      headers: {'x-api-key': apiKey},
     );
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body)['access_token'] as String;
+      final data = json.decode(response.body);
+      return data['signedUrl'];
     } else {
-      throw Exception('Failed to refresh access token');
+      throw Exception(
+          'Failed to load signed URL. Status code: ${response.statusCode}');
     }
   }
 
-  String _getMimeTypeFromExtension(String extension) {
-    switch (extension) {
-      case '.jpg':
-      case '.jpeg':
-        return 'image/jpeg';
-      case '.png':
-        return 'image/png';
-      case '.gif':
-        return 'image/gif';
-      case '.webp':
-        return 'image/webp';
-      default:
-        return 'application/octet-stream';
-    }
-  }
-
-  Future<Uint8List> fetchImageFromDrive(String fileId) async {
-    try {
-      // Get access token using refresh token
-      final accessToken = await _getAccessToken();
-
-      final response = await http.get(
-        Uri.parse(
-            'https://www.googleapis.com/drive/v3/files/$fileId?alt=media'),
-        headers: {'Authorization': 'Bearer $accessToken'},
-      );
-
-      if (response.statusCode == 200) {
-        return response.bodyBytes;
-      } else {
-        throw Exception('Failed to load image: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error fetching image from Drive: $e');
+  Future<Uint8List> fetchImageBytes(String url) async {
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      return response.bodyBytes; // this is Uint8List
+    } else {
+      throw Exception('Failed to load image');
     }
   }
 
@@ -731,25 +791,14 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
       _refId.text = data['refId']?.toString() ?? '';
 
       // Set document checks
-      if (data['documentChecks'] != null) {
-        final docChecks = data['documentChecks'];
-        _documentChecks['Land Tax Receipt'] =
-            docChecks['landTaxReceipt'] ?? false;
-        _documentChecks['Title Deed'] = docChecks['titleDeed'] ?? false;
-        _documentChecks['Building Certificate'] =
-            docChecks['buildingCertificate'] ?? false;
-        _documentChecks['Location Sketch'] =
-            docChecks['locationSketch'] ?? false;
-        _documentChecks['Possession Certificate'] =
-            docChecks['possessionCertificate'] ?? false;
-        _documentChecks['Building Completion Plan'] =
-            docChecks['buildingCompletionPlan'] ?? false;
-        _documentChecks['Thandapper Document'] =
-            docChecks['thandapperDocument'] ?? false;
-        _documentChecks['Building Tax Receipt'] =
-            docChecks['buildingTaxReceipt'] ?? false;
-      }
-
+      _LandTaxReceipt.text = data['landTaxReceipt'];
+      _TitleDeed.text = data['titleDeed'];
+      _BuildingCertificate.text = data['buildingCertificate'];
+      _LocationSketch.text = data['locationSketch'];
+      _PossessionCertificate.text = data['possessionCertificate'];
+      _BuildingCompletionPlan.text = data['buildingCompletionPlan'];
+      _ThandapperDocument.text = data['thandapperDocument'];
+      _BuildingTaxReceipt.text = data['buildingTaxReceipt'];
       // Page 1 fields
       _purposeController.text = data['purpose']?.toString() ?? '';
       _dateOfInspectionController.text =
@@ -1007,16 +1056,12 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
           for (var imgData in imagesData) {
             try {
               // Get the file ID from your data (assuming it's stored as 'fileId')
-              String fileID = imgData['fileID'];
+
               String fileName = imgData['fileName'];
-              debugPrint("Fetching image from Drive with ID: $fileID");
 
-              // Fetch image bytes from Google Drive
-              Uint8List imageBytes = await fetchImageFromDrive(fileID);
-
-              // Get file extension from original filename
-              String extension = path.extension(fileName).toLowerCase();
-              if (extension.isEmpty) extension = '.jpg'; // default fallback
+              String signedUrl = await fetchSignedUrl(fileName);
+              // debugPrint(signedUrl);
+              Uint8List imageBytes = await fetchImageBytes(signedUrl);
 
               _images.add(imageBytes);
             } catch (e) {
@@ -1025,27 +1070,28 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
           }
         }
       } catch (e) {
-        debugPrint('Error in fetchImages: $e');
+        //debugPrint('Error in fetchImages: $e');
       }
 
       if (mounted) setState(() {});
 
-      debugPrint('SIB Land form initialized with property data');
+      //debugPrint('SBI Land form initialized with property data');
     } else {
-      debugPrint('No property data - SIB Land form will use default values');
+      //debugPrint('No property data - SBI Land form will use default values');
     }
   }
 
   Future<void> _getNearbyProperty() async {
-    final latitude = _latController.text.trim();
-    final longitude = _lonController.text.trim();
+    final latitude = _latitude.text.trim();
+    final longitude = _longitude.text.trim();
 
-    debugPrint(latitude);
+    //debugPrint(latitude);
 
     if (latitude.isEmpty || longitude.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text('Please enter both latitude and longitude')),
+          content: Text('Please enter both latitude and longitude'),
+        ),
       );
       return;
     }
@@ -1055,10 +1101,7 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'latitude': latitude,
-          'longitude': longitude,
-        }),
+        body: jsonEncode({'latitude': latitude, 'longitude': longitude}),
       );
 
       if (response.statusCode == 200) {
@@ -1066,9 +1109,9 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
         final List<dynamic> responseData = jsonDecode(response.body);
 
         // Debug print the array
-        debugPrint('Response Data (Array):');
+        //debugPrint('Response Data (Array):');
         for (var item in responseData) {
-          debugPrint(item.toString()); // Print each item in the array
+          //debugPrint(item.toString()); // Print each item in the array
         }
 
         if (context.mounted) {
@@ -1078,17 +1121,19 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
           //   ),
           // );
           showModalBottomSheet(
-              context: context,
-              builder: (ctx) {
-                return Nearbydetails(responseData: responseData);
-              });
+            context: context,
+            builder: (ctx) {
+              return Nearbydetails(responseData: responseData);
+            },
+          );
         }
       }
 
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-              content: Text('Nearby properties fetched successfully')),
+            content: Text('Nearby properties fetched successfully'),
+          ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -1096,16 +1141,13 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
 
-
-
-
-    // Function to build a text input field
+  // Function to build a text input field
   Widget _buildTextField({
     required TextEditingController controller,
     String? labelText, // Made nullable
@@ -1125,13 +1167,16 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
           labelText: labelText,
           hintText: hintText,
           border: const OutlineInputBorder(
-            borderRadius:
-                BorderRadius.all(Radius.circular(20)), // Applied new styling
+            borderRadius: BorderRadius.all(
+              Radius.circular(20),
+            ), // Applied new styling
           ),
           filled: true,
           fillColor: Colors.white,
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16.0,
+            vertical: 12.0,
+          ),
         ),
       ),
     );
@@ -1139,7 +1184,9 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
 
   // Function to select a date
   Future<void> _selectDate(
-      BuildContext context, TextEditingController controller) async {
+    BuildContext context,
+    TextEditingController controller,
+  ) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -1148,14 +1195,14 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
     );
     if (picked != null) {
       setState(() {
-        controller.text =
-            DateFormat('dd-MM-yyyy').format(picked); // Formatted date
+        controller.text = DateFormat(
+          'dd-MM-yyyy',
+        ).format(picked); // Formatted date
       });
     }
   }
 
-  // Function to get current location using geolocator package
-  Future<void> _getCurrentLocation() async {
+  Future<void> _getNearbyLocation() async {
     bool serviceEnabled;
     LocationPermission permission;
 
@@ -1166,8 +1213,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
       // accessing the position and request users to enable the location services.
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content:
-                Text('Location services are disabled. Please enable them.')),
+          content: Text('Location services are disabled. Please enable them.'),
+        ),
       );
       return;
     }
@@ -1192,8 +1239,78 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
       // Permissions are denied forever, handle appropriately.
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text(
-                'Location permissions are permanently denied, we cannot request permissions.')),
+          content: Text(
+            'Location permissions are permanently denied, we cannot request permissions.',
+          ),
+        ),
+      );
+      return;
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      setState(() {
+        // _latitudeLongitudeController.text =
+        //     '${position.latitude}, ${position.longitude}';
+        _latitude.text = '${position.latitude}';
+        _longitude.text = '${position.longitude}';
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Location fetched successfully!')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error fetching location: $e')));
+    }
+  }
+
+  // Function to get current location using geolocator package
+  Future<void> _getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users to enable the location services.
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Location services are disabled. Please enable them.'),
+        ),
+      );
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // a dialog should be shown to the user explaining why permission is needed)
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Location permissions are denied.')),
+        );
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Location permissions are permanently denied, we cannot request permissions.',
+          ),
+        ),
       );
       return;
     }
@@ -1214,9 +1331,9 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
         const SnackBar(content: Text('Location fetched successfully!')),
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error fetching location: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error fetching location: $e')));
     }
   }
 
@@ -1264,7 +1381,7 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
       9: 'IX',
       5: 'V',
       4: 'IV',
-      1: 'I'
+      1: 'I',
     };
     String result = '';
     for (final entry in romanMap.entries) {
@@ -1277,613 +1394,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
   }
 
   // Helper function to get table rows for Page 1 (Items 1-9)
-  List<pw.TableRow> _getPage1TableRows(List<String> selectedDocuments) {
+  List<pw.TableRow> _getPage1TableRows() {
     const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 8);
-    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
-
-    List<pw.TableRow> rows = [];
-
-    rows.add(pw.TableRow(children: [
-      pw.Container(
-          padding: cellPadding, child: pw.Text('1.', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('Purpose for which the valuation is made',
-              style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_purposeController.text, style: contentTextStyle)),
-    ]));
-    rows.add(pw.TableRow(children: [
-      pw.Container(
-          padding: cellPadding, child: pw.Text('2.', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('a) Date of inspection', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_dateOfInspectionController.text,
-              style: contentTextStyle)),
-    ]));
-    rows.add(pw.TableRow(children: [
-      pw.Container(padding: cellPadding, child: pw.Text('')),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('    b) Date on which the valuation is made',
-              style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_dateOfValuationController.text,
-              style: contentTextStyle)),
-    ]));
-    rows.add(pw.TableRow(children: [
-      pw.Container(
-          padding: cellPadding, child: pw.Text('3.', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('List of documents produced for perusal',
-              style: contentTextStyle)),
-      pw.Container(padding: cellPadding, child: pw.Text('')),
-      pw.Container(padding: cellPadding, child: pw.Text('')),
-    ]));
-    rows.addAll(selectedDocuments.asMap().entries.map((entry) {
-      int idx = entry.key + 1;
-      String doc = entry.value;
-      return pw.TableRow(children: [
-        pw.Container(padding: cellPadding, child: pw.Text('')),
-        pw.Container(
-            padding: cellPadding,
-            child:
-                pw.Text('    ${_toRoman(idx)}) $doc', style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding, child: pw.Text('', style: contentTextStyle)),
-      ]);
-    }).toList());
-    if (selectedDocuments.isEmpty) {
-      rows.add(pw.TableRow(children: [
-        pw.Container(padding: cellPadding, child: pw.Text('')),
-        pw.Container(
-            padding: cellPadding,
-            child: pw.Text('    (No documents selected)',
-                style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding, child: pw.Text('', style: contentTextStyle)),
-      ]));
-    }
-    rows.add(pw.TableRow(children: [
-      pw.Container(
-          padding: cellPadding, child: pw.Text('4.', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('Name of the owner(s)', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_ownerNameController.text, style: contentTextStyle)),
-    ]));
-    rows.add(pw.TableRow(children: [
-      pw.Container(
-          padding: cellPadding, child: pw.Text('5.', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('Name of the applicant(s)', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child:
-              pw.Text(_applicantNameController.text, style: contentTextStyle)),
-    ]));
-    rows.add(pw.TableRow(children: [
-      pw.Container(
-          padding: cellPadding, child: pw.Text('6.', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('The address of the property (including pin code)',
-              style: contentTextStyle)),
-      pw.Container(padding: cellPadding, child: pw.Text('')),
-      pw.Container(padding: cellPadding, child: pw.Text('')),
-    ]));
-    rows.add(pw.TableRow(children: [
-      pw.Container(padding: cellPadding, child: pw.Text('')),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('    As Per Documents', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_addressDocController.text, style: contentTextStyle)),
-    ]));
-    rows.add(pw.TableRow(children: [
-      pw.Container(padding: cellPadding, child: pw.Text('')),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('    As per actual/postal', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child:
-              pw.Text(_addressActualController.text, style: contentTextStyle)),
-    ]));
-    rows.add(pw.TableRow(children: [
-      pw.Container(
-          padding: cellPadding, child: pw.Text('7.', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('Deviations if any', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_deviationsController.text, style: contentTextStyle)),
-    ]));
-    rows.add(pw.TableRow(children: [
-      pw.Container(
-          padding: cellPadding, child: pw.Text('8.', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('The property type (Leasehold/ Freehold)',
-              style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child:
-              pw.Text(_propertyTypeController.text, style: contentTextStyle)),
-    ]));
-    rows.add(pw.TableRow(children: [
-      pw.Container(
-          padding: cellPadding, child: pw.Text('9.', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(
-              'Property Zone (Residential/ Commercial/ Industrial/ Agricultural)',
-              style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child:
-              pw.Text(_propertyZoneController.text, style: contentTextStyle)),
-    ]));
-    return rows;
-  }
-
-  List<pw.TableRow> _getPage2Table1Rows() {
-    const pw.TextStyle contentTextStyle =
-        pw.TextStyle(fontSize: 10); // Increased font size to 10
-    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
-
-    List<pw.TableRow> rows = [];
-
-    // Items 10-13 (adjusted for 5-column layout, last cell empty)
-    rows.add(pw.TableRow(children: [
-      pw.Container(
-          padding: cellPadding, child: pw.Text('10.', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child:
-              pw.Text('Classification of the area', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-      pw.Container(padding: cellPadding, child: pw.Text(''))
-    ]));
-    rows.add(pw.TableRow(children: [
-      pw.Container(padding: cellPadding, child: pw.Text('')),
-      pw.Container(
-          padding: cellPadding,
-          child:
-              pw.Text('    i) High / Middle / Poor', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_classificationAreaController.text,
-              style: contentTextStyle)),
-    ]));
-    rows.add(pw.TableRow(children: [
-      pw.Container(padding: cellPadding, child: pw.Text('')),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('    ii) Urban / Semi Urban / Rural',
-              style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_urbanSemiUrbanRuralController.text,
-              style: contentTextStyle)),
-    ]));
-    rows.add(pw.TableRow(children: [
-      pw.Container(
-          padding: cellPadding, child: pw.Text('11.', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(
-              'Coming under Corporation limit / Village Panchayat / Municipality',
-              style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_comingUnderCorporationController.text,
-              style: contentTextStyle)),
-    ]));
-    rows.add(pw.TableRow(children: [
-      pw.Container(
-          padding: cellPadding, child: pw.Text('12.', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(
-              'Whether covered under any State / Central Govt. enactments (e.g. Urban Land Ceiling Act) or notified under agency area / scheduled area',
-              style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_coveredUnderStateCentralGovtController.text,
-              style: contentTextStyle)),
-    ]));
-    rows.add(pw.TableRow(children: [
-      pw.Container(
-          padding: cellPadding, child: pw.Text('13.', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(
-              'In case it is an agricultural land, any conversion to house site plots is contemplated',
-              style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_agriculturalLandConversionController.text,
-              style: contentTextStyle)),
-    ]));
-    return rows;
-  }
-
-  List<pw.TableRow> _getPage2Table2RowsHeading() {
-    const pw.TextStyle contentTextStyle =
-        pw.TextStyle(fontSize: 10); // Increased font size to 10
-    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
-
-    List<pw.TableRow> rows = [];
-
-    rows.add(pw.TableRow(children: [
-      pw.Container(
-          padding: cellPadding, child: pw.Text('14.', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('Boundaries of the property:',
-              style: contentTextStyle)), // empty
-    ]));
-
-    return rows;
-  }
-
-  // Helper function to get table rows for Page 2 - Table 2 (Item 15)
-  List<pw.TableRow> _getPage2Table2Rows() {
-    const pw.TextStyle contentTextStyle =
-        pw.TextStyle(fontSize: 10); // Increased font size to 10
-    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
-
-    List<pw.TableRow> rows = [];
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(padding: cellPadding, child: pw.Text('')),
-        pw.Container(
-            padding: cellPadding,
-            child: pw.Text('Directions', style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding,
-            child: pw.Text('As per Title Deed', style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding,
-            child: pw.Text('As per Location Sketch', style: contentTextStyle)),
-      ],
-    ));
-    rows.add(pw.TableRow(children: [
-      pw.Container(padding: cellPadding, child: pw.Text('')),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('North', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_boundaryNorthTitleController.text,
-              style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(':',
-              style: contentTextStyle)), // colon added for consistency
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_boundaryNorthSketchController.text,
-              style: contentTextStyle)),
-    ]));
-    rows.add(pw.TableRow(children: [
-      pw.Container(padding: cellPadding, child: pw.Text('')),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('South', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(':',
-              style: contentTextStyle)), // colon added for consistency
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_boundarySouthTitleController.text,
-              style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_boundarySouthSketchController.text,
-              style: contentTextStyle)),
-    ]));
-    rows.add(pw.TableRow(children: [
-      pw.Container(padding: cellPadding, child: pw.Text('')),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('East', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(':',
-              style: contentTextStyle)), // colon added for consistency
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_boundaryEastTitleController.text,
-              style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_boundaryEastSketchController.text,
-              style: contentTextStyle)),
-    ]));
-    rows.add(pw.TableRow(children: [
-      pw.Container(padding: cellPadding, child: pw.Text('')),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('West', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(':',
-              style: contentTextStyle)), // colon added for consistency
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_boundaryWestTitleController.text,
-              style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_boundaryWestSketchController.text,
-              style: contentTextStyle)),
-    ]));
-    rows.add(pw.TableRow(children: [
-      pw.Container(padding: cellPadding, child: pw.Text('')),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('Deviations if any :', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('')), // Empty cell for colon column
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_boundaryDeviationsController.text,
-              style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('')), // Empty cell for 5th column
-    ]));
-
-    return rows;
-  }
-
-  List<pw.TableRow> _getPage2Table2RowsPart2Heading() {
-    const pw.TextStyle contentTextStyle =
-        pw.TextStyle(fontSize: 10); // Increased font size to 10
-    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
-
-    List<pw.TableRow> rows = [];
-
-    // Item 15. Dimensions of the site (main header, 4-column like before)
-    rows.add(pw.TableRow(children: [
-      pw.Container(
-          padding: cellPadding, child: pw.Text('15.', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('Dimensions of the site', style: contentTextStyle)),
-    ]));
-
-    return rows;
-  }
-
-  List<pw.TableRow> _getPage2Table2RowsPart2() {
-    const pw.TextStyle contentTextStyle =
-        pw.TextStyle(fontSize: 10); // Increased font size to 10
-    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
-
-    List<pw.TableRow> rows = [];
-
-    // Item 15. Dimensions of the site (sub-header, now 5 columns)
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(
-            padding: cellPadding, child: pw.Text('')), // S.No column (empty)
-        pw.Container(
-            padding: cellPadding,
-            child: pw.Text('Directions', style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding,
-            child: pw.Text('As per Actuals', style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding,
-            child: pw.Text('As per Documents', style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding,
-            child: pw.Text('Adopted area in Sft', style: contentTextStyle)),
-      ],
-    ));
-    rows.add(pw.TableRow(children: [
-      pw.Container(padding: cellPadding, child: pw.Text('')),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('North', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_dimNorthActualsController.text,
-              style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_dimNorthDocumentsController.text,
-              style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_dimNorthAdoptedController.text,
-              style: contentTextStyle)),
-    ]));
-    rows.add(pw.TableRow(children: [
-      pw.Container(padding: cellPadding, child: pw.Text('')),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('South', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_dimSouthActualsController.text,
-              style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_dimSouthDocumentsController.text,
-              style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_dimSouthAdoptedController.text,
-              style: contentTextStyle)),
-    ]));
-    rows.add(pw.TableRow(children: [
-      pw.Container(padding: cellPadding, child: pw.Text('')),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('East', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child:
-              pw.Text(_dimEastActualsController.text, style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_dimEastDocumentsController.text,
-              style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child:
-              pw.Text(_dimEastAdoptedController.text, style: contentTextStyle)),
-    ]));
-    rows.add(pw.TableRow(children: [
-      pw.Container(padding: cellPadding, child: pw.Text('')),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('West', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child:
-              pw.Text(_dimWestActualsController.text, style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_dimWestDocumentsController.text,
-              style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child:
-              pw.Text(_dimWestAdoptedController.text, style: contentTextStyle)),
-    ]));
-    rows.add(pw.TableRow(children: [
-      pw.Container(padding: cellPadding, child: pw.Text('')),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('Total Area', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_dimTotalAreaActualsController.text,
-              style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_dimTotalAreaDocumentsController.text,
-              style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_dimTotalAreaAdoptedController.text,
-              style: contentTextStyle)),
-    ]));
-    rows.add(pw.TableRow(children: [
-      pw.Container(padding: cellPadding, child: pw.Text('')),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('Deviations if any :', style: contentTextStyle)),
-    ]));
-
-    return rows;
-  }
-
-  // Helper function to get table rows for Page 2 - Table 3 (Items 16-17)
-  List<pw.TableRow> _getPage2Table3Rows() {
-    const pw.TextStyle contentTextStyle =
-        pw.TextStyle(fontSize: 10); // Increased font size to 10
-    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
-
-    List<pw.TableRow> rows = [];
-
-    // Item 16
-    rows.add(pw.TableRow(children: [
-      pw.Container(
-          padding: cellPadding, child: pw.Text('16.', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('Latitude, Longitude and Coordinates of the site',
-              style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_latitudeLongitudeController.text,
-              style: contentTextStyle)),
-    ]));
-
-    // Item 17
-    rows.add(pw.TableRow(children: [
-      pw.Container(
-          padding: cellPadding, child: pw.Text('17.', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(
-              'Whether occupied by the Self /tenant? If occupied by tenant, since how long? Rent received per month.',
-              style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(
-            '${_occupiedBySelfTenantController.text}${_occupiedBySelfTenantController.text.toLowerCase() == 'tenant' && _occupiedByTenantSinceController.text.isNotEmpty ? ', since ${_occupiedByTenantSinceController.text}' : ''}${_rentReceivedPerMonthController.text.isNotEmpty ? '. Rent: ${_rentReceivedPerMonthController.text}' : ''}',
-            style: contentTextStyle,
-          )),
-    ]));
-
-    return rows;
-  }
-
-  // Helper function to get table rows for new section 18
-  List<pw.TableRow> _getPage2Table4Rows() {
-    const pw.TextStyle contentTextStyle =
-        pw.TextStyle(fontSize: 10); // Increased font size to 10
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
     List<pw.TableRow> rows = [];
@@ -1892,28 +1404,1144 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
       pw.TableRow(
         children: [
           pw.Container(
-              padding: cellPadding,
-              child: pw.Text('18.', style: contentTextStyle)),
+            padding: cellPadding,
+            child: pw.Text('1.', style: contentTextStyle),
+          ),
           pw.Container(
-              padding: cellPadding,
-              child: pw.Text('Details /Floors', style: contentTextStyle)),
+            padding: cellPadding,
+            child: pw.Text(
+              'Purpose for which the valuation is made',
+              style: contentTextStyle,
+            ),
+          ),
           pw.Container(
-              padding: cellPadding,
-              child:
-                  pw.Text('Occupancy\n(Self/Rented)', style: contentTextStyle)),
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
           pw.Container(
-              padding: cellPadding,
-              child: pw.Text('No. Of Room', style: contentTextStyle)),
+            padding: cellPadding,
+            child: pw.Text(_purposeController.text, style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
           pw.Container(
-              padding: cellPadding,
-              child: pw.Text('No. Of Kitchen', style: contentTextStyle)),
+            padding: cellPadding,
+            child: pw.Text('2.', style: contentTextStyle),
+          ),
           pw.Container(
-              padding: cellPadding,
-              child: pw.Text('No. of Bathroom', style: contentTextStyle)),
+            padding: cellPadding,
+            child: pw.Text('a) Date of inspection', style: contentTextStyle),
+          ),
           pw.Container(
-              padding: cellPadding,
-              child: pw.Text('Usage Remarks\n(Resi/Comm)',
-                  style: contentTextStyle)),
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _dateOfInspectionController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              '    b) Date on which the valuation is made',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _dateOfValuationController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('3.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'List of documents produced for perusal',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('i) Land Tax Receipt (${_LandTaxReceipt.text})',
+                style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('ii) Title Deed (${_TitleDeed.text})',
+                style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+                'iii) Building Certificate (${_BuildingCertificate.text})',
+                style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('iv) Location Sketch (${_LocationSketch.text})',
+                style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+                'v) Possession Certificate (${_PossessionCertificate.text})',
+                style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+                'vi) Building Completion Plan (${_BuildingCompletionPlan.text})',
+                style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+                'vii) Thandapper Document (${_ThandapperDocument.text})',
+                style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+                'viii) Building Tax Receipt (${_BuildingTaxReceipt.text})',
+                style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('4.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('Name of the owner(s)', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(_ownerNameController.text, style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('5.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('Name of the applicant(s)', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _applicantNameController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('6.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'The address of the property (including pin code)',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('    As Per Documents', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(_addressDocController.text, style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('    As per actual/postal', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _addressActualController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('7.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('Deviations if any', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(_deviationsController.text, style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('8.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'The property type (Leasehold/ Freehold)',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _propertyTypeController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('9.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Property Zone (Residential/ Commercial/ Industrial/ Agricultural)',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _propertyZoneController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    return rows;
+  }
+
+  List<pw.TableRow> _getPage2Table1Rows() {
+    const pw.TextStyle contentTextStyle = pw.TextStyle(
+      fontSize: 10,
+    ); // Increased font size to 10
+    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
+
+    List<pw.TableRow> rows = [];
+
+    // Items 10-13 (adjusted for 5-column layout, last cell empty)
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('10.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Classification of the area',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              '    i) High / Middle / Poor',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _classificationAreaController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              '    ii) Urban / Semi Urban / Rural',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _urbanSemiUrbanRuralController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('11.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Coming under Corporation limit / Village Panchayat / Municipality',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _comingUnderCorporationController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('12.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Whether covered under any State / Central Govt. enactments (e.g. Urban Land Ceiling Act) or notified under agency area / scheduled area',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _coveredUnderStateCentralGovtController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('13.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'In case it is an agricultural land, any conversion to house site plots is contemplated',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _agriculturalLandConversionController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    return rows;
+  }
+
+  List<pw.TableRow> _getPage2Table2RowsHeading() {
+    const pw.TextStyle contentTextStyle = pw.TextStyle(
+      fontSize: 10,
+    ); // Increased font size to 10
+    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
+
+    List<pw.TableRow> rows = [];
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('14.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Boundaries of the property:',
+              style: contentTextStyle,
+            ),
+          ), // empty
+        ],
+      ),
+    );
+
+    return rows;
+  }
+
+  // Helper function to get table rows for Page 2 - Table 2 (Item 15)
+  List<pw.TableRow> _getPage2Table2Rows() {
+    const pw.TextStyle contentTextStyle = pw.TextStyle(
+      fontSize: 10,
+    ); // Increased font size to 10
+    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
+
+    List<pw.TableRow> rows = [];
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('Directions', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('As per Title Deed', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('As per Location Sketch', style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('North', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ), // colon added for consistency
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _boundaryNorthTitleController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _boundaryNorthSketchController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('South', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ), // colon added for consistency
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _boundarySouthTitleController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _boundarySouthSketchController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('East', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ), // colon added for consistency
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _boundaryEastTitleController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _boundaryEastSketchController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('West', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ), // colon added for consistency
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _boundaryWestTitleController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _boundaryWestSketchController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('Deviations if any :', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(''),
+          ), // Empty cell for colon column
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _boundaryDeviationsController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(''),
+          ), // Empty cell for 5th column
+        ],
+      ),
+    );
+
+    return rows;
+  }
+
+  List<pw.TableRow> _getPage2Table2RowsPart2Heading() {
+    const pw.TextStyle contentTextStyle = pw.TextStyle(
+      fontSize: 10,
+    ); // Increased font size to 10
+    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
+
+    List<pw.TableRow> rows = [];
+
+    // Item 15. Dimensions of the site (main header, 4-column like before)
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('15.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('Dimensions of the site', style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+
+    return rows;
+  }
+
+  List<pw.TableRow> _getPage2Table2RowsPart2() {
+    const pw.TextStyle contentTextStyle = pw.TextStyle(
+      fontSize: 10,
+    ); // Increased font size to 10
+    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
+
+    List<pw.TableRow> rows = [];
+
+    // Item 15. Dimensions of the site (sub-header, now 5 columns)
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(''),
+          ), // S.No column (empty)
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('Directions', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('As per Actuals', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('As per Documents', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('Adopted area in Sft', style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('North', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _dimNorthActualsController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _dimNorthDocumentsController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _dimNorthAdoptedController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('South', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _dimSouthActualsController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _dimSouthDocumentsController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _dimSouthAdoptedController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('East', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _dimEastActualsController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _dimEastDocumentsController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _dimEastAdoptedController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('West', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _dimWestActualsController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _dimWestDocumentsController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _dimWestAdoptedController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('Total Area', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _dimTotalAreaActualsController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _dimTotalAreaDocumentsController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _dimTotalAreaAdoptedController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('Deviations if any :', style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+
+    return rows;
+  }
+
+  // Helper function to get table rows for Page 2 - Table 3 (Items 16-17)
+  List<pw.TableRow> _getPage2Table3Rows() {
+    const pw.TextStyle contentTextStyle = pw.TextStyle(
+      fontSize: 10,
+    ); // Increased font size to 10
+    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
+
+    List<pw.TableRow> rows = [];
+
+    // Item 16
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('16.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Latitude, Longitude and Coordinates of the site',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _latitudeLongitudeController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    // Item 17
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('17.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Whether occupied by the Self /tenant? If occupied by tenant, since how long? Rent received per month.',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              '${_occupiedBySelfTenantController.text}${_occupiedBySelfTenantController.text.toLowerCase() == 'tenant' && _occupiedByTenantSinceController.text.isNotEmpty ? ', since ${_occupiedByTenantSinceController.text}' : ''}${_rentReceivedPerMonthController.text.isNotEmpty ? '. Rent: ${_rentReceivedPerMonthController.text}' : ''}',
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    return rows;
+  }
+
+  // Helper function to get table rows for new section 18
+  List<pw.TableRow> _getPage2Table4Rows() {
+    const pw.TextStyle contentTextStyle = pw.TextStyle(
+      fontSize: 10,
+    ); // Increased font size to 10
+    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
+
+    List<pw.TableRow> rows = [];
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('18.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('Details /Floors', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('Occupancy\n(Self/Rented)', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('No. Of Room', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('No. Of Kitchen', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('No. of Bathroom', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Usage Remarks\n(Resi/Comm)',
+              style: contentTextStyle,
+            ),
+          ),
         ],
       ),
     );
@@ -1923,30 +2551,48 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
       pw.TableRow(
         children: [
           pw.Container(
-              padding: cellPadding, child: pw.Text('')), // Empty for S.No.
+            padding: cellPadding,
+            child: pw.Text(''),
+          ), // Empty for S.No.
           pw.Container(
-              padding: cellPadding,
-              child: pw.Text('Ground', style: contentTextStyle)),
+            padding: cellPadding,
+            child: pw.Text('Ground', style: contentTextStyle),
+          ),
           pw.Container(
-              padding: cellPadding,
-              child: pw.Text(_groundFloorOccupancyController.text,
-                  style: contentTextStyle)),
+            padding: cellPadding,
+            child: pw.Text(
+              _groundFloorOccupancyController.text,
+              style: contentTextStyle,
+            ),
+          ),
           pw.Container(
-              padding: cellPadding,
-              child: pw.Text(_groundFloorNoOfRoomController.text,
-                  style: contentTextStyle)),
+            padding: cellPadding,
+            child: pw.Text(
+              _groundFloorNoOfRoomController.text,
+              style: contentTextStyle,
+            ),
+          ),
           pw.Container(
-              padding: cellPadding,
-              child: pw.Text(_groundFloorNoOfKitchenController.text,
-                  style: contentTextStyle)),
+            padding: cellPadding,
+            child: pw.Text(
+              _groundFloorNoOfKitchenController.text,
+              style: contentTextStyle,
+            ),
+          ),
           pw.Container(
-              padding: cellPadding,
-              child: pw.Text(_groundFloorNoOfBathroomController.text,
-                  style: contentTextStyle)),
+            padding: cellPadding,
+            child: pw.Text(
+              _groundFloorNoOfBathroomController.text,
+              style: contentTextStyle,
+            ),
+          ),
           pw.Container(
-              padding: cellPadding,
-              child: pw.Text(_groundFloorUsageRemarksController.text,
-                  style: contentTextStyle)),
+            padding: cellPadding,
+            child: pw.Text(
+              _groundFloorUsageRemarksController.text,
+              style: contentTextStyle,
+            ),
+          ),
         ],
       ),
     );
@@ -1956,30 +2602,48 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
       pw.TableRow(
         children: [
           pw.Container(
-              padding: cellPadding, child: pw.Text('')), // Empty for S.No.
+            padding: cellPadding,
+            child: pw.Text(''),
+          ), // Empty for S.No.
           pw.Container(
-              padding: cellPadding,
-              child: pw.Text('First', style: contentTextStyle)),
+            padding: cellPadding,
+            child: pw.Text('First', style: contentTextStyle),
+          ),
           pw.Container(
-              padding: cellPadding,
-              child: pw.Text(_firstFloorOccupancyController.text,
-                  style: contentTextStyle)),
+            padding: cellPadding,
+            child: pw.Text(
+              _firstFloorOccupancyController.text,
+              style: contentTextStyle,
+            ),
+          ),
           pw.Container(
-              padding: cellPadding,
-              child: pw.Text(_firstFloorNoOfRoomController.text,
-                  style: contentTextStyle)),
+            padding: cellPadding,
+            child: pw.Text(
+              _firstFloorNoOfRoomController.text,
+              style: contentTextStyle,
+            ),
+          ),
           pw.Container(
-              padding: cellPadding,
-              child: pw.Text(_firstFloorNoOfKitchenController.text,
-                  style: contentTextStyle)),
+            padding: cellPadding,
+            child: pw.Text(
+              _firstFloorNoOfKitchenController.text,
+              style: contentTextStyle,
+            ),
+          ),
           pw.Container(
-              padding: cellPadding,
-              child: pw.Text(_firstFloorNoOfBathroomController.text,
-                  style: contentTextStyle)),
+            padding: cellPadding,
+            child: pw.Text(
+              _firstFloorNoOfBathroomController.text,
+              style: contentTextStyle,
+            ),
+          ),
           pw.Container(
-              padding: cellPadding,
-              child: pw.Text(_firstFloorUsageRemarksController.text,
-                  style: contentTextStyle)),
+            padding: cellPadding,
+            child: pw.Text(
+              _firstFloorUsageRemarksController.text,
+              style: contentTextStyle,
+            ),
+          ),
         ],
       ),
     );
@@ -1992,38 +2656,63 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
 
   // Helper function to get table rows for new section (Items 19-20)
   List<pw.TableRow> _getPage2Table5Rows() {
-    const pw.TextStyle contentTextStyle =
-        pw.TextStyle(fontSize: 10); // Increased font size to 10
+    const pw.TextStyle contentTextStyle = pw.TextStyle(
+      fontSize: 10,
+    ); // Increased font size to 10
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
     List<pw.TableRow> rows = [];
 
-    rows.add(pw.TableRow(children: [
-      pw.Container(
-          padding: cellPadding, child: pw.Text('19.', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('19.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
               'Type of road available at present :\n(Bitumen/Mud/CC/Private)',
-              style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_typeOfRoadController.text, style: contentTextStyle)),
-    ]));
-    rows.add(pw.TableRow(children: [
-      pw.Container(
-          padding: cellPadding, child: pw.Text('20.', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text('Width of road - in feet', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child: pw.Text(_widthOfRoadController.text, style: contentTextStyle)),
-    ]));
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(_typeOfRoadController.text, style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('20.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('Width of road - in feet', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _widthOfRoadController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
 
     return rows;
   }
@@ -2035,20 +2724,34 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
 
     List<pw.TableRow> rows = [];
 
-    rows.add(pw.TableRow(children: [
-      pw.Container(
-          padding: cellPadding, child: pw.Text('21.', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child:
-              pw.Text('Is it a land - locked land?', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-      pw.Container(
-          padding: cellPadding,
-          child:
-              pw.Text(_isLandLockedController.text, style: contentTextStyle)),
-    ]));
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('21.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Is it a land - locked land?',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _isLandLockedController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
 
     return rows;
   }
@@ -2057,104 +2760,146 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
     List<pw.TableRow> rows = [];
 
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(
-          padding: cellPadding,
-          alignment: pw.Alignment.centerLeft,
-          child: pw.Text('Part - A (Valuation of land)',
-              style:
-                  pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12)),
-        ),
-      ],
-    ));
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            alignment: pw.Alignment.centerLeft,
+            child: pw.Text(
+              'Part - A (Valuation of land)',
+              style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12),
+            ),
+          ),
+        ],
+      ),
+    );
 
     return rows;
   }
 
   // NEW: Helper function to get table rows for "Part - A (Valuation of land)"
   List<pw.TableRow> _getLandValuationTableRows() {
-    final pw.TextStyle headerTextStyle =
-        pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10);
+    final pw.TextStyle headerTextStyle = pw.TextStyle(
+      fontWeight: pw.FontWeight.bold,
+      fontSize: 10,
+    );
     const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 10);
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
     List<pw.TableRow> rows = [];
 
     // Headers Row
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(
-            padding: cellPadding, child: pw.Text('1', style: contentTextStyle)),
-        pw.Container(
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('1', style: contentTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
             alignment: pw.Alignment.center,
-            child: pw.Text('Details', style: headerTextStyle)),
-        pw.Container(
+            child: pw.Text('Details', style: headerTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
             alignment: pw.Alignment.center,
-            child: pw.Text('Land area in\nSq Ft', style: headerTextStyle)),
-        pw.Container(
+            child: pw.Text('Land area in\nSq Ft', style: headerTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
             alignment: pw.Alignment.center,
-            child: pw.Text('Rate per Sq ft', style: headerTextStyle)),
-        pw.Container(
+            child: pw.Text('Rate per Sq ft', style: headerTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
             alignment: pw.Alignment.center,
-            child: pw.Text('Value in Rs.', style: headerTextStyle)),
-      ],
-    ));
+            child: pw.Text('Value in Rs.', style: headerTextStyle),
+          ),
+        ],
+      ),
+    );
 
     // Row 2: Guideline rate
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('2.', style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text('2.', style: contentTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
             child: pw.Text(
-                'Guideline rate obtained from the Registrar\'s Office (an evidence thereof to be enclosed)',
-                style: contentTextStyle)),
-        pw.Container(
+              'Guideline rate obtained from the Registrar\'s Office (an evidence thereof to be enclosed)',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_landAreaGuidelineController.text,
-                style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(
+              _landAreaGuidelineController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_ratePerSqFtGuidelineController.text,
-                style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(
+              _ratePerSqFtGuidelineController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_valueInRsGuidelineController.text,
-                style: contentTextStyle)),
-      ],
-    ));
+            child: pw.Text(
+              _valueInRsGuidelineController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
 
     // Row 3: Prevailing market value
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('3.', style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text('3.', style: contentTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('Prevailing market value of the land',
-                style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(
+              'Prevailing market value of the land',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_landAreaPrevailingController.text,
-                style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(
+              _landAreaPrevailingController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_ratePerSqFtPrevailingController.text,
-                style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(
+              _ratePerSqFtPrevailingController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_valueInRsPrevailingController.text,
-                style: contentTextStyle)),
-      ],
-    ));
+            child: pw.Text(
+              _valueInRsPrevailingController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
 
     return rows;
   }
@@ -2167,40 +2912,51 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
     List<pw.TableRow> rows = [];
 
     // Main Header
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(
-          padding: cellPadding,
-          alignment: pw.Alignment.centerLeft,
-          child: pw.Text('Part - B (Valuation of Building)',
-              style:
-                  pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12)),
-        ),
-      ],
-    ));
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            alignment: pw.Alignment.centerLeft,
+            child: pw.Text(
+              'Part - B (Valuation of Building)',
+              style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12),
+            ),
+          ),
+        ],
+      ),
+    );
 
     return rows;
   }
 
   List<pw.TableRow> _getBuildingValuationTableRowsSubHeading() {
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
-    final pw.TextStyle headerTextStyle =
-        pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10);
+    final pw.TextStyle headerTextStyle = pw.TextStyle(
+      fontWeight: pw.FontWeight.bold,
+      fontSize: 10,
+    );
     const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 10);
 
     List<pw.TableRow> rows = [];
 
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('1.', style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text('1.', style: contentTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('Technical details of the building',
-                style: headerTextStyle)),
-      ],
-    ));
+            child: pw.Text(
+              'Technical details of the building',
+              style: headerTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
 
     return rows;
   }
@@ -2212,486 +2968,746 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
     List<pw.TableRow> rows = [];
 
     // Rows for technical details
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(padding: cellPadding, child: pw.Text('')),
-        pw.Container(
-            padding: cellPadding, child: pw.Text('a', style: contentTextStyle)),
-        pw.Container(
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('a', style: contentTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
             child: pw.Text(
-                'Type of Building (Residential / Commercial / Industrial)',
-                style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding,
-            child: pw.Text(_typeOfBuildingController.text,
-                style: contentTextStyle)),
-      ],
-    ));
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(padding: cellPadding, child: pw.Text('')),
-        pw.Container(
-            padding: cellPadding, child: pw.Text('b', style: contentTextStyle)),
-        pw.Container(
+              'Type of Building (Residential / Commercial / Industrial)',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
             padding: cellPadding,
             child: pw.Text(
-                'Type of construction (Load bearing / RCC / Steel Framed)',
-                style: contentTextStyle)),
-        pw.Container(
+              _typeOfBuildingController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_typeOfConstructionController.text,
-                style: contentTextStyle)),
-      ],
-    ));
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(padding: cellPadding, child: pw.Text('')),
-        pw.Container(
-            padding: cellPadding, child: pw.Text('c', style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding,
-            child: pw.Text('Age of the building', style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding,
-            child: pw.Text(_ageOfTheBuildingController.text,
-                style: contentTextStyle)),
-      ],
-    ));
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(padding: cellPadding, child: pw.Text('')),
-        pw.Container(
-            padding: cellPadding, child: pw.Text('d', style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding,
-            child: pw.Text('Residual age of the building',
-                style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding,
-            child: pw.Text(_residualAgeOfTheBuildingController.text,
-                style: contentTextStyle)),
-      ],
-    ));
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(padding: cellPadding, child: pw.Text('')),
-        pw.Container(
-            padding: cellPadding, child: pw.Text('e', style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding,
-            child: pw.Text('Approved map / plan issuing authority',
-                style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding,
-            child: pw.Text(_approvedMapAuthorityController.text,
-                style: contentTextStyle)),
-      ],
-    ));
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(padding: cellPadding, child: pw.Text('')),
-        pw.Container(
-            padding: cellPadding, child: pw.Text('f', style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text('b', style: contentTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
             child: pw.Text(
-                'Whether genuineness or authenticity of approved map / plan is verified',
-                style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding,
-            child: pw.Text(_genuinenessVerifiedController.text,
-                style: contentTextStyle)),
-      ],
-    ));
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(padding: cellPadding, child: pw.Text('')),
-        pw.Container(
-            padding: cellPadding, child: pw.Text('g', style: contentTextStyle)),
-        pw.Container(
+              'Type of construction (Load bearing / RCC / Steel Framed)',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
             padding: cellPadding,
             child: pw.Text(
-                'Any other comments by our empanelled valuers on authentic of approved plan',
-                style: contentTextStyle)),
-        pw.Container(
+              _typeOfConstructionController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_otherCommentsController.text,
-                style: contentTextStyle)),
-      ],
-    ));
+            child: pw.Text('c', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('Age of the building', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _ageOfTheBuildingController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('d', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Residual age of the building',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _residualAgeOfTheBuildingController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('e', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Approved map / plan issuing authority',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _approvedMapAuthorityController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('f', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Whether genuineness or authenticity of approved map / plan is verified',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _genuinenessVerifiedController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('g', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Any other comments by our empanelled valuers on authentic of approved plan',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _otherCommentsController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
 
     return rows;
   }
 
   // NEW: Helper function to get table rows for "Build up Area"
   List<pw.TableRow> _getBuildUpAreaTableRows() {
-    final pw.TextStyle headerTextStyle =
-        pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10);
+    final pw.TextStyle headerTextStyle = pw.TextStyle(
+      fontWeight: pw.FontWeight.bold,
+      fontSize: 10,
+    );
     const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 10);
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
     List<pw.TableRow> rows = [];
 
     // First header row
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
             padding: cellPadding,
             alignment: pw.Alignment.center,
-            child: pw.Text('S n', style: headerTextStyle)),
-        pw.Container(
+            child: pw.Text('S n', style: headerTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
             alignment: pw.Alignment.center,
-            child: pw.Text('Particular of item', style: headerTextStyle)),
-        // "Build up Area" header - placed in the first of the three columns it spans
-        pw.Container(
+            child: pw.Text('Particular of item', style: headerTextStyle),
+          ),
+          // "Build up Area" header - placed in the first of the three columns it spans
+          pw.Container(
             padding: cellPadding,
             alignment: pw.Alignment.center,
-            child: pw.Text('Build up Area', style: headerTextStyle)),
-        pw.Container(), // Empty cell for the second column of "Build up Area" span
-        pw.Container(), // Empty cell for the third column of "Build up Area" span
-        pw.Container(
+            child: pw.Text('Build up Area', style: headerTextStyle),
+          ),
+          pw.Container(), // Empty cell for the second column of "Build up Area" span
+          pw.Container(), // Empty cell for the third column of "Build up Area" span
+          pw.Container(
             padding: cellPadding,
             alignment: pw.Alignment.center,
-            child: pw.Text('Replacement\nCost in Rs.', style: headerTextStyle)),
-        pw.Container(
+            child: pw.Text('Replacement\nCost in Rs.', style: headerTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
             alignment: pw.Alignment.center,
-            child: pw.Text('Depreciation\nin Rs.', style: headerTextStyle)),
-        pw.Container(
+            child: pw.Text('Depreciation\nin Rs.', style: headerTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
             alignment: pw.Alignment.center,
-            child: pw.Text('Net value\nafter\nDepreciations Rs.',
-                style: headerTextStyle)),
-      ],
-    ));
+            child: pw.Text(
+              'Net value\nafter\nDepreciations Rs.',
+              style: headerTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
 
     // Second header row (sub-headers for "Build up Area")
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(padding: cellPadding, child: pw.Text('')), // Empty for S n
-        pw.Container(
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('')), // Empty for Particular of item
-        pw.Container(
+            child: pw.Text(''),
+          ), // Empty for S n
+          pw.Container(
             padding: cellPadding,
-            alignment: pw.Alignment.center,
-            child:
-                pw.Text('As per approved\nPlan/FSI', style: headerTextStyle)),
-        pw.Container(
-            padding: cellPadding,
-            alignment: pw.Alignment.center,
-            child: pw.Text('As per\nActual', style: headerTextStyle)),
-        pw.Container(
+            child: pw.Text(''),
+          ), // Empty for Particular of item
+          pw.Container(
             padding: cellPadding,
             alignment: pw.Alignment.center,
-            child: pw.Text('Area\nConsidered\nfor the\nValuation',
-                style: headerTextStyle)),
-        pw.Container(
+            child: pw.Text('As per approved\nPlan/FSI', style: headerTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('')), // Empty for Replacement Cost
-        pw.Container(
-            padding: cellPadding, child: pw.Text('')), // Empty for Depreciation
-        pw.Container(
-            padding: cellPadding, child: pw.Text('')), // Empty for Net value
-      ],
-    ));
+            alignment: pw.Alignment.center,
+            child: pw.Text('As per\nActual', style: headerTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            alignment: pw.Alignment.center,
+            child: pw.Text(
+              'Area\nConsidered\nfor the\nValuation',
+              style: headerTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(''),
+          ), // Empty for Replacement Cost
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(''),
+          ), // Empty for Depreciation
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(''),
+          ), // Empty for Net value
+        ],
+      ),
+    );
 
     // Ground floor row
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(
-            padding: cellPadding, child: pw.Text('', style: contentTextStyle)),
-        pw.Container(
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('Ground\nfloor', style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text('', style: contentTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_groundFloorApprovedPlanController.text,
-                style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text('Ground\nfloor', style: contentTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_groundFloorActualController.text,
-                style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(
+              _groundFloorApprovedPlanController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_groundFloorConsideredValuationController.text,
-                style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(
+              _groundFloorActualController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_groundFloorReplacementCostController.text,
-                style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(
+              _groundFloorConsideredValuationController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_groundFloorDepreciationController.text,
-                style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(
+              _groundFloorReplacementCostController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_groundFloorNetValueController.text,
-                style: contentTextStyle)),
-      ],
-    ));
+            child: pw.Text(
+              _groundFloorDepreciationController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _groundFloorNetValueController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
 
     // First floor row
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(
-            padding: cellPadding, child: pw.Text('', style: contentTextStyle)),
-        pw.Container(
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('First\nfloor', style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text('', style: contentTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_firstFloorApprovedPlanController.text,
-                style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text('First\nfloor', style: contentTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_firstFloorActualController.text,
-                style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(
+              _firstFloorApprovedPlanController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_firstFloorConsideredValuationController.text,
-                style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(
+              _firstFloorActualController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_firstFloorReplacementCostController.text,
-                style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(
+              _firstFloorConsideredValuationController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_firstFloorDepreciationController.text,
-                style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(
+              _firstFloorReplacementCostController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_firstFloorNetValueController.text,
-                style: contentTextStyle)),
-      ],
-    ));
+            child: pw.Text(
+              _firstFloorDepreciationController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _firstFloorNetValueController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
 
     // Total row
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(
-            padding: cellPadding, child: pw.Text('', style: contentTextStyle)),
-        pw.Container(
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('Total', style: headerTextStyle)),
-        pw.Container(
+            child: pw.Text('', style: contentTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_totalApprovedPlanController.text,
-                style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text('Total', style: headerTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child:
-                pw.Text(_totalActualController.text, style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(
+              _totalApprovedPlanController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_totalConsideredValuationController.text,
-                style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(
+              _totalActualController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_totalReplacementCostController.text,
-                style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(
+              _totalConsideredValuationController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_totalDepreciationController.text,
-                style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(
+              _totalReplacementCostController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_totalNetValueController.text,
-                style: contentTextStyle)),
-      ],
-    ));
+            child: pw.Text(
+              _totalDepreciationController.text,
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _totalNetValueController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
 
     return rows;
   }
 
   // NEW: Helper function to get table rows for "Part C - Amenities"
   List<pw.TableRow> _getAmenitiesTableRows() {
-    final pw.TextStyle headerTextStyle =
-        pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10);
+    final pw.TextStyle headerTextStyle = pw.TextStyle(
+      fontWeight: pw.FontWeight.bold,
+      fontSize: 10,
+    );
     const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 10);
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
     List<pw.TableRow> rows = [];
 
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('1.', style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text('1.', style: contentTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('Wardrobes', style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text('Wardrobes', style: contentTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_wardrobesController.text, style: contentTextStyle)),
-      ],
-    ));
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('2.', style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(_wardrobesController.text, style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('Amenities', style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text('2.', style: contentTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_amenitiesController.text, style: contentTextStyle)),
-      ],
-    ));
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(
+            child: pw.Text('Amenities', style: contentTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('3.', style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('Any other Additional', style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(_amenitiesController.text, style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_anyOtherAdditionalController.text,
-                style: contentTextStyle)),
-      ],
-    ));
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(
+            child: pw.Text('3.', style: contentTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('4.', style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding, child: pw.Text('', style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding, child: pw.Text('', style: contentTextStyle)),
-      ],
-    ));
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(
+            child: pw.Text('Any other Additional', style: contentTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('5.', style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding, child: pw.Text('', style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding, child: pw.Text('', style: contentTextStyle)),
-      ],
-    ));
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(padding: cellPadding, child: pw.Text('')),
-        pw.Container(
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('Total', style: headerTextStyle)),
-        pw.Container(
-            padding: cellPadding, child: pw.Text(':', style: headerTextStyle)),
-        pw.Container(
+            child: pw.Text(
+              _anyOtherAdditionalController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_amenitiesTotalController.text,
-                style: contentTextStyle)),
-      ],
-    ));
+            child: pw.Text('4.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('', style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('5.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('', style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('Total', style: headerTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: headerTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _amenitiesTotalController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
 
     return rows;
   }
 
   // NEW: Helper function to get table rows for "Total abstract of the entire property"
   List<pw.TableRow> _getTotalAbstractTableRows() {
-    final pw.TextStyle headerTextStyle =
-        pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10);
+    final pw.TextStyle headerTextStyle = pw.TextStyle(
+      fontWeight: pw.FontWeight.bold,
+      fontSize: 10,
+    );
     const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 10);
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
     List<pw.TableRow> rows = [];
 
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('Part- A', style: headerTextStyle)),
-        pw.Container(
+            child: pw.Text('Part- A', style: headerTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('Land', style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text('Land', style: contentTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('₹ ${_totalAbstractLandController.text}',
-                style: contentTextStyle)),
-      ],
-    ));
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('Part- B', style: headerTextStyle)),
-        pw.Container(
+            child: pw.Text(
+              'Rs ${_totalAbstractLandController.text}',
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('Building', style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text('Part- B', style: headerTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('₹ ${_totalAbstractBuildingController.text}',
-                style: contentTextStyle)),
-      ],
-    ));
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(
+            child: pw.Text('Building', style: contentTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('Part- C', style: headerTextStyle)),
-        pw.Container(
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('Amenities', style: contentTextStyle)),
-        pw.Container(
-            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(
+              'Rs ${_totalAbstractBuildingController.text}',
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('₹ ${_totalAbstractAmenitiesController.text}',
-                style: contentTextStyle)),
-      ],
-    ));
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(
-            padding: cellPadding, child: pw.Text('', style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text('Part- C', style: headerTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('Total', style: headerTextStyle)),
-        pw.Container(
-            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text('Amenities', style: contentTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('₹ ${_totalAbstractTotalController.text}',
-                style: contentTextStyle)),
-      ],
-    ));
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(
-            padding: cellPadding, child: pw.Text('', style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('Say', style: headerTextStyle)),
-        pw.Container(
-            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(
+              'Rs ${_totalAbstractAmenitiesController.text}',
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('₹ ${_totalAbstractSayController.text}',
-                style: contentTextStyle)),
-      ],
-    ));
+            child: pw.Text('', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('Total', style: headerTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Rs ${_totalAbstractTotalController.text}',
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('Say', style: headerTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Rs ${_totalAbstractSayController.text}',
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
 
     return rows;
   }
@@ -2703,177 +3719,216 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
 
     List<pw.TableRow> rows = [];
 
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('Present Market Value of The Property',
-                style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(
+              'Present Market Value of The Property',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_presentMarketValueController.text,
-                style: contentTextStyle)),
-      ],
-    ));
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(
+            child: pw.Text(
+              _presentMarketValueController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('Realizable Value of the Property',
-                style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(
+              'Realizable Value of the Property',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_realizableValueController.text,
-                style: contentTextStyle)),
-      ],
-    ));
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(
+            child: pw.Text(
+              _realizableValueController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('Distress Value of the Property',
-                style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(
+              'Distress Value of the Property',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_distressValueController.text,
-                style: contentTextStyle)),
-      ],
-    ));
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(
+            child: pw.Text(
+              _distressValueController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text('Insurable Value of the property',
-                style: contentTextStyle)),
-        pw.Container(
+            child: pw.Text(
+              'Insurable Value of the property',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
             padding: cellPadding,
-            child: pw.Text(_insurableValueController.text,
-                style: contentTextStyle)),
-      ],
-    ));
+            child: pw.Text(
+              _insurableValueController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
 
     return rows;
   }
 
   // NEW: Helper function to get table rows for the Valuer Comments table
   List<pw.TableRow> _getValuerCommentsTableRows() {
-    final pw.TextStyle headerTextStyle =
-        pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10);
-    const pw.TextStyle contentTextStyle =
-        pw.TextStyle(fontSize: 9); // Slightly smaller font for content
+    final pw.TextStyle headerTextStyle = pw.TextStyle(
+      fontWeight: pw.FontWeight.bold,
+      fontSize: 10,
+    );
+    const pw.TextStyle contentTextStyle = pw.TextStyle(
+      fontSize: 9,
+    ); // Slightly smaller font for content
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
     List<Map<String, dynamic>> data = [
       {
         'siNo': '1',
         'particulars': 'background information of the asset being valued;',
-        'controller': _vcBackgroundInfoController
+        'controller': _vcBackgroundInfoController,
       },
       {
         'siNo': '2',
         'particulars': 'purpose of valuation and appointing authority',
-        'controller': _vcPurposeOfValuationController
+        'controller': _vcPurposeOfValuationController,
       },
       {
         'siNo': '3',
         'particulars':
             'identity of the valuer and any other experts involved in the valuation;',
-        'controller': _vcIdentityOfValuerController
+        'controller': _vcIdentityOfValuerController,
       },
       {
         'siNo': '4',
         'particulars': 'disclosure of valuer interest or conflict, if any;',
-        'controller': _vcDisclosureOfInterestController
+        'controller': _vcDisclosureOfInterestController,
       },
       {
         'siNo': '5',
         'particulars':
             'date of appointment, valuation date and date of report;',
-        'controller': _vcDateOfAppointmentController
+        'controller': _vcDateOfAppointmentController,
       },
       {
         'siNo': '6',
         'particulars': 'inspections and/or investigations undertaken;',
-        'controller': _vcInspectionsUndertakenController
+        'controller': _vcInspectionsUndertakenController,
       },
       {
         'siNo': '7',
         'particulars':
             'nature and sources of the information used or relied upon;',
-        'controller': _vcNatureAndSourcesController
+        'controller': _vcNatureAndSourcesController,
       },
       {
         'siNo': '8',
         'particulars':
             'procedures adopted in carrying out the valuation and valuation standards followed;',
-        'controller': _vcProceduresAdoptedController
+        'controller': _vcProceduresAdoptedController,
       },
       {
         'siNo': '9',
         'particulars': 'restrictions on use of the report, if any;',
-        'controller': _vcRestrictionsOnUseController
+        'controller': _vcRestrictionsOnUseController,
       },
       {
         'siNo': '10',
         'particulars':
             'major factors that were taken into account during the valuation;',
-        'controller': _vcMajorFactors1Controller
+        'controller': _vcMajorFactors1Controller,
       },
       {
         'siNo': '11',
         'particulars':
             'major factors that were taken into account during the valuation;',
-        'controller': _vcMajorFactors2Controller
+        'controller': _vcMajorFactors2Controller,
       },
       {
         'siNo': '12',
         'particulars':
             'Caveats, limitations and disclaimers to the extent they explain or elucidate the limitations faced by valuer, which shall not be for the purpose of limiting his responsibility for the valuation report.',
-        'controller': _vcCaveatsLimitationsController
+        'controller': _vcCaveatsLimitationsController,
       },
     ];
 
     List<pw.TableRow> rows = [];
 
     // Table Header
-    rows.add(pw.TableRow(
-      children: [
-        pw.Container(
-          padding: cellPadding,
-          alignment: pw.Alignment.center,
-          child: pw.Text('SI No.', style: headerTextStyle),
-        ),
-        pw.Container(
-          padding: cellPadding,
-          alignment: pw.Alignment.center,
-          child: pw.Text('Particulars', style: headerTextStyle),
-        ),
-        pw.Container(
-          padding: cellPadding,
-          alignment: pw.Alignment.center,
-          child: pw.Text('Valuer comment', style: headerTextStyle),
-        ),
-      ],
-    ));
-
-    // Data Rows
-    for (var item in data) {
-      rows.add(pw.TableRow(
+    rows.add(
+      pw.TableRow(
         children: [
           pw.Container(
             padding: cellPadding,
-            child: pw.Text(item['siNo'], style: contentTextStyle),
+            alignment: pw.Alignment.center,
+            child: pw.Text('SI No.', style: headerTextStyle),
           ),
           pw.Container(
             padding: cellPadding,
-            child: pw.Text(item['particulars'], style: contentTextStyle),
+            alignment: pw.Alignment.center,
+            child: pw.Text('Particulars', style: headerTextStyle),
           ),
           pw.Container(
             padding: cellPadding,
-            child: pw.Text(item['controller'].text, style: contentTextStyle),
+            alignment: pw.Alignment.center,
+            child: pw.Text('Valuer comment', style: headerTextStyle),
           ),
         ],
-      ));
+      ),
+    );
+
+    // Data Rows
+    for (var item in data) {
+      rows.add(
+        pw.TableRow(
+          children: [
+            pw.Container(
+              padding: cellPadding,
+              child: pw.Text(item['siNo'], style: contentTextStyle),
+            ),
+            pw.Container(
+              padding: cellPadding,
+              child: pw.Text(item['particulars'], style: contentTextStyle),
+            ),
+            pw.Container(
+              padding: cellPadding,
+              child: pw.Text(item['controller'].text, style: contentTextStyle),
+            ),
+          ],
+        ),
+      );
     }
     return rows;
   }
@@ -2883,13 +3938,9 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
     final pdf = pw.Document();
 
     // Get selected documents
-    final List<String> selectedDocuments = _documentChecks.entries
-        .where((entry) => entry.value)
-        .map((entry) => entry.key)
-        .toList();
 
     // Get table rows for each section
-    final List<pw.TableRow> page1Rows = _getPage1TableRows(selectedDocuments);
+    final List<pw.TableRow> page1Rows = _getPage1TableRows();
     final List<pw.TableRow> page2Table1Rows = _getPage2Table1Rows();
     final List<pw.TableRow> page2Table2Rows = _getPage2Table2Rows();
     final List<pw.TableRow> page2Table2RowsHeading =
@@ -2939,43 +3990,72 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                   height: 80,
                   width: 80,
                   child: pw.Image(
-                      logoImage), // logoImage = pw.MemoryImage or pw.ImageProvider
+                    logoImage,
+                  ), // logoImage = pw.MemoryImage or pw.ImageProvider
                 ),
 
                 // Right side text
                 pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.end,
                   children: [
-                    pw.Text('VIGNESH. S',
-                        style: pw.TextStyle(
-                            fontSize: 14,
-                            fontWeight: pw.FontWeight.bold,
-                            color: pdfLib.PdfColors.indigo)),
+                    pw.Text(
+                      'VIGNESH. S',
+                      style: pw.TextStyle(
+                        fontSize: 14,
+                        fontWeight: pw.FontWeight.bold,
+                        color: pdfLib.PdfColors.indigo,
+                      ),
+                    ),
                     pw.SizedBox(height: 4),
-                    pw.Text('Chartered Engineer (AM1920793)',
-                        style: const pw.TextStyle(
-                            fontSize: 12, color: pdfLib.PdfColors.indigo)),
                     pw.Text(
-                        'Registered valuer under section 247 of Companies Act, 2013',
-                        style: const pw.TextStyle(
-                            fontSize: 12, color: pdfLib.PdfColors.indigo)),
-                    pw.Text('(IBBI/RV/01/2020/13411)',
-                        style: const pw.TextStyle(
-                            fontSize: 12, color: pdfLib.PdfColors.indigo)),
+                      'Chartered Engineer (AM1920793)',
+                      style: const pw.TextStyle(
+                        fontSize: 12,
+                        color: pdfLib.PdfColors.indigo,
+                      ),
+                    ),
                     pw.Text(
-                        'Registered valuer under section 34AB of Wealth Tax Act, 1957',
-                        style: const pw.TextStyle(
-                            fontSize: 12, color: pdfLib.PdfColors.indigo)),
-                    pw.Text('(I-9AV/CC-TVM/2020-21)',
-                        style: const pw.TextStyle(
-                            fontSize: 12, color: pdfLib.PdfColors.indigo)),
+                      'Registered valuer under section 247 of Companies Act, 2013',
+                      style: const pw.TextStyle(
+                        fontSize: 12,
+                        color: pdfLib.PdfColors.indigo,
+                      ),
+                    ),
                     pw.Text(
-                        'Registered valuer under section 77(1) of Black Money Act, 2015',
-                        style: const pw.TextStyle(
-                            fontSize: 12, color: pdfLib.PdfColors.indigo)),
-                    pw.Text('(I-3/AV-BM/PCIT-TVM/2023-24)',
-                        style: const pw.TextStyle(
-                            fontSize: 12, color: pdfLib.PdfColors.indigo)),
+                      '(IBBI/RV/01/2020/13411)',
+                      style: const pw.TextStyle(
+                        fontSize: 12,
+                        color: pdfLib.PdfColors.indigo,
+                      ),
+                    ),
+                    pw.Text(
+                      'Registered valuer under section 34AB of Wealth Tax Act, 1957',
+                      style: const pw.TextStyle(
+                        fontSize: 12,
+                        color: pdfLib.PdfColors.indigo,
+                      ),
+                    ),
+                    pw.Text(
+                      '(I-9AV/CC-TVM/2020-21)',
+                      style: const pw.TextStyle(
+                        fontSize: 12,
+                        color: pdfLib.PdfColors.indigo,
+                      ),
+                    ),
+                    pw.Text(
+                      'Registered valuer under section 77(1) of Black Money Act, 2015',
+                      style: const pw.TextStyle(
+                        fontSize: 12,
+                        color: pdfLib.PdfColors.indigo,
+                      ),
+                    ),
+                    pw.Text(
+                      '(I-3/AV-BM/PCIT-TVM/2023-24)',
+                      style: const pw.TextStyle(
+                        fontSize: 12,
+                        color: pdfLib.PdfColors.indigo,
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -2989,7 +4069,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                 // Top background strip with address
                 pw.Container(
                   color: pdfLib.PdfColor.fromHex(
-                      '#8a9b8e'), // Approx background color
+                    '#8a9b8e',
+                  ), // Approx background color
                   padding: const pw.EdgeInsets.all(6),
                   width: double.infinity,
                   child: pw.Text(
@@ -3016,16 +4097,20 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                     // Phone
                     pw.Row(
                       children: [
-                        pw.Text('Phone: +91 89030 42635',
-                            style: const pw.TextStyle(fontSize: 12)),
+                        pw.Text(
+                          'Phone: +91 89030 42635',
+                          style: const pw.TextStyle(fontSize: 12),
+                        ),
                       ],
                     ),
 
                     // Email
                     pw.Row(
                       children: [
-                        pw.Text('Email: subramonyvignesh@gmail.com',
-                            style: const pw.TextStyle(fontSize: 12)),
+                        pw.Text(
+                          'Email: subramonyvignesh@gmail.com',
+                          style: const pw.TextStyle(fontSize: 12),
+                        ),
                       ],
                     ),
                   ],
@@ -3041,20 +4126,34 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                     pw.Column(
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       children: [
-                        pw.Text('To,',
-                            style: pw.TextStyle(
-                                fontSize: 12, fontWeight: pw.FontWeight.bold)),
-                        pw.Text('State Bank of India',
-                            style: const pw.TextStyle(fontSize: 12)),
-                        pw.Text('Chakai Branch',
-                            style: const pw.TextStyle(fontSize: 12)),
-                        pw.Text('Thiruvananthapuram',
-                            style: const pw.TextStyle(fontSize: 12)),
+                        pw.Text(
+                          'To,',
+                          style: pw.TextStyle(
+                            fontSize: 12,
+                            fontWeight: pw.FontWeight.bold,
+                          ),
+                        ),
+                        pw.Text(
+                          'The State Bank of India',
+                          style: const pw.TextStyle(fontSize: 12),
+                        ),
+                        pw.Text(
+                          'Chakai Branch',
+                          style: const pw.TextStyle(fontSize: 12),
+                        ),
+                        pw.Text(
+                          'Thiruvananthapuram',
+                          style: const pw.TextStyle(fontSize: 12),
+                        ),
                       ],
                     ),
-                    pw.Text('Ref No.: ${_refId.text}',
-                        style: pw.TextStyle(
-                            fontSize: 12, fontWeight: pw.FontWeight.bold)),
+                    pw.Text(
+                      'Ref No.: ${_refId.text}',
+                      style: pw.TextStyle(
+                        fontSize: 12,
+                        fontWeight: pw.FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -3066,9 +4165,9 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
               child: pw.Text(
                 'FORMAT - A',
                 style: pw.TextStyle(
-                    fontSize: 14,
-                    fontWeight:
-                        pw.FontWeight.bold), // Slightly reduced font size
+                  fontSize: 14,
+                  fontWeight: pw.FontWeight.bold,
+                ), // Slightly reduced font size
               ),
             ),
             pw.SizedBox(height: 8), // Reduced SizedBox height
@@ -3076,21 +4175,24 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
               child: pw.Text(
                 'VALUATION REPORT (IN RESPECT OF LAND / SITE AND BUILDING)',
                 style: pw.TextStyle(
-                    fontSize: 12,
-                    fontWeight:
-                        pw.FontWeight.bold), // Slightly reduced font size
+                  fontSize: 12,
+                  fontWeight: pw.FontWeight.bold,
+                ), // Slightly reduced font size
                 textAlign: pw.TextAlign.center,
               ),
             ),
             pw.SizedBox(height: 15), // Reduced SizedBox height
 
             pw.Table(
-              border:
-                  pw.TableBorder.all(color: pdfLib.PdfColors.black, width: 0.5),
+              border: pw.TableBorder.all(
+                color: pdfLib.PdfColors.black,
+                width: 0.5,
+              ),
               columnWidths: {
                 0: const pw.FlexColumnWidth(0.5), // S.No
                 1: const pw.FlexColumnWidth(
-                    3), // PROPERTY DETAILS (Description)
+                  3,
+                ), // PROPERTY DETAILS (Description)
                 2: const pw.FlexColumnWidth(0.2), // Colon (:)
                 3: const pw.FlexColumnWidth(3.8), // Value/Details
               },
@@ -3101,47 +4203,70 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                     pw.Container(
                       alignment: pw.Alignment.center,
                       padding: const pw.EdgeInsets.all(6),
-                      child: pw.Text('S.No',
-                          style: pw.TextStyle(
-                              fontWeight: pw.FontWeight.bold,
-                              fontSize: 9)), // Reduced font size
-                      decoration: pw.BoxDecoration(
-                          border: pw.Border.all(
-                              color: pdfLib.PdfColors.black, width: 0.5)),
+                      child: pw.Text(
+                        'S.No',
+                        style: pw.TextStyle(
+                          fontWeight: pw.FontWeight.bold,
+                          fontSize: 7,
+                        ),
+                      ), // Reduced font size
+                      // decoration: pw.BoxDecoration(
+                      //   border: pw.Border.all(
+                      //     color: pdfLib.PdfColors.black,
+                      //     width: 0.5,
+                      //   ),
+                      // ),
                     ),
                     pw.Container(
                       alignment: pw.Alignment.center,
                       padding: const pw.EdgeInsets.all(6),
-                      child: pw.Text('PROPERTY DETAILS',
-                          style: pw.TextStyle(
-                              fontWeight: pw.FontWeight.bold,
-                              fontSize: 9)), // Reduced font size
-                      decoration: pw.BoxDecoration(
-                          border: pw.Border.all(
-                              color: pdfLib.PdfColors.black, width: 0.5)),
+                      child: pw.Text(
+                        'PROPERTY DETAILS',
+                        style: pw.TextStyle(
+                          fontWeight: pw.FontWeight.bold,
+                          fontSize: 9,
+                        ),
+                      ), // Reduced font size
+                      // decoration: pw.BoxDecoration(
+                      //   border: pw.Border.all(
+                      //     color: pdfLib.PdfColors.black,
+                      //     width: 0.5,
+                      //   ),
+                      // ),
                     ),
                     pw.Container(
                       alignment: pw.Alignment.center,
                       padding: const pw.EdgeInsets.all(6),
-                      child: pw.Text('',
-                          style: pw.TextStyle(
-                              fontWeight: pw.FontWeight.bold,
-                              fontSize: 9)), // Colon column header
-                      decoration: pw.BoxDecoration(
-                          border: pw.Border.all(
-                              color: pdfLib.PdfColors.black, width: 0.5)),
+                      child: pw.Text(
+                        '',
+                        style: pw.TextStyle(
+                          fontWeight: pw.FontWeight.bold,
+                          fontSize: 9,
+                        ),
+                      ), // Colon column header
+                      // decoration: pw.BoxDecoration(
+                      //   border: pw.Border.all(
+                      //     color: pdfLib.PdfColors.black,
+                      //     width: 0.5,
+                      //   ),
+                      // ),
                     ),
                     pw.Container(
                       alignment: pw.Alignment.center,
                       padding: const pw.EdgeInsets.all(6),
-                      child: pw.Text('',
-                          style: pw.TextStyle(
-                              fontWeight: pw.FontWeight.bold,
-                              fontSize:
-                                  9)), // Value column header (empty as per request)
-                      decoration: pw.BoxDecoration(
-                          border: pw.Border.all(
-                              color: pdfLib.PdfColors.black, width: 0.5)),
+                      child: pw.Text(
+                        '',
+                        style: pw.TextStyle(
+                          fontWeight: pw.FontWeight.bold,
+                          fontSize: 9,
+                        ),
+                      ), // Value column header (empty as per request)
+                      //   decoration: pw.BoxDecoration(
+                      //     border: pw.Border.all(
+                      //       color: pdfLib.PdfColors.black,
+                      //       width: 0.5,
+                      //     ),
+                      //   ),
                     ),
                   ],
                 ),
@@ -3161,8 +4286,10 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
           return [
             // First table on Page 2 (Items 10-14)
             pw.Table(
-              border:
-                  pw.TableBorder.all(color: pdfLib.PdfColors.black, width: 0.5),
+              border: pw.TableBorder.all(
+                color: pdfLib.PdfColors.black,
+                width: 0.5,
+              ),
               columnWidths: {
                 0: const pw.FlexColumnWidth(0.5), // S.No
                 1: const pw.FlexColumnWidth(5.0), // Description
@@ -3173,13 +4300,15 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                 ...page2Table1Rows, // Add rows for the first table on page 2
               ],
             ),
+
             // Removed pw.SizedBox(height: 15) between table 14 and 15.
 
             // Second table on Page 2 (Item 15)
-
             pw.Table(
-              border:
-                  pw.TableBorder.all(color: pdfLib.PdfColors.black, width: 0.5),
+              border: pw.TableBorder.all(
+                color: pdfLib.PdfColors.black,
+                width: 0.5,
+              ),
               columnWidths: {
                 0: const pw.FlexColumnWidth(0.1), // S.No
                 1: const pw.FlexColumnWidth(1.5), // Directions
@@ -3190,16 +4319,20 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
             ),
 
             pw.Table(
-              border:
-                  pw.TableBorder.all(color: pdfLib.PdfColors.black, width: 0.5),
+              border: pw.TableBorder.all(
+                color: pdfLib.PdfColors.black,
+                width: 0.5,
+              ),
               columnWidths: {
                 0: const pw.FlexColumnWidth(0.5), // S.No
                 1: const pw.FlexColumnWidth(1.5), // Directions
                 2: const pw.FlexColumnWidth(0.2), // As per Actuals
                 3: const pw.FlexColumnWidth(
-                    2.0), // As per Documents (slightly wider for text)
+                  2.0,
+                ), // As per Documents (slightly wider for text)
                 4: const pw.FlexColumnWidth(
-                    2.5), // Adopted area in Sft (wider to accommodate text)
+                  2.5,
+                ), // Adopted area in Sft (wider to accommodate text)
               },
               children: [
                 ...page2Table2Rows, // Add rows for the second table on page 2
@@ -3207,8 +4340,10 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
             ),
 
             pw.Table(
-              border:
-                  pw.TableBorder.all(color: pdfLib.PdfColors.black, width: 0.5),
+              border: pw.TableBorder.all(
+                color: pdfLib.PdfColors.black,
+                width: 0.5,
+              ),
               columnWidths: {
                 0: const pw.FlexColumnWidth(0.1), // S.No
                 1: const pw.FlexColumnWidth(1.5), // Directions
@@ -3219,16 +4354,20 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
             ),
 
             pw.Table(
-              border:
-                  pw.TableBorder.all(color: pdfLib.PdfColors.black, width: 0.5),
+              border: pw.TableBorder.all(
+                color: pdfLib.PdfColors.black,
+                width: 0.5,
+              ),
               columnWidths: {
                 0: const pw.FlexColumnWidth(0.5), // S.No
                 1: const pw.FlexColumnWidth(1.5), // Directions
                 2: const pw.FlexColumnWidth(1.5), // As per Actuals
                 3: const pw.FlexColumnWidth(
-                    2.0), // As per Documents (slightly wider for text)
+                  2.0,
+                ), // As per Documents (slightly wider for text)
                 4: const pw.FlexColumnWidth(
-                    2.5), // Adopted area in Sft (wider to accommodate text)
+                  2.5,
+                ), // Adopted area in Sft (wider to accommodate text)
               },
               children: [
                 ...page2Table2RowsPart2, // Add rows for the second table on page 2
@@ -3237,8 +4376,10 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
 
             // Third table on Page 2 (Items 16-17)
             pw.Table(
-              border:
-                  pw.TableBorder.all(color: pdfLib.PdfColors.black, width: 0.5),
+              border: pw.TableBorder.all(
+                color: pdfLib.PdfColors.black,
+                width: 0.5,
+              ),
               columnWidths: {
                 0: const pw.FlexColumnWidth(0.5), // S.No
                 1: const pw.FlexColumnWidth(5.0), // Description
@@ -3253,14 +4394,18 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
 
             // New Table for Item 18 (Floor Details) and Items 19-20 (Road Details)
             pw.Table(
-              border:
-                  pw.TableBorder.all(color: pdfLib.PdfColors.black, width: 0.5),
+              border: pw.TableBorder.all(
+                color: pdfLib.PdfColors.black,
+                width: 0.5,
+              ),
               columnWidths: {
                 0: const pw.FlexColumnWidth(0.5), // S.No.
                 1: const pw.FlexColumnWidth(
-                    1.5), // Details /Floors / Description
+                  1.5,
+                ), // Details /Floors / Description
                 2: const pw.FlexColumnWidth(
-                    1.5), // Occupancy (Self/Rented) / Colon
+                  1.5,
+                ), // Occupancy (Self/Rented) / Colon
                 3: const pw.FlexColumnWidth(1.0), // No. Of Room / Value
                 4: const pw.FlexColumnWidth(1.0), // No. Of Kitchen
                 5: const pw.FlexColumnWidth(1.0), // No. of Bathroom
@@ -3272,8 +4417,10 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
             ),
 
             pw.Table(
-              border:
-                  pw.TableBorder.all(color: pdfLib.PdfColors.black, width: 0.5),
+              border: pw.TableBorder.all(
+                color: pdfLib.PdfColors.black,
+                width: 0.5,
+              ),
               columnWidths: {
                 0: const pw.FlexColumnWidth(0.5), // S.No
                 1: const pw.FlexColumnWidth(5.0), // Description
@@ -3296,8 +4443,10 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
         build: (pw.Context context) {
           return [
             pw.Table(
-              border:
-                  pw.TableBorder.all(color: pdfLib.PdfColors.black, width: 0.5),
+              border: pw.TableBorder.all(
+                color: pdfLib.PdfColors.black,
+                width: 0.5,
+              ),
               columnWidths: {
                 0: const pw.FlexColumnWidth(0.5), // S.No
                 1: const pw.FlexColumnWidth(5.0), // Description
@@ -3310,8 +4459,10 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
             ),
 
             pw.Table(
-              border:
-                  pw.TableBorder.all(color: pdfLib.PdfColors.black, width: 0.5),
+              border: pw.TableBorder.all(
+                color: pdfLib.PdfColors.black,
+                width: 0.5,
+              ),
               columnWidths: {
                 0: const pw.FlexColumnWidth(0.5), // Value in Rs.
               },
@@ -3320,8 +4471,10 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
               ],
             ),
             pw.Table(
-              border:
-                  pw.TableBorder.all(color: pdfLib.PdfColors.black, width: 0.5),
+              border: pw.TableBorder.all(
+                color: pdfLib.PdfColors.black,
+                width: 0.5,
+              ),
               columnWidths: {
                 0: const pw.FlexColumnWidth(0.5), // S.No
                 1: const pw.FlexColumnWidth(2.5), // Details
@@ -3335,10 +4488,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
             ),
 
             // NEW: Building Valuation Table (Part B)
-
             pw.Table(
-              border:
-                  pw.TableBorder.all(color: pdfLib.PdfColors.black, width: 0.5),
+              border: pw.TableBorder.all(
+                color: pdfLib.PdfColors.black,
+                width: 0.5,
+              ),
               columnWidths: {
                 0: const pw.FlexColumnWidth(0.5), // Value in Rs.
               },
@@ -3348,8 +4502,10 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
             ),
 
             pw.Table(
-              border:
-                  pw.TableBorder.all(color: pdfLib.PdfColors.black, width: 0.5),
+              border: pw.TableBorder.all(
+                color: pdfLib.PdfColors.black,
+                width: 0.5,
+              ),
               columnWidths: {
                 0: const pw.FlexColumnWidth(0.25), // S.No
                 1: const pw.FlexColumnWidth(5.0),
@@ -3360,8 +4516,10 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
             ),
 
             pw.Table(
-              border:
-                  pw.TableBorder.all(color: pdfLib.PdfColors.black, width: 0.5),
+              border: pw.TableBorder.all(
+                color: pdfLib.PdfColors.black,
+                width: 0.5,
+              ),
               columnWidths: {
                 0: const pw.FlexColumnWidth(0.5), // S.No
                 1: const pw.FlexColumnWidth(0.5), // Sub-item (a, b, c...)
@@ -3373,22 +4531,25 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
               ],
             ),
             pw.SizedBox(height: 15), // Add some space between tables
-
             // NEW: Build up Area Table
             pw.Table(
-              border:
-                  pw.TableBorder.all(color: pdfLib.PdfColors.black, width: 0.5),
+              border: pw.TableBorder.all(
+                color: pdfLib.PdfColors.black,
+                width: 0.5,
+              ),
               columnWidths: {
                 0: const pw.FlexColumnWidth(0.5), // S n
                 1: const pw.FlexColumnWidth(1.5), // Particular of item
                 2: const pw.FlexColumnWidth(1.5), // As per approved Plan/FSI
                 3: const pw.FlexColumnWidth(1.5), // As per Actual
                 4: const pw.FlexColumnWidth(
-                    1.5), // Area Considered for the Valuation
+                  1.5,
+                ), // Area Considered for the Valuation
                 5: const pw.FlexColumnWidth(1.5), // Replacement Cost in Rs.
                 6: const pw.FlexColumnWidth(1.5), // Depreciation in Rs.
                 7: const pw.FlexColumnWidth(
-                    1.5), // Net value after Depreciations Rs.
+                  1.5,
+                ), // Net value after Depreciations Rs.
               },
               children: [
                 ...buildUpAreaRows, // Add rows for the new build up area table
@@ -3408,8 +4569,10 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
             pw.Center(
               child: pw.Text(
                 'Details of Valuation',
-                style:
-                    pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12),
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 12,
+                ),
                 textAlign: pw.TextAlign.center,
               ),
             ),
@@ -3418,16 +4581,20 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
             pw.Center(
               child: pw.Text(
                 'Part C- Amenities                                            (Amount in Rs.)',
-                style:
-                    pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12),
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 12,
+                ),
                 textAlign: pw.TextAlign.center,
               ),
             ),
 
             pw.SizedBox(height: 10),
             pw.Table(
-              border:
-                  pw.TableBorder.all(color: pdfLib.PdfColors.black, width: 0.5),
+              border: pw.TableBorder.all(
+                color: pdfLib.PdfColors.black,
+                width: 0.5,
+              ),
               columnWidths: {
                 0: const pw.FlexColumnWidth(0.5), // S.No
                 1: const pw.FlexColumnWidth(3.0), // Item
@@ -3443,8 +4610,10 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
             pw.Center(
               child: pw.Text(
                 'Total abstract of the entire property',
-                style:
-                    pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12),
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 12,
+                ),
                 textAlign: pw.TextAlign.center,
               ),
             ),
@@ -3452,8 +4621,10 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
 
             // NEW: Total abstract of the entire property Table
             pw.Table(
-              border:
-                  pw.TableBorder.all(color: pdfLib.PdfColors.black, width: 0.5),
+              border: pw.TableBorder.all(
+                color: pdfLib.PdfColors.black,
+                width: 0.5,
+              ),
               columnWidths: {
                 0: const pw.FlexColumnWidth(1.0), // Part
                 1: const pw.FlexColumnWidth(2.0), // Description
@@ -3472,73 +4643,106 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
               style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12),
             ),
             pw.SizedBox(height: 30),
-            pw.Text('1. ${_remark1Controller.text}',
-                style: const pw.TextStyle(fontSize: 10)),
-            pw.Text('2. ${_remark2Controller.text}',
-                style: const pw.TextStyle(fontSize: 10)),
-            pw.Text('3. ${_remark3Controller.text}',
-                style: const pw.TextStyle(fontSize: 10)),
-            pw.Text('4. ${_remark4Controller.text}',
-                style: const pw.TextStyle(fontSize: 10)),
+            pw.Text(
+              '1. ${_remark1Controller.text}',
+              style: const pw.TextStyle(fontSize: 10),
+            ),
+            pw.Text(
+              '2. ${_remark2Controller.text}',
+              style: const pw.TextStyle(fontSize: 10),
+            ),
+            pw.Text(
+              '3. ${_remark3Controller.text}',
+              style: const pw.TextStyle(fontSize: 10),
+            ),
+            pw.Text(
+              '4. ${_remark4Controller.text}',
+              style: const pw.TextStyle(fontSize: 10),
+            ),
           ];
         },
       ),
     );
 
     // Page 5 - New page for the final valuation table
-    pdf.addPage(pw.MultiPage(
+    pdf.addPage(
+      pw.MultiPage(
         pageFormat: pdfLib.PdfPageFormat.a4,
         build: (pw.Context context) {
           return [
             pw.Center(
-                child: pw.Column(children: [
-              pw.Text(
-                  '     (Valuation: Here the approved valuer should discuss in detail his approach to valuation of property and indicate how the value has been arrived at, supported by necessary calculations. Also, such aspects as i) Salability ii) Likely rental values in future in iii) Any likely income it may generate, may be discussed).',
-                  style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-              pw.SizedBox(height: 10),
-              pw.Text(
-                  'Photograph of owner/representative with property in background to be enclosed.'),
-              pw.SizedBox(height: 10),
-              pw.Text(
-                  'Screen shot of longitude/latitude and co-ordinates of property using GPS/Various Apps/Internet sites'),
-              pw.SizedBox(height: 10),
-              pw.Text(
-                  "As a result of my appraisal and analysis, it is my considered opinion that the present value's of the above property in the prevailing condition with aforesaid specifications is "),
-              pw.SizedBox(height: 30),
-              pw.Table(
-                border: pw.TableBorder.all(
-                    color: pdfLib.PdfColors.black, width: 0.5),
-                columnWidths: {
-                  0: const pw.FlexColumnWidth(3.0), // Description
-                  1: const pw.FlexColumnWidth(2.0), // Value
-                },
+              child: pw.Column(
                 children: [
-                  ...finalValuationTableRows, // Add rows for the new final valuation table
+                  pw.Text(
+                    '     (Valuation: Here the approved valuer should discuss in detail his approach to valuation of property and indicate how the value has been arrived at, supported by necessary calculations. Also, such aspects as i) Salability ii) Likely rental values in future in iii) Any likely income it may generate, may be discussed).',
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                  ),
+                  pw.SizedBox(height: 10),
+                  pw.Text(
+                    'Photograph of owner/representative with property in background to be enclosed.',
+                  ),
+                  pw.SizedBox(height: 10),
+                  pw.Text(
+                    'Screen shot of longitude/latitude and co-ordinates of property using GPS/Various Apps/Internet sites',
+                  ),
+                  pw.SizedBox(height: 10),
+                  pw.Text(
+                    "As a result of my appraisal and analysis, it is my considered opinion that the present value's of the above property in the prevailing condition with aforesaid specifications is ",
+                  ),
+                  pw.SizedBox(height: 30),
+                  pw.Table(
+                    border: pw.TableBorder.all(
+                      color: pdfLib.PdfColors.black,
+                      width: 0.5,
+                    ),
+                    columnWidths: {
+                      0: const pw.FlexColumnWidth(3.0), // Description
+                      1: const pw.FlexColumnWidth(2.0), // Value
+                    },
+                    children: [
+                      ...finalValuationTableRows, // Add rows for the new final valuation table
+                    ],
+                  ),
                 ],
               ),
-            ])),
+            ),
             pw.SizedBox(height: 30),
-            pw.Text('Place: ',
-                style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+            pw.Text(
+              'Place: ',
+              style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+            ),
             pw.SizedBox(height: 10),
-            pw.Text('Date: ',
-                style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+            pw.Text(
+              'Date: ',
+              style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+            ),
             pw.SizedBox(height: 10),
             pw.Align(
-                alignment: pw.Alignment.centerRight,
-                child: pw.Column(children: [
-                  pw.Text('Signature',
-                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+              alignment: pw.Alignment.centerRight,
+              child: pw.Column(
+                children: [
+                  pw.Text(
+                    'Signature',
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                  ),
                   pw.SizedBox(height: 10),
-                  pw.Text('(Name and Official seal of',
-                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                  pw.Text('   the Approved Valuer)',
-                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                ])),
+                  pw.Text(
+                    '(Name and Official seal of',
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                  ),
+                  pw.Text(
+                    '   the Approved Valuer)',
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
             pw.SizedBox(height: 50),
             pw.Text('Encl: Declaration from the valuer in Format E'),
           ];
-        }));
+        },
+      ),
+    );
 
     if (_images.isNotEmpty) {
       final double pageWidth =
@@ -3628,11 +4832,7 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
         for (int k = 0; k < pageImages.length; k += 3) {
           List<pw.Widget> rowChildren = [];
           for (int l = 0; l < 3 && (k + l) < pageImages.length; l++) {
-            rowChildren.add(
-              pw.Expanded(
-                child: pageImages[k + l],
-              ),
-            );
+            rowChildren.add(pw.Expanded(child: pageImages[k + l]));
           }
           rows.add(
             pw.Row(
@@ -3641,8 +4841,9 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
             ),
           );
           if (k + 3 < pageImages.length) {
-            rows.add(pw.SizedBox(
-                height: imageVerticalPadding)); // Space between rows
+            rows.add(
+              pw.SizedBox(height: imageVerticalPadding),
+            ); // Space between rows
           }
         }
 
@@ -3662,9 +4863,7 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                 ),
               ),
               pw.SizedBox(height: 10),
-              pw.Column(
-                children: rows,
-              ),
+              pw.Column(children: rows),
             ],
           ),
         );
@@ -3699,8 +4898,10 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
             ),
           ),
           pw.SizedBox(height: 30),
-          pw.Text('I hereby declare that - ',
-              style: const pw.TextStyle(fontSize: 12)),
+          pw.Text(
+            'I hereby declare that - ',
+            style: const pw.TextStyle(fontSize: 12),
+          ),
           pw.SizedBox(height: 15),
           pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -3783,8 +4984,10 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
           ),
           pw.SizedBox(height: 20),
           pw.Table(
-            border:
-                pw.TableBorder.all(color: pdfLib.PdfColors.black, width: 0.5),
+            border: pw.TableBorder.all(
+              color: pdfLib.PdfColors.black,
+              width: 0.5,
+            ),
             columnWidths: {
               0: const pw.FlexColumnWidth(0.5), // SI No.
               1: const pw.FlexColumnWidth(3.0), // Particulars
@@ -3801,7 +5004,7 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
       onLayout: (pdfLib.PdfPageFormat format) async => pdf.save(),
     );
   }
- // 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -3816,130 +5019,105 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              // ... [UI code remains unchanged] ...
-              Center(
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  margin: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(
-                        255, 244, 238, 238), // Light background color
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color.fromARGB(255, 204, 200, 200)
-                            .withOpacity(0.3),
-                        spreadRadius: 4,
-                        blurRadius: 8,
-                        offset: const Offset(0, 4), // Shadow position
-                      ),
-                    ],
-                  ),
+              Card(
+                elevation: 4,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TextField(
-                        // Changed from TextFormField to TextField
-                        controller: _latController,
+                      Text(
+                        "Search for Nearby Property",
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _latitude,
                         decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(20))), // Applied new styling
-                          hintText: 'Latitude',
+                          labelText: 'Latitude',
                         ),
                       ),
-                      const SizedBox(height: 20),
-                      TextField(
-                        // Changed from TextFormField to TextField
-                        controller: _lonController,
+                      const SizedBox(height: 8),
+                      TextFormField(
+                        controller: _longitude,
                         decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(20))), // Applied new styling
-                          hintText: 'Longitude',
+                          labelText: 'Longitude',
                         ),
                       ),
-                      const SizedBox(height: 30),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton.icon(
-                            onPressed: _getCurrentLocation,
-                            icon: const Icon(Icons.my_location),
-                            label: const Text('Get Location',
-                                style: TextStyle(fontSize: 15.5)),
-                            style: ButtonStyle(
-                              fixedSize:
-                                  WidgetStateProperty.all(const Size(200, 40)),
-                              shape: WidgetStateProperty.all(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
+                      const SizedBox(height: 8),
+                      Center(
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    onPressed:
+                                        _getNearbyLocation, // Call our new method
+                                    icon: const Icon(Icons.my_location),
+                                    label: const Text('Get Location'),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 15), // Spacing between buttons
-                          ElevatedButton.icon(
-                            onPressed: () {
-                              _getNearbyProperty();
-                            },
-                            icon: const Icon(Icons.search),
-                            label: const Text('Search',
-                                style: TextStyle(fontSize: 15.5)),
-                            style: ButtonStyle(
-                              fixedSize:
-                                  WidgetStateProperty.all(const Size(150, 40)),
-                              shape: WidgetStateProperty.all(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
+                                const SizedBox(width: 5),
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    onPressed: /* () {
+                                  Navigator.of(context)
+                                      .push(MaterialPageRoute(builder: (ctx) {
+                                    return Nearbydetails(
+                                        latitude: _nearbyLatitude.text,
+                                        longitude: _nearbyLongitude.text);
+                                  }));
+                                } */
+                                        _getNearbyProperty,
+                                    label: const Text('Search'),
+                                    icon: const Icon(Icons.search),
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
-                          ),
-                        ],
-                      )
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
 
               const SizedBox(height: 20),
+
               Center(
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const SavedDraftsSBILand(),
-                      ),
-                    );
-                  },
-                  icon: const Icon(
-                    Icons.search,
-                    size: 30,
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    right: 50,
+                    left: 50,
+                    top: 10,
+                    bottom: 10,
                   ),
-                  label: const Text(
-                    'Search Saved Drafts',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  style: ButtonStyle(
-                    fixedSize: WidgetStateProperty.all(const Size(300, 50)),
-                    shape: WidgetStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
+                  child: FloatingActionButton.extended(
+                    icon: const Icon(Icons.search),
+                    label: const Text('Search Saved Drafts'),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (ctx) {
+                            return const SavedDraftsSBILand();
+                          },
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),
-              // ... [rest of UI code unchanged, all business logic, fields, PDF generation, etc. remain identical] ...
               const SizedBox(height: 20),
 
               TextField(
                 decoration: const InputDecoration(
                   hintText: "Reference ID",
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(20))),
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  ),
                 ),
                 controller: _refId,
               ),
@@ -3955,15 +5133,18 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                     false, // You can set this to false to start collapsed
                 children: <Widget>[
                   const Divider(),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _purposeController,
                     decoration: const InputDecoration(
                       labelText: '1. Purpose for which the valuation is made',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _dateOfInspectionController,
@@ -3973,9 +5154,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                     decoration: const InputDecoration(
                       labelText: '2. a) Date of inspection',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _dateOfValuationController,
@@ -3985,7 +5168,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                     decoration: const InputDecoration(
                       labelText: '2. b) Date on which the valuation is made',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -3993,34 +5177,114 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                     '3. List of documents produced for perusal',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  ..._documentChecks.keys.map((documentName) {
-                    return CheckboxListTile(
-                      title: Text(documentName),
-                      value: _documentChecks[documentName],
-                      onChanged: (bool? value) {
-                        setState(() {
-                          _documentChecks[documentName] = value!;
-                        });
-                      },
-                    );
-                  }),
                   const SizedBox(height: 16),
+                  TextField(
+                    // Changed from _buildTextField
+                    controller: _LandTaxReceipt,
+                    decoration: const InputDecoration(
+                      labelText: 'Land Tax Receipt',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 13),
+                  TextField(
+                    // Changed from _buildTextField
+                    controller: _TitleDeed,
+                    decoration: const InputDecoration(
+                      labelText: 'Title Deed',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 13),
+                  TextField(
+                    // Changed from _buildTextField
+                    controller: _BuildingCertificate,
+                    decoration: const InputDecoration(
+                      labelText: 'Building Certificate',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 13),
+                  TextField(
+                    // Changed from _buildTextField
+                    controller: _LocationSketch,
+                    decoration: const InputDecoration(
+                      labelText: 'Location Sketch',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 13),
+                  TextField(
+                    // Changed from _buildTextField
+                    controller: _PossessionCertificate,
+                    decoration: const InputDecoration(
+                      labelText: 'Possession Certificate',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 13),
+                  TextField(
+                    // Changed from _buildTextField
+                    controller: _BuildingCompletionPlan,
+                    decoration: const InputDecoration(
+                      labelText: 'Building Completion Plan',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 13),
+                  TextField(
+                    // Changed from _buildTextField
+                    controller: _ThandapperDocument,
+                    decoration: const InputDecoration(
+                      labelText: 'Thandapper Document',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 13),
+                  TextField(
+                    // Changed from _buildTextField
+                    controller: _BuildingTaxReceipt,
+                    decoration: const InputDecoration(
+                      labelText: 'Building Tax Receipt',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 40),
                   TextField(
                     // Changed from _buildTextField
                     controller: _ownerNameController,
                     decoration: const InputDecoration(
                       labelText: '4. Name of the owner(s)',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _applicantNameController,
                     decoration: const InputDecoration(
                       labelText: '5. Name of the applicant(s)',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -4028,24 +5292,29 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                     '6. The address of the property (including pin code)',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _addressDocController,
                     decoration: const InputDecoration(
                       labelText: '  As Per Documents',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _addressActualController,
                     decoration: const InputDecoration(
                       labelText: '  As per actual/postal',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _deviationsController,
@@ -4053,9 +5322,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: '7. Deviations if any',
                       hintText: 'Enter any deviations (e.g., "None")',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _propertyTypeController,
@@ -4063,9 +5334,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: '8. The property type (Leasehold/ Freehold)',
                       hintText: 'e.g., Leasehold or Freehold',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _propertyZoneController,
@@ -4074,13 +5347,13 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                           '9. Property Zone (Residential/ Commercial/ Industrial/ Agricultural)',
                       hintText: 'e.g., Residential',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 20), // Spacer between collapsible sections
-
               // Collapsible Section: Additional Property Details
               ExpansionTile(
                 title: const Text(
@@ -4098,9 +5371,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                           '10. i) Classification of the area (High / Middle / Poor)',
                       hintText: 'e.g., Middle',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _urbanSemiUrbanRuralController,
@@ -4108,9 +5383,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: '10. ii) Urban / Semi Urban / Rural',
                       hintText: 'e.g., Urban',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _comingUnderCorporationController,
@@ -4119,9 +5396,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                           '11. Coming under Corporation limit / Village Panchayat / Municipality',
                       hintText: 'e.g., Corporation limit',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _coveredUnderStateCentralGovtController,
@@ -4130,9 +5409,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                           '12. Whether covered under any State / Central Govt. enactments',
                       hintText: 'e.g., No',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _agriculturalLandConversionController,
@@ -4141,7 +5422,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                           '13. In case it is an agricultural land, any conversion to house site plots is contemplated',
                       hintText: 'e.g., Not applicable / Yes / No',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 30),
@@ -4159,24 +5441,35 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                             Expanded(flex: 1, child: Text(':')),
                             Expanded(flex: 3, child: Text('As per Title Deed')),
                             Expanded(
-                                flex: 3, child: Text('As per Location Sketch')),
+                              flex: 3,
+                              child: Text('As per Location Sketch'),
+                            ),
                           ],
                         ),
                         _buildBoundaryRow(
-                            'North',
-                            _boundaryNorthTitleController,
-                            _boundaryNorthSketchController),
+                          'North',
+                          _boundaryNorthTitleController,
+                          _boundaryNorthSketchController,
+                        ),
                         _buildBoundaryRow(
-                            'South',
-                            _boundarySouthTitleController,
-                            _boundarySouthSketchController),
-                        _buildBoundaryRow('East', _boundaryEastTitleController,
-                            _boundaryEastSketchController),
-                        _buildBoundaryRow('West', _boundaryWestTitleController,
-                            _boundaryWestSketchController),
+                          'South',
+                          _boundarySouthTitleController,
+                          _boundarySouthSketchController,
+                        ),
+                        _buildBoundaryRow(
+                          'East',
+                          _boundaryEastTitleController,
+                          _boundaryEastSketchController,
+                        ),
+                        _buildBoundaryRow(
+                          'West',
+                          _boundaryWestTitleController,
+                          _boundaryWestSketchController,
+                        ),
                       ],
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _boundaryDeviationsController,
@@ -4184,7 +5477,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: 'Deviations if any',
                       hintText: 'Enter any deviations (e.g., "None")',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 30),
@@ -4198,42 +5492,50 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       children: [
                         const Row(
                           children: [
-                            Expanded(flex: 2, child: Text('Directions')),
-                            Expanded(flex: 3, child: Text('As per Actuals')),
-                            Expanded(flex: 3, child: Text('As per Documents')),
+                            Expanded(flex: 3, child: Text('Directions')),
+                            Expanded(flex: 2, child: Text('As per Actuals')),
+                            Expanded(flex: 2, child: Text('As per Documents')),
                             Expanded(
-                                flex: 3, child: Text('Adopted area in Sft')),
+                              flex: 3,
+                              child: Text('   Adopted area in   Sft'),
+                            ),
                           ],
                         ),
                         _buildDimensionsRow(
-                            'North',
-                            _dimNorthActualsController,
-                            _dimNorthDocumentsController,
-                            _dimNorthAdoptedController),
+                          'North',
+                          _dimNorthActualsController,
+                          _dimNorthDocumentsController,
+                          _dimNorthAdoptedController,
+                        ),
                         _buildDimensionsRow(
-                            'South',
-                            _dimSouthActualsController,
-                            _dimSouthDocumentsController,
-                            _dimSouthAdoptedController),
+                          'South',
+                          _dimSouthActualsController,
+                          _dimSouthDocumentsController,
+                          _dimSouthAdoptedController,
+                        ),
                         _buildDimensionsRow(
-                            'East',
-                            _dimEastActualsController,
-                            _dimEastDocumentsController,
-                            _dimEastAdoptedController),
+                          'East',
+                          _dimEastActualsController,
+                          _dimEastDocumentsController,
+                          _dimEastAdoptedController,
+                        ),
                         _buildDimensionsRow(
-                            'West',
-                            _dimWestActualsController,
-                            _dimWestDocumentsController,
-                            _dimWestAdoptedController),
+                          'West',
+                          _dimWestActualsController,
+                          _dimWestDocumentsController,
+                          _dimWestAdoptedController,
+                        ),
                         _buildDimensionsRow(
-                            'Total Area',
-                            _dimTotalAreaActualsController,
-                            _dimTotalAreaDocumentsController,
-                            _dimTotalAreaAdoptedController,
-                            isTotalArea: true),
+                          'Total Area',
+                          _dimTotalAreaActualsController,
+                          _dimTotalAreaDocumentsController,
+                          _dimTotalAreaAdoptedController,
+                          isTotalArea: true,
+                        ),
                       ],
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _dimDeviationsController,
@@ -4241,7 +5543,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: 'Deviations if any',
                       hintText: 'Enter any deviations (e.g., "None")',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
                 ],
@@ -4265,9 +5568,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                           '16. Latitude, Longitude and Coordinates of the site',
                       hintText: 'e.g., 9.1234, 76.5678',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: ElevatedButton.icon(
@@ -4278,13 +5583,16 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.green,
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
+                          horizontal: 20,
+                          vertical: 10,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _occupiedBySelfTenantController,
@@ -4292,9 +5600,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: '17. Whether occupied by the Self /tenant?',
                       hintText: 'e.g., Self or Tenant',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _occupiedByTenantSinceController,
@@ -4302,9 +5612,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: '  If occupied by tenant, since how long?',
                       hintText: 'e.g., 5 years (leave blank if Self occupied)',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _rentReceivedPerMonthController,
@@ -4312,7 +5624,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: '  Rent received per month',
                       hintText: 'e.g., 10000 (leave blank if Self occupied)',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 30),
@@ -4320,65 +5633,205 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                     '18. Floor Details',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  const Divider(),
+                  const SizedBox(height: 13),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 8.0),
-                        child: Row(
-                          children: [
-                            Expanded(
-                                flex: 2,
-                                child: Text('Details /Floors',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold))),
-                            Expanded(
-                                flex: 2,
-                                child: Text('Occupancy\n(Self/Rented)',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold))),
-                            Expanded(
-                                flex: 1,
-                                child: Text('No. Of Room',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold))),
-                            Expanded(
-                                flex: 1,
-                                child: Text('No. Of Kitchen',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold))),
-                            Expanded(
-                                flex: 1,
-                                child: Text('No. of Bathroom',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold))),
-                            Expanded(
-                                flex: 2,
-                                child: Text('Usage Remarks\n(Resi/Comm)',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold))),
-                          ],
+                      const Text(
+                        '18. Floor Details',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 13),
+
+                      // Ground Floor Details
+                      const Text(
+                        'Ground Floor',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: _groundFloorOccupancyController,
+                        decoration: const InputDecoration(
+                          labelText: 'Occupancy (Self/Rented)',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
                         ),
                       ),
-                      _buildFloorDetailRow(
-                        'Ground',
-                        _groundFloorOccupancyController,
-                        _groundFloorNoOfRoomController,
-                        _groundFloorNoOfKitchenController,
-                        _groundFloorNoOfBathroomController,
-                        _groundFloorUsageRemarksController,
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: _groundFloorNoOfRoomController,
+                        decoration: const InputDecoration(
+                          labelText: 'No. of Rooms',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
                       ),
-                      _buildFloorDetailRow(
-                        'First',
-                        _firstFloorOccupancyController,
-                        _firstFloorNoOfRoomController,
-                        _firstFloorNoOfKitchenController,
-                        _firstFloorNoOfBathroomController,
-                        _firstFloorUsageRemarksController,
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: _groundFloorNoOfKitchenController,
+                        decoration: const InputDecoration(
+                          labelText: 'No. of Kitchens',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
                       ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: _groundFloorNoOfBathroomController,
+                        decoration: const InputDecoration(
+                          labelText: 'No. of Bathrooms',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: _groundFloorUsageRemarksController,
+                        decoration: const InputDecoration(
+                          labelText: 'Usage Remarks (Resi/Comm)',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+
+                      // First Floor Details
+                      const Text(
+                        'First Floor',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: _firstFloorOccupancyController,
+                        decoration: const InputDecoration(
+                          labelText: 'Occupancy (Self/Rented)',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: _firstFloorNoOfRoomController,
+                        decoration: const InputDecoration(
+                          labelText: 'No. of Rooms',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: _firstFloorNoOfKitchenController,
+                        decoration: const InputDecoration(
+                          labelText: 'No. of Kitchens',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: _firstFloorNoOfBathroomController,
+                        decoration: const InputDecoration(
+                          labelText: 'No. of Bathrooms',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: _firstFloorUsageRemarksController,
+                        decoration: const InputDecoration(
+                          labelText: 'Usage Remarks (Resi/Comm)',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 30),
                     ],
                   ),
+
+                  // Column(
+                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                  //   children: [
+                  //     const Padding(
+                  //       padding: EdgeInsets.symmetric(vertical: 8.0),
+                  //       child: Row(
+                  //         children: [
+                  //           Expanded(
+                  //             flex: 2,
+                  //             child: Text(
+                  //               'Details /Floors',
+                  //               style: TextStyle(fontWeight: FontWeight.bold),
+                  //             ),
+                  //           ),
+                  //           Expanded(
+                  //             flex: 2,
+                  //             child: Text(
+                  //               'Occupancy\n(Self/Rented)',
+                  //               style: TextStyle(fontWeight: FontWeight.bold),
+                  //             ),
+                  //           ),
+                  //           Expanded(
+                  //             flex: 1,
+                  //             child: Text(
+                  //               'No. Of Room',
+                  //               style: TextStyle(fontWeight: FontWeight.bold),
+                  //             ),
+                  //           ),
+                  //           Expanded(
+                  //             flex: 1,
+                  //             child: Text(
+                  //               'No. Of Kitchen',
+                  //               style: TextStyle(fontWeight: FontWeight.bold),
+                  //             ),
+                  //           ),
+                  //           Expanded(
+                  //             flex: 1,
+                  //             child: Text(
+                  //               'No. of Bathroom',
+                  //               style: TextStyle(fontWeight: FontWeight.bold),
+                  //             ),
+                  //           ),
+                  //           Expanded(
+                  //             flex: 2,
+                  //             child: Text(
+                  //               'Usage Remarks\n(Resi/Comm)',
+                  //               style: TextStyle(fontWeight: FontWeight.bold),
+                  //             ),
+                  //           ),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //     _buildFloorDetailRow(
+                  //       'Ground',
+                  //       _groundFloorOccupancyController,
+                  //       _groundFloorNoOfRoomController,
+                  //       _groundFloorNoOfKitchenController,
+                  //       _groundFloorNoOfBathroomController,
+                  //       _groundFloorUsageRemarksController,
+                  //     ),
+                  //     _buildFloorDetailRow(
+                  //       'First',
+                  //       _firstFloorOccupancyController,
+                  //       _firstFloorNoOfRoomController,
+                  //       _firstFloorNoOfKitchenController,
+                  //       _firstFloorNoOfBathroomController,
+                  //       _firstFloorUsageRemarksController,
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
               const SizedBox(height: 20),
@@ -4400,9 +5853,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                           '19. Type of road available at present (Bitumen/Mud/CC/Private)',
                       hintText: 'e.g., Bitumen',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _widthOfRoadController,
@@ -4410,7 +5865,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: '20. Width of road - in feet',
                       hintText: 'e.g., 20',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
                 ],
@@ -4433,7 +5889,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: '21. Is it a land - locked land?',
                       hintText: 'Yes/No',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
                 ],
@@ -4456,9 +5913,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: '1. Land area in Sq Ft (Details)',
                       hintText: 'e.g., 1500',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _landAreaGuidelineController,
@@ -4466,9 +5925,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: '2. Guideline rate (Land area in Sq Ft)',
                       hintText: 'e.g., 1400',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _ratePerSqFtGuidelineController,
@@ -4476,9 +5937,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: '   Guideline rate (Rate per Sq ft)',
                       hintText: 'e.g., 2000',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _valueInRsGuidelineController,
@@ -4486,9 +5949,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: '   Guideline rate (Value in Rs.)',
                       hintText: 'e.g., 2800000',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _landAreaPrevailingController,
@@ -4497,9 +5962,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                           '3. Prevailing market value (Land area in Sq Ft)',
                       hintText: 'e.g., 1500',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _ratePerSqFtPrevailingController,
@@ -4507,9 +5974,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: '   Prevailing market value (Rate per Sq ft)',
                       hintText: 'e.g., 2500',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _valueInRsPrevailingController,
@@ -4517,7 +5986,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: '   Prevailing market value (Value in Rs.)',
                       hintText: 'e.g., 3750000',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
                 ],
@@ -4541,9 +6011,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                           '1. a) Type of Building (Residential / Commercial / Industrial)',
                       hintText: 'e.g., Residential',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _typeOfConstructionController,
@@ -4552,9 +6024,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                           '   b) Type of construction (Load bearing / RCC / Steel Framed)',
                       hintText: 'e.g., RCC',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _ageOfTheBuildingController,
@@ -4562,9 +6036,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: '   c) Age of the building',
                       hintText: 'e.g., 10 years',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _residualAgeOfTheBuildingController,
@@ -4572,9 +6048,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: '   d) Residual age of the building',
                       hintText: 'e.g., 40 years',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _approvedMapAuthorityController,
@@ -4582,9 +6060,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: '   e) Approved map / plan issuing authority',
                       hintText: 'e.g., Local Municipality',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _genuinenessVerifiedController,
@@ -4593,9 +6073,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                           '   f) Whether genuineness or authenticity of approved map / plan is verified',
                       hintText: 'YES / NO',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _otherCommentsController,
@@ -4605,7 +6087,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                           '   g) Any other comments by our empanelled valuers on authentic of approved plan',
                       hintText: 'e.g., None',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
                 ],
@@ -4620,73 +6103,220 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                 ),
                 initiallyExpanded: false,
                 children: <Widget>[
-                  const Divider(),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                            flex: 1,
-                            child: Text('S n',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        Expanded(
-                            flex: 2,
-                            child: Text('Particular of item',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        Expanded(
-                            flex: 2,
-                            child: Text('As per approved\nPlan/FSI',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        Expanded(
-                            flex: 2,
-                            child: Text('As per Actual',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        Expanded(
-                            flex: 2,
-                            child: Text('Area Considered\nfor the Valuation',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        Expanded(
-                            flex: 2,
-                            child: Text('Replacement Cost\nin Rs.',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        Expanded(
-                            flex: 2,
-                            child: Text('Depreciation\nin Rs.',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        Expanded(
-                            flex: 2,
-                            child: Text('Net value after\nDepreciations Rs.',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                      ],
-                    ),
-                  ),
-                  _buildBuildUpAreaRow(
-                    'Ground floor',
-                    _groundFloorApprovedPlanController,
-                    _groundFloorActualController,
-                    _groundFloorConsideredValuationController,
-                    _groundFloorReplacementCostController,
-                    _groundFloorDepreciationController,
-                    _groundFloorNetValueController,
-                  ),
-                  _buildBuildUpAreaRow(
-                    'First floor',
-                    _firstFloorApprovedPlanController,
-                    _firstFloorActualController,
-                    _firstFloorConsideredValuationController,
-                    _firstFloorReplacementCostController,
-                    _firstFloorDepreciationController,
-                    _firstFloorNetValueController,
-                  ),
-                  _buildBuildUpAreaRow(
-                    'Total',
-                    _totalApprovedPlanController,
-                    _totalActualController,
-                    _totalConsideredValuationController,
-                    _totalReplacementCostController,
-                    _totalDepreciationController,
-                    _totalNetValueController,
-                    isTotal: true,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Divider(),
+                      const Text(
+                        'Build-Up Area Details',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 10),
+
+                      // Ground Floor Section
+                      const Text(
+                        'Ground Floor',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 6),
+                      TextField(
+                        controller: _groundFloorApprovedPlanController,
+                        decoration: const InputDecoration(
+                          labelText: 'As per approved Plan/FSI',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: _groundFloorActualController,
+                        decoration: const InputDecoration(
+                          labelText: 'As per Actual',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: _groundFloorConsideredValuationController,
+                        decoration: const InputDecoration(
+                          labelText: 'Area Considered for the Valuation',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: _groundFloorReplacementCostController,
+                        decoration: const InputDecoration(
+                          labelText: 'Replacement Cost in Rs.',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: _groundFloorDepreciationController,
+                        decoration: const InputDecoration(
+                          labelText: 'Depreciation in Rs.',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: _groundFloorNetValueController,
+                        decoration: const InputDecoration(
+                          labelText: 'Net value after Depreciation in Rs.',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 30),
+
+                      // First Floor Section
+                      const Text(
+                        'First Floor',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 6),
+                      TextField(
+                        controller: _firstFloorApprovedPlanController,
+                        decoration: const InputDecoration(
+                          labelText: 'As per approved Plan/FSI',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: _firstFloorActualController,
+                        decoration: const InputDecoration(
+                          labelText: 'As per Actual',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: _firstFloorConsideredValuationController,
+                        decoration: const InputDecoration(
+                          labelText: 'Area Considered for the Valuation',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: _firstFloorReplacementCostController,
+                        decoration: const InputDecoration(
+                          labelText: 'Replacement Cost in Rs.',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: _firstFloorDepreciationController,
+                        decoration: const InputDecoration(
+                          labelText: 'Depreciation in Rs.',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: _firstFloorNetValueController,
+                        decoration: const InputDecoration(
+                          labelText: 'Net value after Depreciation in Rs.',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 30),
+
+                      // Total Section
+                      const Text(
+                        'Total',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 6),
+                      TextField(
+                        controller: _totalApprovedPlanController,
+                        decoration: const InputDecoration(
+                          labelText: 'As per approved Plan/FSI',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: _totalActualController,
+                        decoration: const InputDecoration(
+                          labelText: 'As per Actual',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: _totalConsideredValuationController,
+                        decoration: const InputDecoration(
+                          labelText: 'Area Considered for the Valuation',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: _totalReplacementCostController,
+                        decoration: const InputDecoration(
+                          labelText: 'Replacement Cost in Rs.',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: _totalDepreciationController,
+                        decoration: const InputDecoration(
+                          labelText: 'Depreciation in Rs.',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: _totalNetValueController,
+                        decoration: const InputDecoration(
+                          labelText: 'Net value after Depreciation in Rs.',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
                   ),
                 ],
               ),
@@ -4708,9 +6338,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: '1. Wardrobes (Amount in Rs.)',
                       hintText: 'e.g., 50000',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _amenitiesController,
@@ -4718,9 +6350,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: '2. Amenities (Amount in Rs.)',
                       hintText: 'e.g., 20000',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _anyOtherAdditionalController,
@@ -4728,9 +6362,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: '3. Any other Additional (Amount in Rs.)',
                       hintText: 'e.g., 10000',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _amenitiesTotalController,
@@ -4738,7 +6374,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: 'Total Amenities (Amount in Rs.)',
                       hintText: 'e.g., 80000',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
                 ],
@@ -4761,9 +6398,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: 'Part- A Land (Amount in Rs.)',
                       hintText: 'e.g., 3750000',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _totalAbstractBuildingController,
@@ -4771,9 +6410,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: 'Part- B Building (Amount in Rs.)',
                       hintText: 'e.g., 2500000',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _totalAbstractAmenitiesController,
@@ -4781,9 +6422,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: 'Part- C Amenities (Amount in Rs.)',
                       hintText: 'e.g., 80000',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _totalAbstractTotalController,
@@ -4791,9 +6434,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: 'Total (Amount in Rs.)',
                       hintText: 'e.g., 6330000',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _totalAbstractSayController,
@@ -4801,7 +6446,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: 'Say (Amount in Rs.)',
                       hintText: 'e.g., 6330000',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
                 ],
@@ -4824,9 +6470,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                     decoration: const InputDecoration(
                       labelText: '1.',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _remark2Controller,
@@ -4834,9 +6482,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                     decoration: const InputDecoration(
                       labelText: '2.',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _remark3Controller,
@@ -4844,9 +6494,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                     decoration: const InputDecoration(
                       labelText: '3.',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _remark4Controller,
@@ -4854,7 +6506,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                     decoration: const InputDecoration(
                       labelText: '4.',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
                 ],
@@ -4877,9 +6530,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: 'Present Market Value of The Property',
                       hintText: 'Enter value',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _realizableValueController,
@@ -4887,9 +6542,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: 'Realizable Value of the Property',
                       hintText: 'Enter value',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _distressValueController,
@@ -4897,9 +6554,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: 'Distress Value of the Property',
                       hintText: 'Enter value',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _insurableValueController,
@@ -4907,7 +6566,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText: 'Insurable Value of the property',
                       hintText: 'Enter value',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
                 ],
@@ -4933,9 +6593,11 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText:
                           'Valuation report date in Declaration (FORMAT E)',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
                     controller: _declarationDateCController,
@@ -4946,7 +6608,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                       labelText:
                           'Property inspection date in Declaration (FORMAT E)',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
                     ),
                   ),
                 ],
@@ -5065,7 +6728,9 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.blueAccent,
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
+                          horizontal: 20,
+                          vertical: 10,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
@@ -5108,8 +6773,10 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                             } else {
                               // Fallback for unexpected types (shouldn't happen with current logic)
                               imageWidget = Center(
-                                  child: Text(
-                                      'Invalid image type: ${imageItem.runtimeType}'));
+                                child: Text(
+                                  'Invalid image type: ${imageItem.runtimeType}',
+                                ),
+                              );
                             }
 
                             return Stack(
@@ -5154,7 +6821,9 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.blue, // Text color
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 30, vertical: 15),
+                      horizontal: 30,
+                      vertical: 15,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -5164,36 +6833,26 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                 ),
               ),
               const SizedBox(height: 20),
-              //
             ],
           ),
         ),
       ),
-      floatingActionButton: ElevatedButton.icon(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           _saveData();
         },
         icon: const Icon(Icons.save),
-        label: const Text('Save', style: TextStyle(fontSize: 15.5)),
-        style: ButtonStyle(
-          fixedSize: WidgetStateProperty.all(const Size(100, 50)),
-          shape: WidgetStateProperty.all(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(3),
-            ),
-          ),
-        ),
+        label: const Text('Save'),
       ),
-      floatingActionButtonLocation:
-          FloatingActionButtonLocation.endFloat,
     );
   }
 
-  // ... [all helper widgets and functions remain unchanged] ...
+  // Helper widget for boundary rows
   Widget _buildBoundaryRow(
-      String direction,
-      TextEditingController titleController,
-      TextEditingController sketchController) {
+    String direction,
+    TextEditingController titleController,
+    TextEditingController sketchController,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
@@ -5209,8 +6868,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                 labelText: '', // No label for internal table fields
                 hintText: 'As per Title Deed',
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(20))), // Applied new styling
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ), // Applied new styling
               ),
             ),
           ),
@@ -5224,8 +6883,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                 labelText: '', // No label for internal table fields
                 hintText: 'As per Location Sketch',
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(20))), // Applied new styling
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ), // Applied new styling
               ),
             ),
           ),
@@ -5236,11 +6895,12 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
 
   // Helper widget for dimensions rows
   Widget _buildDimensionsRow(
-      String direction,
-      TextEditingController actualsController,
-      TextEditingController documentsController,
-      TextEditingController adoptedController,
-      {bool isTotalArea = false}) {
+    String direction,
+    TextEditingController actualsController,
+    TextEditingController documentsController,
+    TextEditingController adoptedController, {
+    bool isTotalArea = false,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
@@ -5255,8 +6915,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                 labelText: '',
                 hintText: 'As per Actuals',
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(20))), // Applied new styling
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ), // Applied new styling
               ),
             ),
           ),
@@ -5270,8 +6930,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                 labelText: '',
                 hintText: 'As per Documents',
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(20))), // Applied new styling
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ), // Applied new styling
               ),
             ),
           ),
@@ -5285,8 +6945,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                 labelText: '',
                 hintText: 'Adopted area in Sft',
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(20))), // Applied new styling
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ), // Applied new styling
               ),
             ),
           ),
@@ -5310,12 +6970,14 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-              flex: 2,
-              child: Padding(
-                padding:
-                    const EdgeInsets.only(top: 12.0), // Align text vertically
-                child: Text(floorName),
-              )),
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                top: 12.0,
+              ), // Align text vertically
+              child: Text(floorName),
+            ),
+          ),
           Expanded(
             flex: 2,
             child: TextField(
@@ -5325,8 +6987,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                 labelText: '',
                 hintText: 'Self/Rented',
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(20))), // Applied new styling
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ), // Applied new styling
               ),
             ),
           ),
@@ -5340,8 +7002,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                 labelText: '',
                 hintText: '#Rooms',
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(20))), // Applied new styling
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ), // Applied new styling
               ),
             ),
           ),
@@ -5355,8 +7017,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                 labelText: '',
                 hintText: '#Kitchen',
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(20))), // Applied new styling
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ), // Applied new styling
               ),
             ),
           ),
@@ -5370,8 +7032,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                 labelText: '',
                 hintText: '#Bathroom',
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(20))), // Applied new styling
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ), // Applied new styling
               ),
             ),
           ),
@@ -5386,8 +7048,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                 labelText: '',
                 hintText: 'Resi/Comm Remarks',
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(20))), // Applied new styling
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ), // Applied new styling
               ),
             ),
           ),
@@ -5398,37 +7060,45 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
 
   // Helper widget for Build up Area rows
   Widget _buildBuildUpAreaRow(
-      String particularOfItem,
-      TextEditingController approvedPlanController,
-      TextEditingController actualController,
-      TextEditingController consideredValuationController,
-      TextEditingController replacementCostController,
-      TextEditingController depreciationController,
-      TextEditingController netValueController,
-      {bool isTotal = false}) {
+    String particularOfItem,
+    TextEditingController approvedPlanController,
+    TextEditingController actualController,
+    TextEditingController consideredValuationController,
+    TextEditingController replacementCostController,
+    TextEditingController depreciationController,
+    TextEditingController netValueController, {
+    bool isTotal = false,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-              flex: 1,
-              child: Padding(
-                padding:
-                    const EdgeInsets.only(top: 12.0), // Align text vertically
-                child:
-                    Text(isTotal ? '' : ''), // Empty for S n for non-total rows
-              )),
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                top: 12.0,
+              ), // Align text vertically
+              child: Text(
+                isTotal ? '' : '',
+              ), // Empty for S n for non-total rows
+            ),
+          ),
           Expanded(
-              flex: 2,
-              child: Padding(
-                padding:
-                    const EdgeInsets.only(top: 12.0), // Align text vertically
-                child: Text(particularOfItem,
-                    style: TextStyle(
-                        fontWeight:
-                            isTotal ? FontWeight.bold : FontWeight.normal)),
-              )),
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                top: 12.0,
+              ), // Align text vertically
+              child: Text(
+                particularOfItem,
+                style: TextStyle(
+                  fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
+                ),
+              ),
+            ),
+          ),
           Expanded(
             flex: 2,
             child: TextField(
@@ -5438,8 +7108,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                 labelText: '',
                 hintText: isTotal ? 'Total Approved' : 'Approved Plan/FSI',
                 border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(20))), // Applied new styling
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ), // Applied new styling
               ),
             ),
           ),
@@ -5453,8 +7123,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                 labelText: '',
                 hintText: isTotal ? 'Total Actual' : 'Actual',
                 border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(20))), // Applied new styling
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ), // Applied new styling
               ),
             ),
           ),
@@ -5469,8 +7139,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                 hintText:
                     isTotal ? 'Total Considered' : 'Considered for Valuation',
                 border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(20))), // Applied new styling
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ), // Applied new styling
               ),
             ),
           ),
@@ -5484,8 +7154,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                 labelText: '',
                 hintText: isTotal ? 'Total Replacement' : 'Replacement Cost',
                 border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(20))), // Applied new styling
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ), // Applied new styling
               ),
             ),
           ),
@@ -5499,8 +7169,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                 labelText: '',
                 hintText: isTotal ? 'Total Depreciation' : 'Depreciation',
                 border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(20))), // Applied new styling
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ), // Applied new styling
               ),
             ),
           ),
@@ -5514,8 +7184,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                 labelText: '',
                 hintText: isTotal ? 'Total Net Value' : 'Net Value',
                 border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(20))), // Applied new styling
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ), // Applied new styling
               ),
             ),
           ),
@@ -5526,25 +7196,31 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
 
   // NEW: Helper widget for Valuer Comments table rows (for UI)
   Widget _buildValuerCommentRow(
-      String siNo, String particulars, TextEditingController controller,
-      {String? hintText, int maxLines = 1}) {
+    String siNo,
+    String particulars,
+    TextEditingController controller, {
+    String? hintText,
+    int maxLines = 1,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-              flex: 1,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 12.0),
-                child: Text(siNo),
-              )),
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 12.0),
+              child: Text(siNo),
+            ),
+          ),
           Expanded(
-              flex: 3,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 12.0),
-                child: Text(particulars),
-              )),
+            flex: 3,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 12.0),
+              child: Text(particulars),
+            ),
+          ),
           Expanded(
             flex: 4,
             child: TextField(
@@ -5555,8 +7231,8 @@ class _SBIValuationFormPageState extends State<SBIValuationFormPage> {
                 labelText: '',
                 hintText: hintText,
                 border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(20))), // Applied new styling
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ), // Applied new styling
               ),
             ),
           ),

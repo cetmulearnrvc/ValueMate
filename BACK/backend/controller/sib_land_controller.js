@@ -5,8 +5,8 @@ import cloudinary from "../cloudinaryConfig.js";
 
 export const savelandData = async(req,res)=>{
 
-    console.log("A post req received for sib land");
-    console.log(req.body); 
+    //console.log("A post req received for sib land");
+    //console.log(req.body); 
     
 
     
@@ -78,7 +78,7 @@ export async function searchByDate(req,res){
 
     const {date}=req.body
 
-    console.log(date)
+    //console.log(date)
 
     const targetDate = new Date(date);
 
