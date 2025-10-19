@@ -3,17 +3,17 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:login_screen/screens/SBI/Flat/config.dart'; // Updated import path
-import 'package:login_screen/screens/SBI/Flat/valuation_form.dart'; // Updated import path
+import 'package:login_screen/screens/SBI/Flat/config.dart';
+import 'package:login_screen/screens/SBI/Flat/valuation_form.dart';
 
-class SavedDraftsSBI extends StatefulWidget { // Changed class name
-  const SavedDraftsSBI({super.key});
+class SavedDrafts extends StatefulWidget {
+  const SavedDrafts({super.key});
 
   @override
-  State<SavedDraftsSBI> createState() => _SavedDraftsSBIState();
+  State<SavedDrafts> createState() => _SavedDraftsState();
 }
 
-class _SavedDraftsSBIState extends State<SavedDraftsSBI> {
+class _SavedDraftsState extends State<SavedDrafts> {
   DateTime date = DateTime.now();
   List<dynamic> searchResults = [];
   bool isLoading = false;
@@ -27,7 +27,7 @@ class _SavedDraftsSBIState extends State<SavedDraftsSBI> {
     try {
       final formattedDate = DateFormat('yyyy-MM-dd').format(date);
       final response = await http.post(
-        Uri.parse(url3), // Make sure url3 is configured for SBI endpoint
+        Uri.parse(url3),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({'date': formattedDate}),
       );
@@ -62,7 +62,7 @@ class _SavedDraftsSBIState extends State<SavedDraftsSBI> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SBIValuationFormScreen( // Updated to SBI form screen
+        builder: (context) => SBIValuationFormScreen(
           propertyData: propertyData,
         ),
       ),
@@ -77,7 +77,7 @@ class _SavedDraftsSBIState extends State<SavedDraftsSBI> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: const Text(
-          'SBI Saved Drafts', // Updated title
+          'Saved Drafts',
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w500,
@@ -107,7 +107,8 @@ class _SavedDraftsSBIState extends State<SavedDraftsSBI> {
               children: [
                 // Date field with gradient style
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     gradient: const LinearGradient(
@@ -139,7 +140,8 @@ class _SavedDraftsSBIState extends State<SavedDraftsSBI> {
                         ),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.edit_calendar, color: Colors.black54),
+                        icon: const Icon(Icons.edit_calendar,
+                            color: Colors.black54),
                         onPressed: () async {
                           final picked = await showDatePicker(
                             context: context,
@@ -188,7 +190,7 @@ class _SavedDraftsSBIState extends State<SavedDraftsSBI> {
                       : searchResults.isEmpty
                           ? const Center(
                               child: Text(
-                                'No SBI drafts found!', // Updated message
+                                'No drafts found!',
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w500,
@@ -202,17 +204,31 @@ class _SavedDraftsSBIState extends State<SavedDraftsSBI> {
                               itemBuilder: (context, index) {
                                 final property = searchResults[index];
 
+                                // Rotating pastel gradient backgrounds
                                 final gradients = [
-                                  [const Color(0xFFDAF1F5), const Color(0xFFC7E8F3)],
-                                  [const Color(0xFFF6E9F8), const Color(0xFFEBD8F5)],
-                                  [const Color(0xFFFFF2D8), const Color(0xFFFFE8B8)],
-                                  [const Color(0xFFDFF6DD), const Color(0xFFBDE7BE)],
+                                  [
+                                    const Color(0xFFDAF1F5),
+                                    const Color(0xFFC7E8F3)
+                                  ],
+                                  [
+                                    const Color(0xFFF6E9F8),
+                                    const Color(0xFFEBD8F5)
+                                  ],
+                                  [
+                                    const Color(0xFFFFF2D8),
+                                    const Color(0xFFFFE8B8)
+                                  ],
+                                  [
+                                    const Color(0xFFDFF6DD),
+                                    const Color(0xFFBDE7BE)
+                                  ],
                                 ];
                                 final gradientColors =
                                     gradients[index % gradients.length];
 
                                 return Container(
-                                  margin: const EdgeInsets.symmetric(vertical: 8),
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 8),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
                                     gradient: LinearGradient(
@@ -241,7 +257,8 @@ class _SavedDraftsSBIState extends State<SavedDraftsSBI> {
                                     subtitle: Padding(
                                       padding: const EdgeInsets.only(top: 6.0),
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             'Owner: ${property['nameOfOwner']}',
@@ -266,7 +283,8 @@ class _SavedDraftsSBIState extends State<SavedDraftsSBI> {
                                       size: 18,
                                       color: Colors.black54,
                                     ),
-                                    onTap: () => navigateToValuationForm(property),
+                                    onTap: () =>
+                                        navigateToValuationForm(property),
                                   ),
                                 );
                               },

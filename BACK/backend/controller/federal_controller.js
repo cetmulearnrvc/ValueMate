@@ -4,8 +4,8 @@ import crypto from "crypto";
 
 export const saveFederalData = async(req,res)=>{
 
-    console.log("A post req received");
-    console.log(req.body); 
+    // console.log("A post req received");
+    // console.log(req.body); 
     
 
     
@@ -77,7 +77,7 @@ export async function searchByDate(req,res){
 
     const {date}=req.body
 
-    console.log(date)
+    // console.log(date)
 
     const targetDate = new Date(date);
 

@@ -1,4 +1,4 @@
-// lib/valuation_form_sbi.dart
+// lib/valuation_form_sib.dart
 
 import 'dart:convert';
 import 'dart:io';
@@ -153,7 +153,6 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
       'remarks2': TextEditingController(text: _data.remarks2),
       'remarks3': TextEditingController(text: _data.remarks3),
       'remarks4': TextEditingController(text: _data.remarks4),
-      'valuationApproach': TextEditingController(text: _data.valuationApproach),
       'presentMarketValue':
           TextEditingController(text: _data.presentMarketValue),
       'realizableValue': TextEditingController(text: _data.realizableValue),
@@ -177,64 +176,95 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
     };
   }
 
-  Future<String> _getAccessToken() async {
-    final response = await http.post(
-      Uri.parse('https://oauth2.googleapis.com/token'),
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: {
-        'client_id': clientId,
-        'client_secret': clientSecret,
-        'refresh_token': refreshToken,
-        'grant_type': 'refresh_token',
-      },
+  // Future<String> _getAccessToken() async {
+  //   final response = await http.post(
+  //     Uri.parse('https://oauth2.googleapis.com/token'),
+  //     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+  //     body: {
+  //       'client_id': clientId,
+  //       'client_secret': clientSecret,
+  //       'refresh_token': refreshToken,
+  //       'grant_type': 'refresh_token',
+  //     },
+  //   );
+
+  //   if (response.statusCode == 200) {
+  //     return jsonDecode(response.body)['access_token'] as String;
+  //   } else {
+  //     throw Exception('Failed to refresh access token');
+  //   }
+  // }
+
+  // String _getMimeTypeFromExtension(String extension) {
+  //   switch (extension) {
+  //     case '.jpg':
+  //     case '.jpeg':
+  //       return 'image/jpeg';
+  //     case '.png':
+  //       return 'image/png';
+  //     case '.gif':
+  //       return 'image/gif';
+  //     case '.webp':
+  //       return 'image/webp';
+  //     default:
+  //       return 'application/octet-stream';
+  //   }
+  // }
+
+  // Future<Uint8List> fetchImageFromDrive(String fileId) async {
+  //   try {
+  //     // Get access token using refresh token
+  //     final accessToken = await _getAccessToken();
+
+  //     final response = await http.get(
+  //       Uri.parse('https://www.googleapis.com/drive/v3/files/$fileId?alt=media'),
+  //       headers: {'Authorization': 'Bearer $accessToken'},
+  //     );
+
+  //     if (response.statusCode == 200) {
+  //       return response.bodyBytes;
+  //     } else {
+  //       throw Exception('Failed to load image: ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     throw Exception('Error fetching image from Drive: $e');
+  //   }
+  // }
+
+  Future<String> fetchSignedUrl(String imagePublicId) async {
+    // --- YOU MUST CUSTOMIZE THESE VALUES ---
+    const String apiKey =
+        "db74f0da81338f1ad24d0be8298f90f4e6be5f0df5b53aca2f95ead470665641";
+    const String apiBaseUrl = 'http://localhost:3000'; // For Android emulator
+    // -----------------------------------------
+
+    final url = Uri.parse('$apiBaseUrl/api/images/secure-url/$imagePublicId');
+
+    final response = await http.get(
+      url,
+      headers: {'x-api-key': apiKey},
     );
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body)['access_token'] as String;
+      final data = json.decode(response.body);
+      return data['signedUrl'];
     } else {
-      throw Exception('Failed to refresh access token');
+      throw Exception(
+          'Failed to load signed URL. Status code: ${response.statusCode}');
     }
   }
 
-  String _getMimeTypeFromExtension(String extension) {
-    switch (extension) {
-      case '.jpg':
-      case '.jpeg':
-        return 'image/jpeg';
-      case '.png':
-        return 'image/png';
-      case '.gif':
-        return 'image/gif';
-      case '.webp':
-        return 'image/webp';
-      default:
-        return 'application/octet-stream';
-    }
-  }
-
-  Future<Uint8List> fetchImageFromDrive(String fileId) async {
-    try {
-      // Get access token using refresh token
-      final accessToken = await _getAccessToken();
-
-      final response = await http.get(
-        Uri.parse(
-            'https://www.googleapis.com/drive/v3/files/$fileId?alt=media'),
-        headers: {'Authorization': 'Bearer $accessToken'},
-      );
-
-      if (response.statusCode == 200) {
-        return response.bodyBytes;
-      } else {
-        throw Exception('Failed to load image: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error fetching image from Drive: $e');
+  Future<Uint8List> fetchImageBytes(String url) async {
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      return response.bodyBytes; // this is Uint8List
+    } else {
+      throw Exception('Failed to load image');
     }
   }
 
   void _initializeFormWithPropertyData() async {
-    print('PROPERTY DATA: ${widget.propertyData}');
+    // print('PROPERTY DATA: ${widget.propertyData}');
     if (widget.propertyData != null) {
       final data = widget.propertyData!;
 
@@ -244,32 +274,32 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
           controller.text = data[key].toString();
         }
       });
-      print(data['images']);
+      // print(data['images']);
       _loadInitialImages(data);
       // Initialize images if available
       //
-      print('Valuation : ${data['valuationDetails']}');
+      // print('Valuation : ${data['valuationDetails']}');
       setState(() {
         if (data.containsKey('valuationDetails') &&
             data['valuationDetails'] is List) {
           var detailsList = data['valuationDetails'] as List;
-          debugPrint(
-              "Received valuation details list with ${detailsList.length} items.");
-          debugPrint("Raw list content: $detailsList");
+          // debugPrint(
+          //     "Received valuation details list with ${detailsList.length} items.");
+          // debugPrint("Raw list content: $detailsList");
           detailsList = detailsList
               .where((item) => item != null && item is Map<String, dynamic>)
               .toList();
 
-          debugPrint(
-              "Filtered valuation details list with ${detailsList.length} valid items.");
+          // debugPrint(
+          //     "Filtered valuation details list with ${detailsList.length} valid items.");
 
           _valuationDetails = (data['valuationDetails'] as List)
               .map((item) => ValuationDetailItem(
-                    description: item['description'] ?? '',
-                    area: item['area'] ?? '',
-                    ratePerUnit: item['ratePerUnit'] ?? '',
-                    estimatedValue: item['estimatedValue'] ?? '',
-                  ))
+                  description: item['description'] ?? '',
+                  area: item['area'] ?? '',
+                  ratePerUnit: item['ratePerUnit'] ?? '',
+                  estimatedValue: item['estimatedValue'] ?? '',
+                  total: item['total'] ?? ''))
               .toList();
         }
       });
@@ -291,8 +321,8 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
         }
       }
 
-      print('dateOfInspection: ${_data.dateOfInspection}');
-      print('dateOfValuation: ${_data.dateOfValuation}');
+      // print('dateOfInspection: ${_data.dateOfInspection}');
+      // print('dateOfValuation: ${_data.dateOfValuation}');
 
       if (data['finalValuationDate'] != null) {
         try {
@@ -310,9 +340,9 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
         }
       }
 
-      debugPrint('Form initialized with SBI property data');
+      // debugPrint('Form initialized with SIB property data');
     } else {
-      debugPrint('No property data - using default values');
+      // debugPrint('No property data - using default values');
     }
   }
 
@@ -325,16 +355,15 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
         for (var imgData in imagesData) {
           try {
             // Get the file ID from your data (assuming it's stored as 'fileId')
-            String fileID = imgData['fileID'];
+
             String fileName = imgData['fileName'];
-            debugPrint("Fetching image from Drive with ID: $fileID");
 
-            // Fetch image bytes from Google Drive
-            Uint8List imageBytes = await fetchImageFromDrive(fileID);
-
-            // Get file extension from original filename
-            String extension = path.extension(fileName).toLowerCase();
-            if (extension.isEmpty) extension = '.jpg'; // default fallback
+            String signedUrl = await fetchSignedUrl(fileName);
+            // debugPrint(signedUrl);
+            Uint8List imageBytes = await fetchImageBytes(signedUrl);
+            // // Get file extension from original filename
+            // String extension = path.extension(fileName).toLowerCase();
+            // if (extension.isEmpty) extension = '.jpg'; // default fallback
 
             _valuationImages.add(ValuationImage(
               imageFile: imageBytes,
@@ -600,9 +629,6 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
         case 'remarks4':
           _data.remarks4 = controller.text;
           break;
-        case 'valuationApproach':
-          _data.valuationApproach = controller.text;
-          break;
         case 'presentMarketValue':
           _data.presentMarketValue = controller.text;
           break;
@@ -676,7 +702,7 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
     final latitude = _controllers['nearbyLatitude']!.text.trim();
     final longitude = _controllers['nearbyLongitude']!.text.trim();
 
-    debugPrint(latitude);
+    // debugPrint(latitude);
 
     if (latitude.isEmpty || longitude.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -702,10 +728,10 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
         final List<dynamic> responseData = jsonDecode(response.body);
 
         // Debug print the array
-        debugPrint('Response Data (Array):');
-        for (var item in responseData) {
-          debugPrint(item.toString()); // Print each item in the array
-        }
+        // debugPrint('Response Data (Array):');
+        // for (var item in responseData) {
+        //   debugPrint(item.toString()); // Print each item in the array
+        // }
 
         if (context.mounted) {
           // Navigator.of(context).push(
@@ -738,9 +764,9 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
     }
   }
 
-  // In lib/valuation_form_sbi.dart, inside the _SBIValuationFormScreenState class
+  // In lib/valuation_form_sib.dart, inside the _SIBValuationFormScreenState class
 
-// In lib/valuation_form_sbi.dart, inside the _SBIValuationFormScreenState class
+// In lib/valuation_form_sib.dart, inside the _SIBValuationFormScreenState class
 
   Future<void> _saveToNearbyCollection() async {
     try {
@@ -758,8 +784,8 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
 
       // --- STEP 2: Handle the case where no image has location data ---
       if (firstImageWithLocation == null) {
-        debugPrint(
-            'No image with location data found. Skipping save to nearby collection.');
+        // debugPrint(
+        //     'No image with location data found. Skipping save to nearby collection.');
         return; // Exit the function early.
       }
 
@@ -767,11 +793,11 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
       final marketValue =
           _controllers['presentMarketValue']?.text ?? '[is null]';
 
-      debugPrint('------------------------------------------');
-      debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
-      debugPrint('Owner Name from Controller: "$ownerName"');
-      debugPrint('Market Value from Controller: "$marketValue"');
-      debugPrint('------------------------------------------');
+      // debugPrint('------------------------------------------');
+      // debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
+      // debugPrint('Owner Name from Controller: "$ownerName"');
+      // debugPrint('Market Value from Controller: "$marketValue"');
+      // debugPrint('------------------------------------------');
       // --- STEP 3: Build the payload with the correct data ---
       final dataToSave = {
         // Use the coordinates from the image we found
@@ -791,12 +817,12 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
         body: jsonEncode(dataToSave),
       );
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 201 || response.statusCode == 200) {
         debugPrint('Successfully saved data to nearby collection.');
       } else {
         debugPrint(
             'Failed to save to nearby collection: ${response.statusCode}');
-        debugPrint('Response body: ${response.body}');
+        // debugPrint('Response body: ${response.body}');
       }
     } catch (e) {
       debugPrint('Error in _saveToNearbyCollection: $e');
@@ -811,14 +837,14 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
         builder: (context) => const Center(child: CircularProgressIndicator()),
       );
 
-      var request = http.MultipartRequest('POST', Uri.parse(url1));
+      var request = http.MultipartRequest('POST', Uri.parse(url));
 
       request.fields.addAll(
         _controllers.map((key, controller) => MapEntry(key, controller.text)),
       );
 
-      debugPrint('Saving dateOfInspection: ${_data.dateOfInspection}');
-      debugPrint('Saving dateOfValuation: ${_data.dateOfValuation}');
+      // debugPrint('Saving dateOfInspection: ${_data.dateOfInspection}');
+      // debugPrint('Saving dateOfValuation: ${_data.dateOfValuation}');
 
       request.fields['dateOfInspection'] =
           DateFormat('yyyy-MM-dd').format(_data.dateOfInspection!);
@@ -834,6 +860,7 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
                 'area': item.area,
                 'ratePerUnit': item.ratePerUnit,
                 'estimatedValue': item.estimatedValue,
+                'total': item.total
               })
           .toList();
 
@@ -863,7 +890,7 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
 
       final response = await request.send();
 
-      debugPrint("send req to back");
+      // debugPrint("send req to back");
 
       if (context.mounted) Navigator.of(context).pop();
       // debugPrint("${response.statusCode}");
@@ -1046,9 +1073,10 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
         setState(() {});
       }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('Failed to pick images: $e')));
+      }
     }
   }
 
@@ -1127,11 +1155,12 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
               padding: const EdgeInsets.only(
                   right: 50, left: 50, top: 10, bottom: 10),
               child: FloatingActionButton.extended(
+                heroTag: "f1",
                 icon: const Icon(Icons.search),
                 label: const Text('Search Saved Drafts'),
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
-                    return const SavedDraftsSBI();
+                    return const SavedDrafts();
                   }));
                 },
               ),
@@ -1195,7 +1224,8 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
               _buildTextField('Property type (Leasehold/Freehold)',
                   'propertyTypeLeaseholdFreehold'),
               _buildTextField(
-                  'Property Zone (Residential/etc)', 'propertyZone'),
+                  'Property Zone (Residential/Commercial/Industrial/Agricultural)',
+                  'propertyZone'),
               const Text("Classification of the area",
                   style: TextStyle(fontWeight: FontWeight.bold)),
               _buildTextField('i) High / Middle / Poor',
@@ -1219,6 +1249,7 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
               _buildTextField('Year of Construction', 'yearOfConstruction'),
               const Text("Number of Floors",
                   style: TextStyle(fontWeight: FontWeight.bold)),
+              // NEW, CORRECTED CODE
               Row(children: [
                 Expanded(
                     child:
@@ -1230,6 +1261,7 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
               ]),
               const Text("Number of Units",
                   style: TextStyle(fontWeight: FontWeight.bold)),
+
               Row(children: [
                 Expanded(
                     child:
@@ -1335,9 +1367,7 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
                   _buildTextField('Remark 4', 'remarks4', maxLines: 2),
                 ]),
             _buildSection(title: 'Final Valuation Summary', children: [
-              _buildTextField('Valuation Approach Details', 'valuationApproach',
-                  maxLines: 5),
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
               _buildTextField(
                   'Present Market Value of The Property', 'presentMarketValue'),
               _buildTextField(
@@ -1404,7 +1434,9 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
                       label: const Text('Add Images'))),
               const SizedBox(height: 10),
 
-// In lib/valuation_form_sbi.dart -> build() method -> 'Photo Report' section
+              // lib/valuation_form_sib.dart -> build() method -> 'Photo Report' section
+
+// In lib/valuation_form_sib.dart -> build() method -> 'Photo Report' section
 
 // --- REPLACE the old GridView.builder with THIS ENTIRE WIDGET ---
               GridView.builder(
@@ -1531,6 +1563,7 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
             Padding(
               padding: const EdgeInsets.only(left: 50, right: 50, top: 10),
               child: FloatingActionButton.extended(
+                heroTag: "f2",
                 onPressed: _generatePdf,
                 icon: const Icon(Icons.picture_as_pdf),
                 label: const Text('Generate PDF'),
@@ -1540,6 +1573,7 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: "f3",
         onPressed: () {
           _saveData();
         },

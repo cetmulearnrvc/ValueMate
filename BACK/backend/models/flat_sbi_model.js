@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+
 // Sub-schema for valuation details, corresponding to the ValuationDetailItem class
 const valuationDetailItemSchema = new mongoose.Schema({
     description: {
@@ -17,6 +18,10 @@ const valuationDetailItemSchema = new mongoose.Schema({
     estimatedValue: {
         type: String,
         default: ''
+    },
+    total:{
+        type: String,
+        default: ''
     }
 }, { _id: false }); // _id is not needed for these sub-documents
 
@@ -26,16 +31,17 @@ const valuationImageSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    fileID: {
-        type: String,
-        required: true
-    },
+    // fileID: {
+    //     type: String,
+    //     required: true
+    // },
     latitude: Number,
     longitude: Number,
 }, { _id: false });
 
-// Main schema for SBI Valuation data, corresponding to the SBIValuationData class
+// Main schema for SIB Valuation data, corresponding to the SIBValuationData class
 const sbiValuationSchemaFlat = new mongoose.Schema({
+    
     
     // === Header Info ===
     valuerName: String,
@@ -137,7 +143,6 @@ const sbiValuationSchemaFlat = new mongoose.Schema({
     remarks4: String,
 
     // === Page 4 - Final Valuation Summary ===
-    valuationApproach: String,
     presentMarketValue: String,
     realizableValue: String,
     distressValue: String,

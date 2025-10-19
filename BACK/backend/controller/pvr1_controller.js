@@ -5,8 +5,8 @@ import cloudinary from "../cloudinaryConfig.js";
 
 export const savePVR1Data = async(req,res)=>{
 
-    console.log("A post req received");
-    console.log(req.body); 
+    // console.log("A post req received");
+    // console.log(req.body); 
     
     const pvr1Data=req.body;
     pvr1Data.typo="pvr1"

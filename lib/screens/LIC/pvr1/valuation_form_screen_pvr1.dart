@@ -38,7 +38,7 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
     super.initState();
     if (widget.propertyData != null) {
       // Use the passed data to initialize your form only if it exists
-      debugPrint('Received property data: ${widget.propertyData}');
+      // debugPrint('Received property data: ${widget.propertyData}');
       // Example:
       // _fileNoController.text = widget.propertyData!['fileNo'].toString();
     } else {
@@ -60,7 +60,7 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
   // --- ALL CONTROLLERS AND STATE VARIABLES ---
   final _valuerNameCtrl = TextEditingController();
   final _valuerCodeCtrl = TextEditingController();
-  DateTime _inspectionDate = DateTime(2025, 5, 20);
+  DateTime _inspectionDate = DateTime.now();
   final _fileNoCtrl = TextEditingController();
   final _applicantNameCtrl = TextEditingController();
   final _ownerNameCtrl = TextEditingController();
@@ -175,11 +175,11 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
       final ownerName = _ownerNameCtrl.text ?? '[is null]';
       final marketValue = _landValueMarketCtrl.text ?? '[is null]';
 
-      debugPrint('------------------------------------------');
-      debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
-      debugPrint('Owner Name from Controller: "$ownerName"');
-      debugPrint('Market Value from Controller: "$marketValue"');
-      debugPrint('------------------------------------------');
+      // debugPrint('------------------------------------------');
+      // debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
+      // debugPrint('Owner Name from Controller: "$ownerName"');
+      // debugPrint('Market Value from Controller: "$marketValue"');
+      // debugPrint('------------------------------------------');
       // --- STEP 3: Build the payload with the correct data ---
       final dataToSave = {
         // Use the coordinates from the image we found
@@ -204,7 +204,7 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
       } else {
         debugPrint(
             'Failed to save to nearby collection: ${response.statusCode}');
-        debugPrint('Response body: ${response.body}');
+        // debugPrint('Response body: ${response.body}');
       }
     } catch (e) {
       debugPrint('Error in _saveToNearbyCollection: $e');
@@ -374,7 +374,7 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
 
       final response = await request.send();
 
-      debugPrint("send req to back");
+      // debugPrint("send req to back");
 
       if (context.mounted) Navigator.of(context).pop();
       // debugPrint("${response.statusCode}");
@@ -403,7 +403,7 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
     final latitude = _nearbyLatitude.text.trim();
     final longitude = _nearbyLongitude.text.trim();
 
-    debugPrint(latitude);
+    // debugPrint(latitude);
 
     if (latitude.isEmpty || longitude.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -429,10 +429,10 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
         final List<dynamic> responseData = jsonDecode(response.body);
 
         // Debug print the array
-        debugPrint('Response Data (Array):');
-        for (var item in responseData) {
-          debugPrint(item.toString()); // Print each item in the array
-        }
+        // debugPrint('Response Data (Array):');
+        // for (var item in responseData) {
+        //   debugPrint(item.toString()); // Print each item in the array
+        // }
 
         if (context.mounted) {
           // Navigator.of(context).push(
@@ -791,7 +791,7 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
       // Date fields
       if (data['inspectionDate'] != null) {
         try {
-          debugPrint(data['inspectionDate']);
+          // debugPrint(data['inspectionDate']);
           _inspectionDate = DateTime.parse(data['inspectionDate']);
         } catch (e) {
           debugPrint('Error parsing inspection date: $e');

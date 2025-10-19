@@ -1,4 +1,4 @@
-const url1 = "http://localhost:3000/api/v1/sbi/flat/savepdf";
+const url = "http://localhost:3000/api/v1/sbi/flat/savepdf";
 
 const url2 = "http://localhost:3000/api/v1/getNearby";
 

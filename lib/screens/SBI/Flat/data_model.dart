@@ -1,13 +1,17 @@
-// lib/data_model_sbi.dart
+// lib/data_model_sib.dart
 
 import 'dart:typed_data';
 
 class ValuationImage {
+  // Using a class to potentially hold more data like lat/long in the future
   final Uint8List imageFile;
   String latitude;
   String longitude;
-  ValuationImage({required this.imageFile,this.latitude = '', 
-    this.longitude = '',});
+  ValuationImage({
+    required this.imageFile,
+    this.latitude = '',
+    this.longitude = '',
+  });
 }
 
 class ValuationDetailItem {
@@ -15,17 +19,16 @@ class ValuationDetailItem {
   String area;
   String ratePerUnit;
   String estimatedValue;
-
-  ValuationDetailItem({
-    this.description = '',
-    this.area = '',
-    this.ratePerUnit = '',
-    this.estimatedValue = '',
-  });
+  String total;
+  ValuationDetailItem(
+      {this.description = '',
+      this.area = '',
+      this.ratePerUnit = '',
+      this.estimatedValue = '',
+      this.total = ''});
 }
 
 class SBIValuationData {
-
   String nearbyLatitude;
   String nearbyLongitude;
   // === Header Info ===
@@ -46,7 +49,7 @@ class SBIValuationData {
   String purposeOfValuation;
   DateTime? dateOfInspection;
   DateTime? dateOfValuation;
-  
+
   // Documents for Persual
   String docLandTaxReceipt;
   String docTitleDeed;
@@ -56,7 +59,7 @@ class SBIValuationData {
   String docBuildingCompletionPlan;
   String docThandapperDocument;
   String docBuildingTaxReceipt;
-  
+
   String nameOfOwner;
   String nameOfApplicant;
   String addressAsPerDocuments;
@@ -128,7 +131,6 @@ class SBIValuationData {
   String remarks4;
 
   // === Page 4 - Final Valuation Summary ===
-  String valuationApproach;
   String presentMarketValue;
   String realizableValue;
   String distressValue;
@@ -151,25 +153,31 @@ class SBIValuationData {
   String p7caveats;
   DateTime? p7reportDate;
   String p7reportPlace;
-  
+
   List<ValuationImage> images;
 
   SBIValuationData({
-    this.nearbyLatitude='',
-    this.nearbyLongitude='',
+    this.nearbyLatitude = '',
+    this.nearbyLongitude = '',
     this.valuerName = 'VIGNESH. S',
     this.valuerQualifications = 'Chartered Engineer (AM1920793)',
-    this.valuerRegInfo = 'Registered valuer under section 247 of Companies Act, 2013 (IBBI/RV/01/2020/13411)\nRegistered valuer under section 34AB of Wealth Tax Act, 1957 (I-9AV/CC-TVM/2020-21)\nRegistered valuer under section 77(1) of Black Money Act, 2015 (I-3/AV-BM/PCIT-TVM/2023-24)',
-    this.valuerAddress = 'TC-37/777(1), Big Palla Street, Fort P.O. Thiruvananthapuram-695023',
+    this.valuerRegInfo =
+        'Registered valuer under section 247 of Companies Act, 2013 (IBBI/RV/01/2020/13411)\nRegistered valuer under section 34AB of Wealth Tax Act, 1957 (I-9AV/CC-TVM/2020-21)\nRegistered valuer under section 77(1) of Black Money Act, 2015 (I-3/AV-BM/PCIT-TVM/2023-24)',
+    this.valuerAddress =
+        'TC-37/777(1), Big Palla Street, Fort P.O. Thiruvananthapuram-695023',
     this.valuerContact = '+91 89030 42635',
     this.valuerEmail = 'subramonyvignesh@gmail.com',
     this.refNo = '',
-    this.bankName = 'State Bank of India', 
+    this.bankName = 'The State Bank of India',
     this.branchName = 'Chakai Branch',
     this.branchAddress = 'Thiruvananthapuram',
+    // Set dateOfInspection to DateTime.now() if not provided
+    DateTime?
+        dateOfInspection, // Make it nullable here to handle the default logic
+    DateTime? dateOfValuation,
+    DateTime? finalValuationDate,
+    DateTime? p7reportDate,
     this.purposeOfValuation = '',
-    this.dateOfInspection,
-    this.dateOfValuation,
     this.docLandTaxReceipt = '',
     this.docTitleDeed = '',
     this.docBuildingCertificate = '',
@@ -183,13 +191,13 @@ class SBIValuationData {
     this.addressAsPerDocuments = '',
     this.addressAsPerActual = '',
     this.deviations = '',
-    this.propertyTypeLeaseholdFreehold = 'Freehold',
-    this.propertyZone = 'Residential',
-    this.classificationAreaHighMiddlePoor = 'Middle',
-    this.classificationAreaUrbanSemiRural = 'Urban',
-    this.comingUnder = 'Corporation limit',
-    this.coveredUnderGovtEnactments = 'No',
-    this.isAgriculturalLand = 'No',
+    this.propertyTypeLeaseholdFreehold = '',
+    this.propertyZone = '',
+    this.classificationAreaHighMiddlePoor = '',
+    this.classificationAreaUrbanSemiRural = '',
+    this.comingUnder = '',
+    this.coveredUnderGovtEnactments = '',
+    this.isAgriculturalLand = '',
     this.natureOfApartment = '',
     this.yearOfConstruction = '',
     this.numFloorsActuals = '',
@@ -225,9 +233,9 @@ class SBIValuationData {
     this.saleDeedName = '',
     this.undividedLandArea = '',
     this.flatArea = '',
-    this.flatClass = 'Medium',
-    this.flatUsage = 'Residential',
-    this.flatOccupancy = 'Owner-occupied',
+    this.flatClass = '',
+    this.flatUsage = '',
+    this.flatOccupancy = '',
     this.flatMonthlyRent = '',
     this.rateComparable = '',
     this.rateNewConstruction = '',
@@ -237,33 +245,43 @@ class SBIValuationData {
     this.remarks2 = '',
     this.remarks3 = '',
     this.remarks4 = '',
-    this.valuationApproach = '',
     this.presentMarketValue = '',
     this.realizableValue = '',
     this.distressValue = '',
     this.insurableValue = '',
     this.finalValuationPlace = 'Thiruvananthapuram',
-    this.finalValuationDate,
     this.p7background = 'The property is a 1.62 Ares residential building,',
-    this.p7purpose = 'To assess the present fair market value, realizable value, distress value of the property offered as primary security for Mr. Babu',
+    this.p7purpose =
+        'To assess the present fair market value, realizable value, distress value of the property offered as primary security for Mr. Babu',
     this.p7identity = 'Vignesh S',
-    this.p7disclosure = 'The property was not physically measured as the customer was not willing',
+    this.p7disclosure =
+        'The property was not physically measured as the customer was not willing',
     this.p7dates = '02-09-2024, 04-09-2024, 06-09-2024',
     this.p7inspections = 'The property was inspected on 04-09-2024',
     this.p7nature = 'Documents submitted for verification',
     this.p7procedures = 'Comparable Sale Method & Replacement Method',
-    this.p7restrictions = "This report shall be used to determine the present market value of the property only for the purpose of bank's security",
-    this.p7majorFactors1 = 'The Land extent considered is as per the revenue records produced for verification, separated using compound wall',
-    this.p7majorFactors2 = 'The building extend considered in this report is as per the measurement taken on the date of site visit',
-    this.p7caveats = 'The value is an estimate considering the local enquiry, this may vary depending on the date and purpose of valuation',
-    this.p7reportDate,
+    this.p7restrictions =
+        'This report shall be used to determine the present market value of the property only for the purpose of bank\'s security',
+    this.p7majorFactors1 =
+        'The Land extent considered is as per the revenue records produced for verification, separated using compound wall',
+    this.p7majorFactors2 =
+        'The building extend considered in this report is as per the measurement taken on the date of site visit',
+    this.p7caveats =
+        'The value is an estimate considering the local enquiry, this may vary depending on the date and purpose of valuation',
     this.p7reportPlace = 'Thiruvananthapuram',
     List<ValuationImage>? images,
-  }) : images = images ?? [],
-       valuationDetails = valuationDetails ?? [
-         ValuationDetailItem(description: 'Present value of the flat'),
-         ValuationDetailItem(description: 'Car park'),
-         ValuationDetailItem(description: 'Wardrobes'),
-         ValuationDetailItem(description: 'Any additional'),
-       ];
+  })  : // Initialize date fields with DateTime.now() if not provided
+        dateOfInspection = DateTime.now(),
+        dateOfValuation = DateTime.now(),
+        finalValuationDate = DateTime.now(),
+        p7reportDate = p7reportDate ?? DateTime.now(),
+        images = images ?? [],
+        valuationDetails = valuationDetails ??
+            [
+              ValuationDetailItem(description: 'Present value of the flat'),
+              ValuationDetailItem(description: 'Car park'),
+              ValuationDetailItem(description: 'Wardrobes'),
+              ValuationDetailItem(description: 'Any additional'),
+              ValuationDetailItem(description: 'Total'),
+            ];
 }

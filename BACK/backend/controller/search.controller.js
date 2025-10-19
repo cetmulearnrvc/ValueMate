@@ -4,7 +4,7 @@ export async function searchByDate(req,res){
 
     const {date}=req.body
 
-    console.log(date)
+    // console.log(date)
 
     const targetDate = new Date(date);
 
