@@ -14,8 +14,6 @@ import 'package:geolocator/geolocator.dart'; // Import geolocator package
 // Import geolocator package
 import 'package:http/http.dart' as http;
 import 'config.dart';
-import 'package:login_screen/screens/driveAPIconfig.dart';
-import 'package:path/path.dart' as path;
 
 void main() {
   runApp(const MyApp());
@@ -1520,34 +1518,42 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
           data['constructionDeviationHerebyConfirmCertify']?.toString() ?? '';
 
       // Load images if available
+
       try {
         if (data['images'] != null && data['images'] is List) {
           final List<dynamic> imagesData = data['images'];
 
           for (var imgData in imagesData) {
             try {
-              String fileName = imgData['fileName'];
+              // The backend returned something like "uploads/abc123.png"
+              final String filePath = imgData['filePath'];
 
-              String signedUrl = await fetchSignedUrl(fileName);
-              Uint8List imageBytes = await fetchImageBytes(signedUrl);
+              // Build the full URL (e.g., http://your-server.com/uploads/abc123.png)
+              final String imageUrl = '$baseUrl/$filePath';
 
-              // Get file extension from original filename
-              // String extension = path.extension(fileName).toLowerCase();
-              // if (extension.isEmpty) extension = '.jpg'; // default fallback
+              // Fetch image bytes
+              final response = await http.get(Uri.parse(imageUrl));
 
-              _images.add(
-                XFile.fromData(
-                  imageBytes,
-                ),
-              );
+              if (response.statusCode == 200) {
+                Uint8List imageBytes = response.bodyBytes;
+
+                _images.add(
+                  XFile.fromData(
+                    imageBytes,
+                  ),
+                );
+              } else {
+                debugPrint('Failed to load image: ${response.statusCode}');
+              }
             } catch (e) {
-              debugPrint('Error loading image from Drive: $e');
+              debugPrint('Error loading image from uploads: $e');
             }
           }
         }
       } catch (e) {
-        debugPrint('Error in fetchImages: $e');
+        debugPrint('Error in fetchImagesFromUploads: $e');
       }
+
       if (mounted) setState(() {});
 
       debugPrint('Federal Bank form initialized with property data');

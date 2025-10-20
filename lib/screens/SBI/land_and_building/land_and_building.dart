@@ -15,7 +15,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'config.dart';
 // import 'package:login_screen/screens/driveAPIconfig.dart';
-import 'package:path/path.dart' as path;
 
 void main() {
   runApp(const MyApp());
@@ -1049,28 +1048,35 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           data['vcCaveatsLimitations']?.toString() ?? '';
 
       // Load images if available
-      try {
+     try {
         if (data['images'] != null && data['images'] is List) {
           final List<dynamic> imagesData = data['images'];
 
           for (var imgData in imagesData) {
             try {
-              // Get the file ID from your data (assuming it's stored as 'fileId')
+              // The backend returned something like "uploads/abc123.png"
+              final String filePath = imgData['filePath'];
 
-              String fileName = imgData['fileName'];
+              // Build the full URL (e.g., http://your-server.com/uploads/abc123.png)
+              final String imageUrl = '$baseUrl/$filePath';
 
-              String signedUrl = await fetchSignedUrl(fileName);
-              // debugPrint(signedUrl);
-              Uint8List imageBytes = await fetchImageBytes(signedUrl);
+              // Fetch image bytes
+              final response = await http.get(Uri.parse(imageUrl));
 
-              _images.add(imageBytes);
+              if (response.statusCode == 200) {
+                Uint8List imageBytes = response.bodyBytes;
+
+                _images.add(imageBytes);
+              } else {
+                debugPrint('Failed to load image: ${response.statusCode}');
+              }
             } catch (e) {
-              debugPrint('Error loading image from Drive: $e');
+              debugPrint('Error loading image from uploads: $e');
             }
           }
         }
       } catch (e) {
-        //debugPrint('Error in fetchImages: $e');
+        debugPrint('Error in fetchImagesFromUploads: $e');
       }
 
       if (mounted) setState(() {});

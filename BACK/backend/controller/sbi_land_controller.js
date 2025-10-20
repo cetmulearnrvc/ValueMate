@@ -21,30 +21,14 @@ export const savelandData = async(req,res)=>{
 
 
      landData.images = [];
-    if (req.files && req.files.length > 0) {
-      for (let i = 0; i < req.files.length; i++) {
-        // const meta = imagesMeta[i] || {};
-        const hash = crypto.createHash("sha256").update(req.files[i].buffer).digest("hex");
-        // console.log(hash);
-        // Upload file buffer to Cloudinary
-        const result = await new Promise((resolve, reject) => {
-          const stream = cloudinary.uploader.upload_stream(
-            { resource_type: "image",
-              type:"authenticated",
-                public_id: hash,    // <-- use hash as unique ID
-                overwrite: false    // <-- prevents overwriting if same hash exists
-             },
-            (error, result) => {
-              if (error) reject(error);
-              else resolve(result);
-            }
-          );
-          stream.end(req.files[i].buffer); // << file buffer
-        });
+    if (req.results && req.results.length > 0) {
+      for (let i = 0; i < req.results.length; i++) {
+       const file = req.results[i];
+
     
         const imageData = {
-          fileName: result.public_id, // Cloudinary URL
-          
+          fileName: file.filename, 
+          filePath:file.path,
         };
     
         landData.images.push(imageData);

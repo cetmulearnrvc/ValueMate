@@ -1,7 +1,5 @@
 import pvr1 from "../models/pvr1_model.js";
-import crypto from "crypto";
-import mongoose from "mongoose";
-import cloudinary from "../cloudinaryConfig.js";
+
 
 export const savePVR1Data = async(req,res)=>{
 
@@ -31,28 +29,15 @@ export const savePVR1Data = async(req,res)=>{
 
 
      pvr1Data.images = [];
-    if (req.files && req.files.length > 0) {
+    if (req.results && req.results.length > 0) {
       for (let i = 0; i < req.files.length; i++) {
         const meta = imagesMeta[i] || {};
-        const hash = crypto.createHash("sha256").update(req.files[i].buffer).digest("hex");
-        // Upload file buffer to Cloudinary
-        const result = await new Promise((resolve, reject) => {
-          const stream = cloudinary.uploader.upload_stream(
-            { resource_type: "image",
-                type:"authenticated",
-                public_id: hash,    // <-- use hash as unique ID
-                overwrite: false    // <-- prevents overwriting if same hash exists
-             },
-            (error, result) => {
-              if (error) reject(error);
-              else resolve(result);
-            }
-          );
-          stream.end(req.files[i].buffer); // << file buffer
-        });
+        const file = req.results[i];
+
     
         const imageData = {
-          fileName: result.public_id, // Cloudinary URL
+          fileName: file.filename, 
+          filePath:file.path,
           latitude: meta.latitude ? String(meta.latitude) : null,
           longitude: meta.longitude ? String(meta.longitude) : null
         };
