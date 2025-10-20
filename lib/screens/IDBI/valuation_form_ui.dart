@@ -779,29 +779,42 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
           data['valuerAddress']?.toString() ?? '';
 
       // Handle images if needed
+
       try {
         if (data['images'] != null && data['images'] is List) {
           final List<dynamic> imagesData = data['images'];
+
           for (var imgData in imagesData) {
             try {
-              String fileName = imgData['fileName'];
-              String signedUrl = await fetchSignedUrl(fileName);
-              // debugPrint("url:$signedUrl");
-              Uint8List imageBytes = await fetchImageBytes(signedUrl);
+              // The backend returned something like "uploads/abc123.png"
+              final String filePath = imgData['filePath'];
 
-              _valuationImages.add(ValuationImage(
-                imageFile: imageBytes,
-                latitude: imgData['latitude']?.toString() ?? '',
-                longitude: imgData['longitude']?.toString() ?? '',
-              ));
+              // Build the full URL (e.g., http://your-server.com/uploads/abc123.png)
+              final String imageUrl = '$baseUrl/$filePath';
+
+              // Fetch image bytes
+              final response = await http.get(Uri.parse(imageUrl));
+
+              if (response.statusCode == 200) {
+                Uint8List imageBytes = response.bodyBytes;
+
+                _valuationImages.add(ValuationImage(
+                  imageFile: imageBytes,
+                  latitude: imgData['latitude'],
+                  longitude: imgData['longitude'],
+                ));
+              } else {
+                debugPrint('Failed to load image: ${response.statusCode}');
+              }
             } catch (e) {
-              debugPrint('Error loading image from Cloudinary: $e');
+              debugPrint('Error loading image from uploads: $e');
             }
           }
         }
       } catch (e) {
-        debugPrint('Error in fetchImages: $e');
+        debugPrint('Error in fetchImagesFromUploads: $e');
       }
+
 
       if (mounted) setState(() {});
       debugPrint('New form initialized with property data');

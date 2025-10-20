@@ -6,7 +6,7 @@ import cloudinary from "../cloudinaryConfig.js";
 export const savePVR3Data = async(req,res)=>{
 
     console.log("A post req received in pvr3");
-    console.log(req.body); 
+    
     
 
     
@@ -31,29 +31,14 @@ export const savePVR3Data = async(req,res)=>{
 
 
      pvr3Data.images = [];
-    if (req.files && req.files.length > 0) {
-      for (let i = 0; i < req.files.length; i++) {
+    if (req.results && req.results.length > 0) {
+      for (let i = 0; i < req.results.length; i++) {
         const meta = imagesMeta[i] || {};
-        const hash = crypto.createHash("sha256").update(req.files[i].buffer).digest("hex");
-        // console.log(hash);
-        // Upload file buffer to Cloudinary
-        const result = await new Promise((resolve, reject) => {
-          const stream = cloudinary.uploader.upload_stream(
-            { resource_type: "image",
-              type:"authenticated",
-                public_id: hash,    // <-- use hash as unique ID
-                overwrite: false    // <-- prevents overwriting if same hash exists
-             },
-            (error, result) => {
-              if (error) reject(error);
-              else resolve(result);
-            }
-          );
-          stream.end(req.files[i].buffer); // << file buffer
-        });
+        const file = req.results[i];
     
         const imageData = {
-          fileName: result.public_id, // Cloudinary URL
+          fileName: file.filename, 
+          filePath:file.path,
           latitude: meta.latitude ? String(meta.latitude) : null,
           longitude: meta.longitude ? String(meta.longitude) : null
         };

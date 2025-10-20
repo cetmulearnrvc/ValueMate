@@ -5,6 +5,10 @@ const valuationImageSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  filePath: {
+    type: String,
+    required: true
+  },
   // fileID:{
   //   type: String,
   //   required: true

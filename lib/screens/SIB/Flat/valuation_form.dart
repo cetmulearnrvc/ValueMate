@@ -16,8 +16,6 @@ import 'package:login_screen/screens/SIB/Flat/savedDrafts.dart';
 import 'package:login_screen/screens/nearbyDetails.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
-import 'package:path/path.dart' as path;
-import 'package:login_screen/screens/driveAPIconfig.dart';
 
 class SIBValuationFormScreen extends StatefulWidget {
   final Map<String, dynamic>? propertyData;
@@ -349,35 +347,39 @@ class _SIBValuationFormScreenState extends State<SIBValuationFormScreen> {
   Future<void> _loadInitialImages(Map<String, dynamic> data) async {
     final List<ValuationImage> loadedImages = [];
     try {
-      if (data['images'] != null && data['images'] is List) {
-        final List<dynamic> imagesData = data['images'];
+        if (data['images'] != null && data['images'] is List) {
+          final List<dynamic> imagesData = data['images'];
 
-        for (var imgData in imagesData) {
-          try {
-            // Get the file ID from your data (assuming it's stored as 'fileId')
+          for (var imgData in imagesData) {
+            try {
+              // The backend returned something like "uploads/abc123.png"
+              final String filePath = imgData['filePath'];
 
-            String fileName = imgData['fileName'];
+              // Build the full URL (e.g., http://your-server.com/uploads/abc123.png)
+              final String imageUrl = '$baseUrl/$filePath';
 
-            String signedUrl = await fetchSignedUrl(fileName);
-            // debugPrint(signedUrl);
-            Uint8List imageBytes = await fetchImageBytes(signedUrl);
-            // // Get file extension from original filename
-            // String extension = path.extension(fileName).toLowerCase();
-            // if (extension.isEmpty) extension = '.jpg'; // default fallback
+              // Fetch image bytes
+              final response = await http.get(Uri.parse(imageUrl));
 
-            _valuationImages.add(ValuationImage(
-              imageFile: imageBytes,
-              latitude: imgData['latitude']?.toString() ?? '',
-              longitude: imgData['longitude']?.toString() ?? '',
-            ));
-          } catch (e) {
-            debugPrint('Error loading image from Drive: $e');
+              if (response.statusCode == 200) {
+                Uint8List imageBytes = response.bodyBytes;
+
+                _valuationImages.add(ValuationImage(
+                  imageFile: imageBytes,
+                  latitude: imgData['latitude']?.toString() ?? '',
+                  longitude: imgData['longitude']?.toString() ?? '',
+                ));
+              } else {
+                debugPrint('Failed to load image: ${response.statusCode}');
+              }
+            } catch (e) {
+              debugPrint('Error loading image from uploads: $e');
+            }
           }
         }
+      } catch (e) {
+        debugPrint('Error in fetchImagesFromUploads: $e');
       }
-    } catch (e) {
-      debugPrint('Error in fetchImages: $e');
-    }
     if (mounted) {
       setState(() {});
     }

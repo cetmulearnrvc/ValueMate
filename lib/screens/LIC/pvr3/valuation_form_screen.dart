@@ -15,8 +15,6 @@ import 'valuation_data_model.dart';
 import 'pdf_generator.dart';
 import 'package:http/http.dart' as http;
 import 'config.dart';
-import 'package:login_screen/screens/driveAPIconfig.dart';
-import 'package:path/path.dart' as path;
 
 class ValuationFormScreen extends StatefulWidget {
   final Map<String, dynamic>? propertyData;
@@ -397,62 +395,6 @@ class _ValuationFormScreenState extends State<ValuationFormScreen> {
     }
   }
 
-  Future<String> _getAccessToken() async {
-    final response = await http.post(
-      Uri.parse('https://oauth2.googleapis.com/token'),
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: {
-        'client_id': clientId,
-        'client_secret': clientSecret,
-        'refresh_token': refreshToken,
-        'grant_type': 'refresh_token',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body)['access_token'] as String;
-    } else {
-      throw Exception('Failed to refresh access token');
-    }
-  }
-
-  String _getMimeTypeFromExtension(String extension) {
-    switch (extension) {
-      case '.jpg':
-      case '.jpeg':
-        return 'image/jpeg';
-      case '.png':
-        return 'image/png';
-      case '.gif':
-        return 'image/gif';
-      case '.webp':
-        return 'image/webp';
-      default:
-        return 'application/octet-stream';
-    }
-  }
-
-  Future<Uint8List> fetchImageFromDrive(String fileId) async {
-    try {
-      // Get access token using refresh token
-      final accessToken = await _getAccessToken();
-
-      final response = await http.get(
-        Uri.parse(
-            'https://www.googleapis.com/drive/v3/files/$fileId?alt=media'),
-        headers: {'Authorization': 'Bearer $accessToken'},
-      );
-
-      if (response.statusCode == 200) {
-        return response.bodyBytes;
-      } else {
-        throw Exception('Failed to load image: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error fetching image from Drive: $e');
-    }
-  }
-
   OccupantStatus _parseOccupantStatus(String? status) {
     if (status == null) return OccupantStatus.Occupied;
     switch (status.toLowerCase()) {
@@ -482,38 +424,6 @@ class _ValuationFormScreenState extends State<ValuationFormScreen> {
         return PropertyType.Flat;
       default:
         return PropertyType.House;
-    }
-  }
-
-  Future<String> fetchSignedUrl(String imagePublicId) async {
-    // --- YOU MUST CUSTOMIZE THESE VALUES ---
-    const String apiKey =
-        "db74f0da81338f1ad24d0be8298f90f4e6be5f0df5b53aca2f95ead470665641";
-    const String apiBaseUrl = 'http://localhost:3000'; // For Android emulator
-    // -----------------------------------------
-
-    final url = Uri.parse('$apiBaseUrl/api/images/secure-url/$imagePublicId');
-
-    final response = await http.get(
-      url,
-      headers: {'x-api-key': apiKey},
-    );
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      return data['signedUrl'];
-    } else {
-      throw Exception(
-          'Failed to load signed URL. Status code: ${response.statusCode}');
-    }
-  }
-
-  Future<Uint8List> fetchImageBytes(String url) async {
-    final response = await http.get(Uri.parse(url));
-    if (response.statusCode == 200) {
-      return response.bodyBytes; // this is Uint8List
-    } else {
-      throw Exception('Failed to load image');
     }
   }
 
@@ -697,25 +607,33 @@ class _ValuationFormScreenState extends State<ValuationFormScreen> {
 
           for (var imgData in imagesData) {
             try {
-              // Get the file ID from your data (assuming it's stored as 'fileId')
+              // The backend returned something like "uploads/abc123.png"
+              final String filePath = imgData['filePath'];
 
-              String fileName = imgData['fileName'];
+              // Build the full URL (e.g., http://your-server.com/uploads/abc123.png)
+              final String imageUrl = '$baseUrl/$filePath';
 
-              String signedUrl = await fetchSignedUrl(fileName);
-              Uint8List imageBytes = await fetchImageBytes(signedUrl);
+              // Fetch image bytes
+              final response = await http.get(Uri.parse(imageUrl));
 
-              _valuationImages.add(ValuationImage(
-                imageFile: imageBytes,
-                latitude: imgData['latitude']?.toString() ?? '',
-                longitude: imgData['longitude']?.toString() ?? '',
-              ));
+              if (response.statusCode == 200) {
+                Uint8List imageBytes = response.bodyBytes;
+
+                _valuationImages.add(ValuationImage(
+                  imageFile: imageBytes,
+                  latitude: imgData['latitude']?.toString() ?? '',
+                  longitude: imgData['longitude']?.toString() ?? '',
+                ));
+              } else {
+                debugPrint('Failed to load image: ${response.statusCode}');
+              }
             } catch (e) {
-              debugPrint('Error loading image from Drive: $e');
+              debugPrint('Error loading image from uploads: $e');
             }
           }
         }
       } catch (e) {
-        debugPrint('Error in fetchImages: $e');
+        debugPrint('Error in fetchImagesFromUploads: $e');
       }
 
       if (mounted) setState(() {});

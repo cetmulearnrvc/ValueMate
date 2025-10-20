@@ -5,8 +5,9 @@ import { saveFlatData } from "../controller/sib_flat_controller.js";
 import { searchByDate } from "../controller/sib_flat_controller.js";
 // import { searchByDate, searchByFileNo } from "../controller/search.controller.js";
 import upload from "../multer/upload.js";
+import { handleUpload } from "../middleware/handleUpload.js";
 
-flat_router.post("/flat/savepdf" ,upload.array("images",10),saveFlatData);
+flat_router.post("/flat/savepdf" ,upload.array("images",10),handleUpload,saveFlatData);
 
 // flat_router.post("/flat/getnearby",getNearbyFlat);
 

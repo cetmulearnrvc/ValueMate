@@ -7,3 +7,5 @@ const url3 = "http://localhost:3000/api/v1/sbi/flat/getByDate";
 const url4 = "http://localhost:3000/uploads/";
 
 const url5 = "http://localhost:3000/api/v1/saveNearby";
+
+const baseUrl = "http://localhost:3000";
