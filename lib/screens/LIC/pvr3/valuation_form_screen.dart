@@ -15,6 +15,7 @@ import 'valuation_data_model.dart';
 import 'pdf_generator.dart';
 import 'package:http/http.dart' as http;
 import 'config.dart';
+import 'package:login_screen/screens/driveAPIconfig.dart';
 
 class ValuationFormScreen extends StatefulWidget {
   final Map<String, dynamic>? propertyData;
@@ -46,113 +47,91 @@ class _ValuationFormScreenState extends State<ValuationFormScreen> {
   // --- STATE FOR DYNAMIC UI ---
   PropertyType _selectedPropertyType = PropertyType.House;
   final List<FloorData> _floors = [
-    FloorData(
-        name: 'GF', area: '676', marketRate: '1500', guidelineRate: '1500'),
-    FloorData(
-        name: 'FF', area: '716', marketRate: '1500', guidelineRate: '1500'),
+    FloorData(name: '', area: '', marketRate: '', guidelineRate: ''),
   ];
   final List<ValuationImage> _valuationImages = [];
   // ADDED: State for the dynamic "Progress of Work" table
   final List<ProgressWorkItem> _progressWorkItems = [
-    ProgressWorkItem(
-        description:
-            'FLOORING PAINTING SHEET ROOFING SANITARY FITTINGS ELECTRICAL WORKS ALL WORKS COMPLETED AS PER ESTIMATE',
-        applicantEstimate: '2000000',
-        valuerOpinion: '')
+    ProgressWorkItem(description: '', applicantEstimate: '', valuerOpinion: '')
   ];
 
   // --- ALL CONTROLLERS ---
   final _nearbyLatitude = TextEditingController();
   final _nearbyLongitude = TextEditingController();
-  final _fileNoCtrl = TextEditingController(text: '5002050002910');
-  final _valuerNameCtrl = TextEditingController(text: 'VIGNESH S');
-  final _valuerCodeCtrl = TextEditingController(text: 'TVV0001');
-  final _appointingAuthorityCtrl =
-      TextEditingController(text: 'LICHFL THIRUVANANTHAPURAM');
+  final _fileNoCtrl = TextEditingController();
+  final _valuerNameCtrl = TextEditingController(text: "VIGNESH");
+  final _valuerCodeCtrl = TextEditingController(text: "TVV0001");
+  final _appointingAuthorityCtrl = TextEditingController();
   DateTime _inspectionDate = DateTime(2025, 6, 5);
-  final _reraNoCtrl = TextEditingController(text: 'NA');
-  final _schemeCtrl =
-      TextEditingController(text: 'Purchase/ Renovation /Griha Vikas');
-  final _applicantNameCtrl =
-      TextEditingController(text: 'NARAYANAN GANESH KUMAR');
-  final _documentPerusedCtrl = TextEditingController(text: 'Minor');
-  final _addressCtrl = TextEditingController(
-      text: '118 ARES RS NO 2100 A 1 DOOR NO 79 2290 MUTTATHARA VILLAGE...');
+  final _reraNoCtrl = TextEditingController();
+  final _schemeCtrl = TextEditingController();
+  final _applicantNameCtrl = TextEditingController();
+  final _documentPerusedCtrl = TextEditingController();
+  final _addressCtrl = TextEditingController();
   bool _locationSketchVerified = true;
-  final _northBoundaryCtrl =
-      TextEditingController(text: 'PRIVATE ROAD HAVING CAR ACCESS');
-  final _northDimCtrl = TextEditingController(text: '1000 CM');
-  final _southBoundaryCtrl =
-      TextEditingController(text: 'PROPERTY OF KRISHNAMMA');
-  final _southDimCtrl = TextEditingController(text: '1000 CM');
-  final _eastBoundaryCtrl =
-      TextEditingController(text: 'PROPERTY OF MOHANASUNDARAM');
-  final _eastDimCtrl = TextEditingController(text: '1581 CM');
-  final _westBoundaryCtrl = TextEditingController(text: 'PROPERTY OF RADHIKA');
-  final _westDimCtrl = TextEditingController(text: '891 CM');
-  final _extent1Ctrl = TextEditingController(text: '1.18');
-  final _extent2Ctrl = TextEditingController(text: '2.91');
-  final _propertyTypeCtrl = TextEditingController(text: 'Bunglow');
+  final _northBoundaryCtrl = TextEditingController();
+  final _northDimCtrl = TextEditingController();
+  final _southBoundaryCtrl = TextEditingController();
+  final _southDimCtrl = TextEditingController();
+  final _eastBoundaryCtrl = TextEditingController();
+  final _eastDimCtrl = TextEditingController();
+  final _westBoundaryCtrl = TextEditingController();
+  final _westDimCtrl = TextEditingController();
+  final _extent1Ctrl = TextEditingController();
+  final _extent2Ctrl = TextEditingController();
+  final _propertyTypeCtrl = TextEditingController();
   OccupantStatus _occupantStatus = OccupantStatus.Occupied;
-  final _occupantNameCtrl = TextEditingController(text: 'RENTED');
-  final _usageOfBuildingCtrl = TextEditingController(text: 'RESIDENTIAL');
-  final _nearbyLandmarkCtrl = TextEditingController(
-      text: 'SREEVARAHAM MARKET JUNCTION AND MANSIONS SREENIDHI');
-  final _surroundingAreaDevCtrl = TextEditingController(text: 'Middle Class');
+  final _occupantNameCtrl = TextEditingController();
+  final _usageOfBuildingCtrl = TextEditingController();
+  final _nearbyLandmarkCtrl = TextEditingController();
+  final _surroundingAreaDevCtrl = TextEditingController();
   bool _basicAmenitiesAvailable = true;
-  final _negativesToLocalityCtrl = TextEditingController(text: 'NIL');
-  final _favourableConsiderationsCtrl = TextEditingController(text: 'NIL');
-  final _otherFeaturesCtrl = TextEditingController(text: 'NIL');
+  final _negativesToLocalityCtrl = TextEditingController();
+  final _favourableConsiderationsCtrl = TextEditingController();
+  final _otherFeaturesCtrl = TextEditingController();
   bool _approvedDrawingAvailable = true;
-  final _approvalNoAndDateCtrl =
-      TextEditingController(text: 'FE2/TSL/28/11 25-04-11');
+  final _approvalNoAndDateCtrl = TextEditingController();
   bool _constructionAsPerPlan = true;
-  final _drawingDeviationsCtrl = TextEditingController(text: 'NIL');
+  final _drawingDeviationsCtrl = TextEditingController();
   DeviationNature _deviationNature = DeviationNature.Minor;
-  final _marketabilityCtrl = TextEditingController(text: 'Good');
-  final _buildingAgeCtrl = TextEditingController(text: '13');
-  final _residualLifeCtrl = TextEditingController(text: '37');
-  final _fsiApprovedCtrl = TextEditingController(text: '1.1');
-  final _fsiActualCtrl = TextEditingController(text: '1.1');
-  final _specFoundationCtrl = TextEditingController(text: 'RR MASONRY');
-  final _specRoofCtrl = TextEditingController(text: 'RCC');
-  final _specFlooringCtrl = TextEditingController(text: 'VITRIFIED TILES');
-  final _qualityOfConstructionCtrl = TextEditingController(text: 'GOOD');
+  final _marketabilityCtrl = TextEditingController();
+  final _buildingAgeCtrl = TextEditingController();
+  final _residualLifeCtrl = TextEditingController();
+  final _fsiApprovedCtrl = TextEditingController();
+  final _fsiActualCtrl = TextEditingController();
+  final _specFoundationCtrl = TextEditingController();
+  final _specRoofCtrl = TextEditingController();
+  final _specFlooringCtrl = TextEditingController();
+  final _qualityOfConstructionCtrl = TextEditingController();
   bool _adheresToSafetySpecs = true;
   bool _highTensionLineImpact = false;
-  final _landAreaCtrl = TextEditingController(text: '2.91');
-  final _landUnitRateCtrl = TextEditingController(text: '1200000');
-  final _landGuidelineRateCtrl = TextEditingController(text: '1141140');
-  final _amenitiesAreaCtrl = TextEditingController(text: '0');
-  final _amenitiesUnitRateCtrl = TextEditingController(text: '0');
-  final _amenitiesGuidelineRateCtrl = TextEditingController(text: '0');
-  final _marketValueSourceHouseCtrl =
-      TextEditingController(text: 'LOCAL MARKET ENQUIRY');
-  final _flatUndividedShareCtrl = TextEditingController(text: 'NA');
-  final _flatBuiltUpAreaCtrl = TextEditingController(text: '0');
-  final _flatCompositeRateCtrl = TextEditingController(text: '0');
-  final _flatValueUnitRateCtrl = TextEditingController(text: '0');
-  final _flatValueMarketCtrl = TextEditingController(text: '0');
-  final _flatValueGuidelineRateCtrl = TextEditingController(text: '0');
-  final _flatValueGuidelineCtrl = TextEditingController(text: '0');
-  final _marketValueSourceFlatCtrl = TextEditingController(text: 'NA');
-  final _flatExtraAmenitiesCtrl = TextEditingController(text: '0');
-  final _improvementDescriptionCtrl =
-      TextEditingController(text: 'FLOORING PAINTING SHEET ROOFING...');
-  final _improvementAmountCtrl = TextEditingController(text: '2000000');
+  final _landAreaCtrl = TextEditingController();
+  final _landUnitRateCtrl = TextEditingController();
+  final _landGuidelineRateCtrl = TextEditingController();
+  final _amenitiesAreaCtrl = TextEditingController();
+  final _amenitiesUnitRateCtrl = TextEditingController();
+  final _amenitiesGuidelineRateCtrl = TextEditingController();
+  final _marketValueSourceHouseCtrl = TextEditingController();
+  final _flatUndividedShareCtrl = TextEditingController();
+  final _flatBuiltUpAreaCtrl = TextEditingController();
+  final _flatCompositeRateCtrl = TextEditingController();
+  final _flatValueUnitRateCtrl = TextEditingController();
+  final _flatValueMarketCtrl = TextEditingController();
+  final _flatValueGuidelineRateCtrl = TextEditingController();
+  final _flatValueGuidelineCtrl = TextEditingController();
+  final _marketValueSourceFlatCtrl = TextEditingController();
+  final _flatExtraAmenitiesCtrl = TextEditingController();
+  final _improvementDescriptionCtrl = TextEditingController();
+  final _improvementAmountCtrl = TextEditingController();
   bool _improvementEstimateReasonable = true;
   final _improvementReasonableEstimateCtrl =
       TextEditingController(); // ADDED for section 5.4
   // REMOVED: final _improvementCompletedValueCtrl = TextEditingController(text: '2000000');
-  final _remarksBackgroundCtrl =
-      TextEditingController(text: 'SUBMITTED DOCUMENTS');
-  final _remarksSourcesCtrl =
-      TextEditingController(text: 'LOCAL MARKET ENQUIRY');
-  final _remarksProceduresCtrl = TextEditingController(text: 'MARKET APPROACH');
-  final _remarksMethodologyCtrl =
-      TextEditingController(text: 'COMPARISON METHOD');
-  final _remarksFactorsCtrl =
-      TextEditingController(text: 'AMENITIES AND ACCESSIBILITY');
+  final _remarksBackgroundCtrl = TextEditingController();
+  final _remarksSourcesCtrl = TextEditingController();
+  final _remarksProceduresCtrl = TextEditingController();
+  final _remarksMethodologyCtrl = TextEditingController();
+  final _remarksFactorsCtrl = TextEditingController();
 
   bool _isNotValidState = false;
 
@@ -224,9 +203,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreen> {
       if (_valuerNameCtrl.text.isEmpty ||
           _valuerCodeCtrl.text.isEmpty ||
           _fileNoCtrl.text.isEmpty ||
-          _applicantNameCtrl.text.isEmpty ||
-          _addressCtrl.text.isEmpty ||
-          _appointingAuthorityCtrl.text.isEmpty) {
+          _applicantNameCtrl.text.isEmpty) {
         debugPrint("not all required fields available");
         setState(() => _isNotValidState = true);
         return;
@@ -343,6 +320,23 @@ class _ValuationFormScreenState extends State<ValuationFormScreen> {
 
         "selectedPropertyType":
             _selectedPropertyType.toString().split('.').last,
+
+        "progressWorkItems": jsonEncode(_progressWorkItems
+            .map((item) => {
+                  "description": item.description,
+                  "applicantEstimate": item.applicantEstimate,
+                  "valuerOpinion": item.valuerOpinion,
+                })
+            .toList()),
+
+        "floors": jsonEncode(_floors
+            .map((item) => {
+                  "name": item.name,
+                  "area": item.area,
+                  "marketRate": item.marketRate,
+                  "guidelineRate": item.guidelineRate
+                })
+            .toList()),
       });
 
       // Handle image uploads
@@ -395,6 +389,62 @@ class _ValuationFormScreenState extends State<ValuationFormScreen> {
     }
   }
 
+  Future<String> _getAccessToken() async {
+    final response = await http.post(
+      Uri.parse('https://oauth2.googleapis.com/token'),
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: {
+        'client_id': clientId,
+        'client_secret': clientSecret,
+        'refresh_token': refreshToken,
+        'grant_type': 'refresh_token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body)['access_token'] as String;
+    } else {
+      throw Exception('Failed to refresh access token');
+    }
+  }
+
+  String _getMimeTypeFromExtension(String extension) {
+    switch (extension) {
+      case '.jpg':
+      case '.jpeg':
+        return 'image/jpeg';
+      case '.png':
+        return 'image/png';
+      case '.gif':
+        return 'image/gif';
+      case '.webp':
+        return 'image/webp';
+      default:
+        return 'application/octet-stream';
+    }
+  }
+
+  Future<Uint8List> fetchImageFromDrive(String fileId) async {
+    try {
+      // Get access token using refresh token
+      final accessToken = await _getAccessToken();
+
+      final response = await http.get(
+        Uri.parse(
+            'https://www.googleapis.com/drive/v3/files/$fileId?alt=media'),
+        headers: {'Authorization': 'Bearer $accessToken'},
+      );
+
+      if (response.statusCode == 200) {
+        return response.bodyBytes;
+      } else {
+        throw Exception('Failed to load image: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error fetching image from Drive: $e');
+    }
+  }
+
   OccupantStatus _parseOccupantStatus(String? status) {
     if (status == null) return OccupantStatus.Occupied;
     switch (status.toLowerCase()) {
@@ -424,6 +474,38 @@ class _ValuationFormScreenState extends State<ValuationFormScreen> {
         return PropertyType.Flat;
       default:
         return PropertyType.House;
+    }
+  }
+
+  Future<String> fetchSignedUrl(String imagePublicId) async {
+    // --- YOU MUST CUSTOMIZE THESE VALUES ---
+    const String apiKey =
+        "db74f0da81338f1ad24d0be8298f90f4e6be5f0df5b53aca2f95ead470665641";
+    const String apiBaseUrl = 'http://localhost:3000'; // For Android emulator
+    // -----------------------------------------
+
+    final url = Uri.parse('$apiBaseUrl/api/images/secure-url/$imagePublicId');
+
+    final response = await http.get(
+      url,
+      headers: {'x-api-key': apiKey},
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['signedUrl'];
+    } else {
+      throw Exception(
+          'Failed to load signed URL. Status code: ${response.statusCode}');
+    }
+  }
+
+  Future<Uint8List> fetchImageBytes(String url) async {
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      return response.bodyBytes; // this is Uint8List
+    } else {
+      throw Exception('Failed to load image');
     }
   }
 
@@ -600,6 +682,48 @@ class _ValuationFormScreenState extends State<ValuationFormScreen> {
         }
       }
 
+      _progressWorkItems.clear(); // Clear existing items first
+      if (data['progressWorkItems'] != null) {
+        try {
+          // Handle both JSON string format and direct list format
+          dynamic progressItemsData = data['progressWorkItems'];
+
+          if (progressItemsData is List) {
+            for (var itemData in progressItemsData) {
+              _progressWorkItems.add(ProgressWorkItem(
+                description: itemData['description']?.toString() ?? '',
+                applicantEstimate:
+                    itemData['applicantEstimate']?.toString() ?? '',
+                valuerOpinion: itemData['valuerOpinion']?.toString() ?? '',
+              ));
+            }
+          }
+        } catch (e) {
+          debugPrint('Error parsing progressWorkItems: $e');
+        }
+      }
+
+      _floors.clear(); // Clear existing items first
+      if (data['floors'] != null) {
+        try {
+          // Handle both JSON string format and direct list format
+          dynamic floorData = data['floors'];
+
+          if (floorData is List) {
+            for (var itemData in floorData) {
+              _floors.add(FloorData(
+                name: itemData['name']?.toString() ?? '',
+                area: itemData['area']?.toString() ?? '',
+                marketRate: itemData['marketRate']?.toString() ?? '',
+                guidelineRate: itemData['guidelineRate']?.toString() ?? '',
+              ));
+            }
+          }
+        } catch (e) {
+          debugPrint('Error parsing progressWorkItems: $e');
+        }
+      }
+
       // Handle images if they exist
       try {
         if (data['images'] != null && data['images'] is List) {
@@ -607,33 +731,25 @@ class _ValuationFormScreenState extends State<ValuationFormScreen> {
 
           for (var imgData in imagesData) {
             try {
-              // The backend returned something like "uploads/abc123.png"
-              final String filePath = imgData['filePath'];
+              // Get the file ID from your data (assuming it's stored as 'fileId')
 
-              // Build the full URL (e.g., http://your-server.com/uploads/abc123.png)
-              final String imageUrl = '$baseUrl/$filePath';
+              String fileName = imgData['fileName'];
 
-              // Fetch image bytes
-              final response = await http.get(Uri.parse(imageUrl));
+              String signedUrl = await fetchSignedUrl(fileName);
+              Uint8List imageBytes = await fetchImageBytes(signedUrl);
 
-              if (response.statusCode == 200) {
-                Uint8List imageBytes = response.bodyBytes;
-
-                _valuationImages.add(ValuationImage(
-                  imageFile: imageBytes,
-                  latitude: imgData['latitude']?.toString() ?? '',
-                  longitude: imgData['longitude']?.toString() ?? '',
-                ));
-              } else {
-                debugPrint('Failed to load image: ${response.statusCode}');
-              }
+              _valuationImages.add(ValuationImage(
+                imageFile: imageBytes,
+                latitude: imgData['latitude']?.toString() ?? '',
+                longitude: imgData['longitude']?.toString() ?? '',
+              ));
             } catch (e) {
-              debugPrint('Error loading image from uploads: $e');
+              debugPrint('Error loading image from Drive: $e');
             }
           }
         }
       } catch (e) {
-        debugPrint('Error in fetchImagesFromUploads: $e');
+        debugPrint('Error in fetchImages: $e');
       }
 
       if (mounted) setState(() {});
@@ -1018,7 +1134,6 @@ class _ValuationFormScreenState extends State<ValuationFormScreen> {
               padding: const EdgeInsets.only(
                   right: 40, left: 40, top: 10, bottom: 10),
               child: FloatingActionButton.extended(
-                heroTag: "f1",
                 icon: const Icon(Icons.search),
                 label: const Text('Search Saved Drafts'),
                 onPressed: () {
@@ -1391,7 +1506,6 @@ class _ValuationFormScreenState extends State<ValuationFormScreen> {
                 ]),
             const SizedBox(height: 15),
             FloatingActionButton.extended(
-                heroTag: "f2",
                 icon: const Icon(Icons.picture_as_pdf),
                 label: const Text('Generate PDF'),
                 onPressed: _generatePdf),
@@ -1402,7 +1516,6 @@ class _ValuationFormScreenState extends State<ValuationFormScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton.extended(
-            heroTag: "f3",
             icon: const Icon(Icons.save),
             label: const Text('Save'),
             onPressed: _saveData,

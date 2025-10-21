@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
-import 'package:login_screen/screens/SIB/vacant_land/vacant_land.dart';
+import 'package:login_screen/screens/SBI/vacant_land/vacant_land.dart';
 import 'dart:convert';
 import 'config.dart';
 
-class SavedDraftsSIBVacantLand extends StatefulWidget {
-  const SavedDraftsSIBVacantLand({super.key});
+class SavedDraftsSBIVacantLand extends StatefulWidget {
+  const SavedDraftsSBIVacantLand({super.key});
 
   @override
-  State<SavedDraftsSIBVacantLand> createState() =>
-      _SavedDraftsSIBVacantLandState();
+  State<SavedDraftsSBIVacantLand> createState() =>
+      _SavedDraftsSBIVacantLandState();
 }
 
-class _SavedDraftsSIBVacantLandState extends State<SavedDraftsSIBVacantLand> {
+class _SavedDraftsSBIVacantLandState extends State<SavedDraftsSBIVacantLand> {
   DateTime date = DateTime.now();
   List<dynamic> searchResults = [];
   bool isLoading = false;
@@ -31,7 +31,7 @@ class _SavedDraftsSIBVacantLandState extends State<SavedDraftsSIBVacantLand> {
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'date': formattedDate,
-          'type': 'sibVacantLand' // Filter for vacant land records
+          'type': 'sbiVacantLand' // Filter for vacant land records
         }),
       );
 
@@ -62,7 +62,7 @@ class _SavedDraftsSIBVacantLandState extends State<SavedDraftsSIBVacantLand> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => VacantLandFormPage(
+        builder: (context) => SBIVacantLandFormPage(
           propertyData: propertyData,
         ),
       ),
@@ -77,7 +77,7 @@ class _SavedDraftsSIBVacantLandState extends State<SavedDraftsSIBVacantLand> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: const Text(
-          'SIB Vacant Land Drafts',
+          'SBI Vacant Land Drafts',
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w500,
@@ -192,7 +192,7 @@ class _SavedDraftsSIBVacantLandState extends State<SavedDraftsSIBVacantLand> {
                       : searchResults.isEmpty
                           ? const Center(
                               child: Text(
-                                'No SIB Vacant Land drafts found',
+                                'No SBI Vacant Land drafts found',
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w500,
@@ -262,7 +262,7 @@ class _SavedDraftsSIBVacantLandState extends State<SavedDraftsSIBVacantLand> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           const Text(
-                                            'Bank: South Indian Bank - Vacant Land',
+                                            'Bank: State Bank of India - Vacant Land',
                                             style: TextStyle(
                                                 fontSize: 15,
                                                 fontFamily: 'Poppins'),

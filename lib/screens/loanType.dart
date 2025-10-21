@@ -6,6 +6,7 @@ import 'package:login_screen/screens/LIC/pvr1/valuation_form_screen_pvr1.dart';
 import 'package:login_screen/screens/LIC/pvr3/valuation_form_screen.dart';
 import 'package:login_screen/screens/SBI/Flat/valuation_form.dart';
 import 'package:login_screen/screens/SBI/land_and_building/land_and_building.dart';
+import 'package:login_screen/screens/SBI/vacant_land/vacant_land.dart';
 import 'package:login_screen/screens/SIB/Flat/valuation_form.dart';
 import 'package:login_screen/screens/SIB/land_and_building/land_and_building.dart';
 import 'package:login_screen/screens/SIB/vacant_land/vacant_land.dart';
@@ -435,7 +436,7 @@ class LoanType extends StatelessWidget {
                   } else if (value ==
                       'VALUATION REPORT (IN RESPECT OF VACANT LAND / SITE)') {
                     Navigator.of(ctx).push(MaterialPageRoute(
-                        builder: (_) => const VacantLandFormPage()));
+                        builder: (_) => const SBIVacantLandFormPage()));
                   }
                 },
               );

@@ -65,6 +65,10 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
 
   final TextEditingController _latController = TextEditingController();
   final TextEditingController _lonController = TextEditingController();
+
+  final TextEditingController _latitude = TextEditingController();
+  final TextEditingController _longitude = TextEditingController();
+
   final TextEditingController _refId = TextEditingController();
 
   // Controllers for text input fields (Page 1)
@@ -664,8 +668,8 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
   }
 
   Future<void> _getNearbyProperty() async {
-    final latitude = _latController.text.trim();
-    final longitude = _lonController.text.trim();
+    final latitude = _latitude.text.trim();
+    final longitude = _longitude.text.trim();
 
     // debugPrint('Searching nearby properties at: $latitude, $longitude');
 
@@ -724,6 +728,73 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Network error: Please check your connection')),
       );
+    }
+  }
+
+  Future<void> _getNearbyLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users to enable the location services.
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Location services are disabled. Please enable them.'),
+        ),
+      );
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // a dialog should be shown to the user explaining why permission is needed)
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Location permissions are denied.')),
+        );
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Location permissions are permanently denied, we cannot request permissions.',
+          ),
+        ),
+      );
+      return;
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      setState(() {
+        // _latitudeLongitudeController.text =
+        //     '${position.latitude}, ${position.longitude}';
+        _latitude.text = '${position.latitude}';
+        _longitude.text = '${position.longitude}';
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Location fetched successfully!')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error fetching location: $e')));
     }
   }
 
@@ -2969,14 +3040,14 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
-                        controller: _latController,
+                        controller: _latitude,
                         decoration: const InputDecoration(
                           labelText: 'Latitude',
                         ),
                       ),
                       const SizedBox(height: 8),
                       TextFormField(
-                        controller: _lonController,
+                        controller: _longitude,
                         decoration: const InputDecoration(
                           labelText: 'Longitude',
                         ),
@@ -2991,7 +3062,7 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
                                 Expanded(
                                   child: ElevatedButton.icon(
                                     onPressed:
-                                        _getCurrentLocation, // Call our new method
+                                        _getNearbyLocation, // Call our new method
                                     icon: const Icon(Icons.my_location),
                                     label: const Text('Get Location'),
                                   ),

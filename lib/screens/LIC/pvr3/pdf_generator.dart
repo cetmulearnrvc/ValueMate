@@ -53,11 +53,14 @@ pw.Page _buildPage2(ValuationData data) {
   // Calculate total property value to show in section 7
   double totalMarketValue = 0;
   if (data.valuationType == PropertyType.House) {
-    final landMarketVal = (double.tryParse(data.landArea) ?? 0) * (double.tryParse(data.landUnitRate) ?? 0);
-    final amenitiesMarketVal = (double.tryParse(data.amenitiesArea) ?? 0) * (double.tryParse(data.amenitiesUnitRate) ?? 0);
+    final landMarketVal = (double.tryParse(data.landArea) ?? 0) *
+        (double.tryParse(data.landUnitRate) ?? 0);
+    final amenitiesMarketVal = (double.tryParse(data.amenitiesArea) ?? 0) *
+        (double.tryParse(data.amenitiesUnitRate) ?? 0);
     double floorsMarketValue = 0;
     for (var floor in data.floors) {
-      floorsMarketValue += (double.tryParse(floor.area) ?? 0) * (double.tryParse(floor.marketRate) ?? 0);
+      floorsMarketValue += (double.tryParse(floor.area) ?? 0) *
+          (double.tryParse(floor.marketRate) ?? 0);
     }
     totalMarketValue = landMarketVal + amenitiesMarketVal + floorsMarketValue;
   } else {
@@ -65,7 +68,6 @@ pw.Page _buildPage2(ValuationData data) {
   }
   final improvementTotal = double.tryParse(data.improvementAmount) ?? 0;
   final estimatedValueAfterImprovements = totalMarketValue + improvementTotal;
-
 
   return pw.Page(
     pageFormat: PdfPageFormat.a4,
@@ -92,22 +94,21 @@ pw.Page _buildPage2(ValuationData data) {
           _buildProgressOfWorkTable(data, currencyFormat),
           pw.SizedBox(height: 10),
           // ADDED: Section 7 as per the image
-          _buildSectionHeader('7. Estimated Value of Property After Above Improvements'),
+          _buildSectionHeader(
+              '7. Estimated Value of Property After Above Improvements'),
           pw.Align(
-            alignment: pw.Alignment.centerRight,
-            child: pw.Text(
-              currencyFormat.format(estimatedValueAfterImprovements),
-              style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10),
-            )
-          ),
+              alignment: pw.Alignment.centerRight,
+              child: pw.Text(
+                currencyFormat.format(estimatedValueAfterImprovements),
+                style:
+                    pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10),
+              )),
           pw.SizedBox(height: 10),
-          
         ],
       );
     },
   );
 }
-
 
 pw.Page _buildPage3(ValuationData data) {
   return pw.Page(
@@ -121,8 +122,9 @@ pw.Page _buildPage3(ValuationData data) {
           _buildRemarks(data),
           _buildSectionHeader('9. CERTIFICATE'),
           pw.SizedBox(height: 7),
-          pw.Text('I declare that I am not associated with the builder or with any of his associate companies or with the borrower directly or indirectly in the past or in the present and this report has been prepared by me with highest professional integrity.',
-          style: const pw.TextStyle(fontSize: 9)),
+          pw.Text(
+              'I declare that I am not associated with the builder or with any of his associate companies or with the borrower directly or indirectly in the past or in the present and this report has been prepared by me with highest professional integrity.',
+              style: const pw.TextStyle(fontSize: 9)),
           pw.Spacer(),
           pw.Align(
               alignment: pw.Alignment.centerRight,
@@ -177,11 +179,14 @@ pw.Widget _buildHeader() => pw.Column(children: [
         pw.Center(
             child: pw.Column(children: [
           pw.Text('LIC HOUSING FINANCE LIMITED',
-              style: pw.TextStyle(fontWeight: pw.FontWeight.bold,fontSize: 10)),
-          pw.Text('AREA OFFICE: THIRUVANANTHAPURAM',style: const pw.TextStyle(fontSize: 10)),
+              style:
+                  pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10)),
+          pw.Text('AREA OFFICE: THIRUVANANTHAPURAM',
+              style: const pw.TextStyle(fontSize: 10)),
           pw.SizedBox(height: 5),
           pw.Text('VALUATION REPORT BY PANEL VALUER FOR HOME LOAN',
-              style: const pw.TextStyle(decoration: pw.TextDecoration.underline,fontSize: 10)),
+              style: const pw.TextStyle(
+                  decoration: pw.TextDecoration.underline, fontSize: 10)),
         ])),
         pw.Align(
             alignment: pw.Alignment.topRight,
@@ -197,23 +202,32 @@ pw.Table _buildInfoTable(ValuationData data, DateFormat dateFormat) => pw.Table(
         1: const pw.FlexColumnWidth(2)
       },
       children: [
-        pw.TableRow(
-            children: [pw.Text(' * File no.',style: const pw.TextStyle(fontSize: 9)), pw.Text(': ${data.fileNo}',style: const pw.TextStyle(fontSize: 9))]),
         pw.TableRow(children: [
-          pw.Text(' * Name of the Valuer',style: const pw.TextStyle(fontSize: 9)),
-          pw.Text(': ${data.valuerName} (${data.valuerCode})',style: const pw.TextStyle(fontSize: 9))
+          pw.Text(' * File no.', style: const pw.TextStyle(fontSize: 9)),
+          pw.Text(': ${data.fileNo}', style: const pw.TextStyle(fontSize: 9))
         ]),
         pw.TableRow(children: [
-          pw.Text(' Appointing Authority',style: const pw.TextStyle(fontSize: 9)),
-          pw.Text(': ${data.appointingAuthority}',style: const pw.TextStyle(fontSize: 9))
+          pw.Text(' * Name of the Valuer',
+              style: const pw.TextStyle(fontSize: 9)),
+          pw.Text(': ${data.valuerName} (${data.valuerCode})',
+              style: const pw.TextStyle(fontSize: 9))
         ]),
         pw.TableRow(children: [
-          pw.Text(' Date of Inspection',style: const pw.TextStyle(fontSize: 9)),
-          pw.Text(': ${dateFormat.format(data.inspectionDate)}',style: const pw.TextStyle(fontSize: 9))
+          pw.Text(' Appointing Authority',
+              style: const pw.TextStyle(fontSize: 9)),
+          pw.Text(': ${data.appointingAuthority}',
+              style: const pw.TextStyle(fontSize: 9))
         ]),
         pw.TableRow(children: [
-          pw.Text(' RERA NO. (For Flats)',style: const pw.TextStyle(fontSize: 9)),
-          pw.Text(': ${data.reraNo}',style: const pw.TextStyle(fontSize: 9))
+          pw.Text(' Date of Inspection',
+              style: const pw.TextStyle(fontSize: 9)),
+          pw.Text(': ${dateFormat.format(data.inspectionDate)}',
+              style: const pw.TextStyle(fontSize: 9))
+        ]),
+        pw.TableRow(children: [
+          pw.Text(' RERA NO. (For Flats)',
+              style: const pw.TextStyle(fontSize: 9)),
+          pw.Text(': ${data.reraNo}', style: const pw.TextStyle(fontSize: 9))
         ]),
       ],
     );
@@ -229,25 +243,25 @@ pw.Widget _buildPropertyDetails(ValuationData data) {
     children: [
       pw.Text('g. Occupant', style: const pw.TextStyle(fontSize: 9)),
       pw.Padding(
-        padding: const pw.EdgeInsets.only(left: 10, top: 2),
-        child: pw.Column(
-          crossAxisAlignment: pw.CrossAxisAlignment.start,
-          children: [
-            pw.Text('If Occupied, Name of the Occupant', style: const pw.TextStyle(fontSize: 8)),
-            pw.Text('If rented, List of occupants', style: const pw.TextStyle(fontSize: 8)),
-          ]
-        )
-      ),
+          padding: const pw.EdgeInsets.only(left: 10, top: 2),
+          child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text('If Occupied, Name of the Occupant',
+                    style: const pw.TextStyle(fontSize: 8)),
+                pw.Text('If rented, List of occupants',
+                    style: const pw.TextStyle(fontSize: 8)),
+              ])),
     ],
   );
 
-  final occupantValueWidget = pw.Column(
-    crossAxisAlignment: pw.CrossAxisAlignment.start,
-    children: [
-      pw.Text(data.occupantStatus.name, style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9)),
-      pw.Text(data.occupantName, style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9)),
-    ]
-  );
+  final occupantValueWidget =
+      pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+    pw.Text(data.occupantStatus.name,
+        style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9)),
+    pw.Text(data.occupantName,
+        style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9)),
+  ]);
   // --- End of Fix ---
 
   // Step 2: Return the main Column widget, now that the variables are declared.
@@ -257,17 +271,18 @@ pw.Widget _buildPropertyDetails(ValuationData data) {
       _buildKeyValue('a. * Name of the Applicant', data.applicantName),
       _buildKeyValue('b. Document perused', data.documentPerused),
       _buildKeyValue(
-          'c. * Location of the Property Survey Number/Block No. /Village Ward No. /Taluk ', data.propertyAddress),
+          'c. * Location of the Property Survey Number/Block No. /Village Ward No. /Taluk ',
+          data.propertyAddress),
       _buildKeyBoolValue(
           'd. Location Sketch verified', data.locationSketchVerified),
       pw.SizedBox(height: 5),
       pw.Text('e. Boundaries and Dimensions',
           style: const pw.TextStyle(
-              fontSize: 10, )),
+            fontSize: 10,
+          )),
       pw.TableHelper.fromTextArray(
         border: pw.TableBorder.all(width: 0.5),
-        headerStyle:
-            pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9),
+        headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9),
         cellStyle: const pw.TextStyle(fontSize: 9),
         headers: [' ', 'Boundaries', 'Dimensions'],
         data: [
@@ -280,32 +295,35 @@ pw.Widget _buildPropertyDetails(ValuationData data) {
       ),
       pw.SizedBox(height: 5),
       _buildKeyValue('f. Type of the property', data.propertyType),
-      
+
       // Step 3: Use the declared widgets inside the layout.
       pw.Padding(
         padding: const pw.EdgeInsets.symmetric(vertical: 1),
-        child: pw.Row(
-          crossAxisAlignment: pw.CrossAxisAlignment.start,
-          children: [
-            pw.Expanded(flex: 2, child: occupantKeyWidget),
-            pw.Text(': ', style: const pw.TextStyle(fontSize: 9)),
-            pw.Expanded(flex: 3, child: occupantValueWidget),
-          ]
-        ),
+        child:
+            pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+          pw.Expanded(flex: 2, child: occupantKeyWidget),
+          pw.Text(': ', style: const pw.TextStyle(fontSize: 9)),
+          pw.Expanded(flex: 3, child: occupantValueWidget),
+        ]),
       ),
-      
-      _buildKeyValue('h. Usage of the Building (Explain ratio of each type)', data.usageOfBuilding),
+
+      _buildKeyValue('h. Usage of the Building (Explain ratio of each type)',
+          data.usageOfBuilding),
+      _buildKeyValue('i. Details of the Nearby Landmark', data.nearbyLandmark),
       _buildKeyValue(
-          'i. Details of the Nearby Landmark', data.nearbyLandmark),
-      _buildKeyValue(
-          'j. Development of surrounding area with Special reference to population', data.surroundingAreaDev),
-      _buildKeyBoolValue('k.Whether basic amenities like water, electricity, roads, sewerage, telephone are available',
+          'j. Development of surrounding area with Special reference to population',
+          data.surroundingAreaDev),
+      _buildKeyBoolValue(
+          'k.Whether basic amenities like water, electricity, roads, sewerage, telephone are available',
           data.basicAmenitiesAvailable),
       _buildKeyValue(
-          'l. Any negatives to the locality (Crematoriums, slums, riot prone, gases Chemical hazards,nagbana etc', data.negativesToLocality),
+          'l. Any negatives to the locality (Crematoriums, slums, riot prone, gases Chemical hazards,nagbana etc',
+          data.negativesToLocality),
+      _buildKeyValue('m. Any favourable considerations for addl value',
+          data.favourableConsiderations),
       _buildKeyValue(
-          'm. Any favourable considerations for addl value', data.favourableConsiderations),
-      _buildKeyValue('n. Any other features like board of other financier indicating mortgage, notice of Court/any authority which may effect the security.', data.otherFeatures),
+          'n. Any other features like board of other financier indicating mortgage, notice of Court/any authority which may effect the security.',
+          data.otherFeatures),
     ],
   );
 }
@@ -332,49 +350,47 @@ pw.Widget _buildBuildingDetails(ValuationData data) => pw.Column(
       children: [
         _buildKeyValue('1. Marketability of the Property', data.marketability),
         _buildKeyValue('2. Age of the Building', data.buildingAge),
-        _buildKeyValue('3. Future Residual life expected', data.residualLife),
-        pw.Table(
-          border: pw.TableBorder.all(width: 0.5),
-          columnWidths: {
-            0: const pw.FlexColumnWidth(3),
-            1: const pw.FlexColumnWidth(3),
-            2: const pw.FlexColumnWidth(2)
-          },
-          children: [
-            pw.TableRow(children: [
-              pw.Padding(
-                  padding: const pw.EdgeInsets.all(2),
-                  child: pw.Text('4. Floor Space Index')),
-              pw.Center(child: pw.Text('As per Approved Plan/as per rule')),
-              pw.Center(child: pw.Text('Actual')),
-            ]),
-            pw.TableRow(children: [
-              pw.Container(),
-              pw.Center(child: pw.Text(data.fsiApproved)),
-              pw.Center(child: pw.Text(data.fsiActual)),
-            ]),
-          ],
-        ),
-        
-        
       ],
     );
 
-pw.Widget _buildBuildingDetailsContinuation(ValuationData data) => pw.Column(
-  crossAxisAlignment: pw.CrossAxisAlignment.start,
-  children: [
-    _buildKeyValue('5. Specification', ''),
-        _buildKeyValue('    Foundation', data.specFoundation, isSubItem: true),
-        _buildKeyValue('    Roof', data.specRoof, isSubItem: true),
-        _buildKeyValue('    Flooring', data.specFlooring, isSubItem: true),
-        _buildKeyValue('6. Quality of Construction (Exterior & Interior)',
-            data.qualityOfConstruction),
-        _buildKeyBoolValue(
-            '7. i) Whether the Construction carried out / being carried out adheres to the Safety Specifications prescribed in the National Building Code of India 2005?\nii) Guidelines issued by the National Disaster Management Authority (NDMA', data.adheresToSafetySpecs),
-        _buildKeyBoolValue(
-            '8. Whether any High Tension Wire Lines are passing through the property and if there is any adverse impact due to this?', data.highTensionLineImpact),
-  ]
-);
+pw.Widget _buildBuildingDetailsContinuation(ValuationData data) =>
+    pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+      _buildKeyValue('3. Future Residual life expected', data.residualLife),
+      pw.Table(
+        border: pw.TableBorder.all(width: 0.5),
+        columnWidths: {
+          0: const pw.FlexColumnWidth(3),
+          1: const pw.FlexColumnWidth(3),
+          2: const pw.FlexColumnWidth(2)
+        },
+        children: [
+          pw.TableRow(children: [
+            pw.Padding(
+                padding: const pw.EdgeInsets.all(2),
+                child: pw.Text('4. Floor Space Index')),
+            pw.Center(child: pw.Text('As per Approved Plan/as per rule')),
+            pw.Center(child: pw.Text('Actual')),
+          ]),
+          pw.TableRow(children: [
+            pw.Container(),
+            pw.Center(child: pw.Text(data.fsiApproved)),
+            pw.Center(child: pw.Text(data.fsiActual)),
+          ]),
+        ],
+      ),
+      _buildKeyValue('5. Specification', ''),
+      _buildKeyValue('    Foundation', data.specFoundation, isSubItem: true),
+      _buildKeyValue('    Roof', data.specRoof, isSubItem: true),
+      _buildKeyValue('    Flooring', data.specFlooring, isSubItem: true),
+      _buildKeyValue('6. Quality of Construction (Exterior & Interior)',
+          data.qualityOfConstruction),
+      _buildKeyBoolValue(
+          '7. i) Whether the Construction carried out / being carried out adheres to the Safety Specifications prescribed in the National Building Code of India 2005?\nii) Guidelines issued by the National Disaster Management Authority (NDMA',
+          data.adheresToSafetySpecs),
+      _buildKeyBoolValue(
+          '8. Whether any High Tension Wire Lines are passing through the property and if there is any adverse impact due to this?',
+          data.highTensionLineImpact),
+    ]);
 pw.Widget _buildHouseValuationPdf(
     ValuationData data, NumberFormat currencyFormat) {
   final List<List<String>> floorRows = data.floors.map((floor) {
@@ -527,18 +543,21 @@ pw.Widget _buildImprovementDetails(
     pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        _buildKeyValue('1. Description of improvement works as per applicants estimate',
+        _buildKeyValue(
+            '1. Description of improvement works as per applicants estimate',
             data.improvementDescription),
         _buildKeyValue(
             '2. Amount estimated by the applicant for the improvement works',
             currencyFormat
                 .format(double.tryParse(data.improvementAmount) ?? 0)),
-        _buildKeyBoolValue('3. Whether the estimate submitted by the applicant is reasonable?',
+        _buildKeyBoolValue(
+            '3. Whether the estimate submitted by the applicant is reasonable?',
             data.improvementEstimateReasonable),
         if (!data.improvementEstimateReasonable)
           _buildKeyValue(
             '4. If not, what would be the reasonable estimate',
-            currencyFormat.format(double.tryParse(data.improvementReasonableEstimate) ?? 0),
+            currencyFormat.format(
+                double.tryParse(data.improvementReasonableEstimate) ?? 0),
           )
       ],
     );
@@ -546,9 +565,11 @@ pw.Widget _buildImprovementDetails(
 // MODIFIED: PDF builder for Section 6
 // lib/pdf_generator.dart -> REPLACE THIS FUNCTION
 
-pw.Widget _buildProgressOfWorkTable(ValuationData data, NumberFormat currencyFormat) {
+pw.Widget _buildProgressOfWorkTable(
+    ValuationData data, NumberFormat currencyFormat) {
   final headerStyle = pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9);
-  final subHeaderStyle = pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 8);
+  final subHeaderStyle =
+      pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 8);
   const cellStyle = pw.TextStyle(fontSize: 9);
   const cellPadding = pw.EdgeInsets.all(3);
 
@@ -557,7 +578,8 @@ pw.Widget _buildProgressOfWorkTable(ValuationData data, NumberFormat currencyFor
   const Map<int, pw.TableColumnWidth> headerWidths = {
     0: pw.FlexColumnWidth(1),
     1: pw.FlexColumnWidth(5),
-    2: pw.FlexColumnWidth(5), // This single column will contain the nested sub-header table
+    2: pw.FlexColumnWidth(
+        5), // This single column will contain the nested sub-header table
   };
   const Map<int, pw.TableColumnWidth> dataWidths = {
     0: pw.FlexColumnWidth(1),
@@ -570,70 +592,109 @@ pw.Widget _buildProgressOfWorkTable(ValuationData data, NumberFormat currencyFor
   final dataRows = data.progressWorkItems.asMap().entries.map((entry) {
     int index = entry.key;
     ProgressWorkItem item = entry.value;
-    return pw.TableRow(
-      children: [
-        pw.Padding(padding: cellPadding, child: pw.Text((index + 1).toString(), style: cellStyle, textAlign: pw.TextAlign.center)),
-        pw.Padding(padding: cellPadding, child: pw.Text(item.description, style: cellStyle)),
-        pw.Padding(padding: cellPadding, child: pw.Text(item.applicantEstimate.isNotEmpty ? currencyFormat.format(double.tryParse(item.applicantEstimate) ?? 0) : '', style: cellStyle, textAlign: pw.TextAlign.right)),
-        pw.Padding(padding: cellPadding, child: pw.Text(item.valuerOpinion.isNotEmpty ? currencyFormat.format(double.tryParse(item.valuerOpinion) ?? 0) : '', style: cellStyle, textAlign: pw.TextAlign.right)),
-      ]
-    );
+    return pw.TableRow(children: [
+      pw.Padding(
+          padding: cellPadding,
+          child: pw.Text((index + 1).toString(),
+              style: cellStyle, textAlign: pw.TextAlign.center)),
+      pw.Padding(
+          padding: cellPadding,
+          child: pw.Text(item.description, style: cellStyle)),
+      pw.Padding(
+          padding: cellPadding,
+          child: pw.Text(
+              item.applicantEstimate.isNotEmpty
+                  ? currencyFormat
+                      .format(double.tryParse(item.applicantEstimate) ?? 0)
+                  : '',
+              style: cellStyle,
+              textAlign: pw.TextAlign.right)),
+      pw.Padding(
+          padding: cellPadding,
+          child: pw.Text(
+              item.valuerOpinion.isNotEmpty
+                  ? currencyFormat
+                      .format(double.tryParse(item.valuerOpinion) ?? 0)
+                  : '',
+              style: cellStyle,
+              textAlign: pw.TextAlign.right)),
+    ]);
   }).toList();
 
   // Return a Column with two tables: one for the header, one for the data.
   return pw.Column(
-    crossAxisAlignment: pw.CrossAxisAlignment.stretch,
-    children: [
-      // 1. HEADER TABLE
-      pw.Table(
-        border:  pw.TableBorder.all(),
-        columnWidths: headerWidths,
-        children: [
-          pw.TableRow(
-            verticalAlignment: pw.TableCellVerticalAlignment.middle,
+      crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+      children: [
+        // 1. HEADER TABLE
+        pw.Table(
+            border: pw.TableBorder.all(),
+            columnWidths: headerWidths,
             children: [
-              // Cell 1: Sr. No.
-              pw.Padding(padding: const pw.EdgeInsets.fromLTRB(3, 11, 3, 11), child: pw.Center(child: pw.Text('Sr. No.', style: headerStyle))),
-              // Cell 2: Description
-              pw.Padding(padding: cellPadding, child: pw.Center(child: pw.Text('Description of work', style: headerStyle))),
-              // Cell 3: The complex header cell
-              pw.Column(
-                mainAxisAlignment: pw.MainAxisAlignment.center,
-                crossAxisAlignment: pw.CrossAxisAlignment.stretch,
-                children: [
-                  pw.Center(child: pw.Padding(padding: const pw.EdgeInsets.only(top: 2, bottom: 2), child: pw.Text('Amount incurred as per', style: headerStyle))),
-                  pw.Divider(height: 1, thickness: 0.5, color: PdfColors.black),
-                  // NESTED table for the sub-headers
-                  pw.Table(
-                    // border: pw.TableBorder.all(),
-                    columnWidths: const { 0: pw.FlexColumnWidth(1), 1: pw.FlexColumnWidth(1) },
-                    children: [
-                      pw.TableRow(
+              pw.TableRow(
+                  verticalAlignment: pw.TableCellVerticalAlignment.middle,
+                  children: [
+                    // Cell 1: Sr. No.
+                    pw.Padding(
+                        padding: const pw.EdgeInsets.fromLTRB(3, 11, 3, 11),
+                        child: pw.Center(
+                            child: pw.Text('Sr. No.', style: headerStyle))),
+                    // Cell 2: Description
+                    pw.Padding(
+                        padding: cellPadding,
+                        child: pw.Center(
+                            child: pw.Text('Description of work',
+                                style: headerStyle))),
+                    // Cell 3: The complex header cell
+                    pw.Column(
+                        mainAxisAlignment: pw.MainAxisAlignment.center,
+                        crossAxisAlignment: pw.CrossAxisAlignment.stretch,
                         children: [
-                          pw.Center(child: pw.Padding(padding: const pw.EdgeInsets.only(top: 2, bottom: 2), child: pw.Text('Applicants estimate', style: subHeaderStyle))),
-                          pw.Center(child: pw.Padding(padding: const pw.EdgeInsets.only(top: 2, bottom: 2), child: pw.Text('Valuers opinion', style: subHeaderStyle))),
-                        ]
-                      )
-                    ]
-                  )
-                ]
-              ),
-            ]
-          ),
-        ]
-      ),
-      // 2. DATA TABLE
-      pw.Table(
-        border:  pw.TableBorder.all()
+                          pw.Center(
+                              child: pw.Padding(
+                                  padding: const pw.EdgeInsets.only(
+                                      top: 2, bottom: 2),
+                                  child: pw.Text('Amount incurred as per',
+                                      style: headerStyle))),
+                          pw.Divider(
+                              height: 1,
+                              thickness: 0.5,
+                              color: PdfColors.black),
+                          // NESTED table for the sub-headers
+                          pw.Table(
+                              // border: pw.TableBorder.all(),
+                              columnWidths: const {
+                                0: pw.FlexColumnWidth(1),
+                                1: pw.FlexColumnWidth(1)
+                              },
+                              children: [
+                                pw.TableRow(children: [
+                                  pw.Center(
+                                      child: pw.Padding(
+                                          padding: const pw.EdgeInsets.only(
+                                              top: 2, bottom: 2),
+                                          child: pw.Text('Applicants estimate',
+                                              style: subHeaderStyle))),
+                                  pw.Center(
+                                      child: pw.Padding(
+                                          padding: const pw.EdgeInsets.only(
+                                              top: 2, bottom: 2),
+                                          child: pw.Text('Valuers opinion',
+                                              style: subHeaderStyle))),
+                                ])
+                              ])
+                        ]),
+                  ]),
+            ]),
+        // 2. DATA TABLE
+        pw.Table(
+          border: pw.TableBorder.all()
           // No top border, to connect seamlessly with the header table
-        ,
-        columnWidths: dataWidths,
-        children: dataRows,
-      )
-    ]
-  );
+          ,
+          columnWidths: dataWidths,
+          children: dataRows,
+        )
+      ]);
 }
-
 
 pw.Widget _buildRemarks(ValuationData data) => pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,

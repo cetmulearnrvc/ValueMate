@@ -7,13 +7,9 @@ export const savePVR3Data = async(req,res)=>{
 
     console.log("A post req received in pvr3");
     
-    
-
-    
-    
     const pvr3Data=req.body;
     pvr3Data.typo="pvr3"
-    if(!pvr3Data.valuerName || !pvr3Data.valuerCode || !pvr3Data.fileNo || !pvr3Data.appointingAuthority || !pvr3Data.applicantName || !pvr3Data.address )
+    if(!pvr3Data.valuerName || !pvr3Data.valuerCode || !pvr3Data.fileNo || !pvr3Data.applicantName )
     {
         
         return res.status(400).json({success:false,message:"please enter all required fields"})
@@ -71,7 +67,7 @@ export async function searchByDate(req,res){
 
     const {date}=req.body
 
-    console.log(date)
+    // console.log(date)
 
     const targetDate = new Date(date);
 
