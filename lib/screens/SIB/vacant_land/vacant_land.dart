@@ -361,7 +361,7 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
     // --- YOU MUST CUSTOMIZE THESE VALUES ---
     const String apiKey =
         "db74f0da81338f1ad24d0be8298f90f4e6be5f0df5b53aca2f95ead470665641";
-    const String apiBaseUrl = 'http://localhost:3000'; // For Android emulator
+    const String apiBaseUrl = 'http://72.60.219.196/'; // For Android emulator
     // -----------------------------------------
 
     final url = Uri.parse('$apiBaseUrl/api/images/secure-url/$imagePublicId');

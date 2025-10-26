@@ -43,6 +43,38 @@ export const savePVR3Data = async(req,res)=>{
       }
     }
 
+    if (pvr3Data.progressWorkItems) {
+        try {
+            pvr3Data.progressWorkItems = JSON.parse(pvr3Data.progressWorkItems);
+        } catch (err) {
+            console.log("Error parsing progressWorkItems:", err);
+            // If parsing fails, you can either return an error or set to empty array
+            return res.status(400).json({
+                success: false,
+                message: "Invalid progressWorkItems format"
+            });
+        }
+    } else {
+        // If no progressWorkItems sent, set to empty array
+        pvr3Data.progressWorkItems = [];
+    }
+
+    if (pvr3Data.floors) {
+        try {
+            pvr3Data.floors = JSON.parse(pvr3Data.floors);
+        } catch (err) {
+            console.log("Error parsing floors:", err);
+            // If parsing fails, you can either return an error or set to empty array
+            return res.status(400).json({
+                success: false,
+                message: "Invalid floors format"
+            });
+        }
+    } else {
+        // If no progressWorkItems sent, set to empty array
+        pvr3Data.floors = [];
+    }
+
     /* const newPVR3Data=new pvr3(pvr3Data); */
 
     
