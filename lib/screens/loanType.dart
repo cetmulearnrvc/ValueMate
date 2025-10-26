@@ -1,3 +1,4 @@
+import 'dart:ui'; // Required for the painter
 import 'package:flutter/material.dart';
 import 'package:login_screen/screens/Canara/main.dart';
 import 'package:login_screen/screens/Federal/federal.dart';
@@ -16,6 +17,15 @@ class LoanType extends StatelessWidget {
 
   const LoanType({super.key, required this.selectedBank});
 
+  // --- Define professional colors (copied from HomeScreen) ---
+  static const Color _primaryColor =
+      Color(0xFF0D47A1); // A deep, professional blue
+  static final Color _secondaryTextColor = Colors.grey[800]!;
+  static const Color _scaffoldBgTop = Color(0xFFF4F7F6);
+  static const Color _scaffoldBgBottom = Color(0xFFDDE8F0); // Slightly bluer
+  static const Color _cardBgColor = Colors.white;
+  // ---
+
   @override
   Widget build(BuildContext context) {
     final Widget bankName;
@@ -33,72 +43,160 @@ class LoanType extends StatelessWidget {
       bankName = Federal(context);
     }
 
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFFB0D9F8),
-            Color(0xFF90C1F7),
-            Color(0xFFA1A4F8),
-            Color(0xFFC49CF7),
-            Color(0xFFE4A2F5),
-          ],
-        ),
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(100),
-          child: SafeArea(
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: Colors.white.withOpacity(0.2)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
+    return Scaffold(
+      // Use the same AppBar style as HomeScreen
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(100),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.85),
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(color: Colors.white.withOpacity(0.2)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  // Back button
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: Icon(Icons.arrow_back_ios, color: _primaryColor),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    'LOAN TYPE',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: _primaryColor,
                     ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    IconButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      icon: const Icon(Icons.arrow_back, color: Colors.black),
-                    ),
-                    const SizedBox(width: 12),
-                    const Text(
-                      'LOAN TYPE',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
         ),
-        body: SafeArea(
-          child: Center(child: bankName),
-        ),
+      ),
+      extendBodyBehindAppBar: true,
+      // Use the same Stack/Background as HomeScreen
+      body: Stack(
+        children: [
+          // Layer 1: The background gradient
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  _scaffoldBgTop,
+                  _scaffoldBgBottom,
+                ],
+              ),
+            ),
+          ),
+
+          // Layer 2: The tile pattern painter
+          CustomPaint(
+            size: Size.infinite,
+            painter: _TilePatternPainter(
+              lineColor: _primaryColor.withOpacity(0.08),
+              strokeWidth: 2.0,
+            ),
+          ),
+
+          // Layer 3: Your content
+          SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  // This SizedBox is REQUIRED to push content below the floating AppBar
+                  const SizedBox(height: 110.0),
+
+                  // Wrap the content in a padded card
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: _cardBgColor,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.12),
+                            blurRadius: 16,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: Column(
+                          children: [
+                            // Top border design
+                            Container(
+                              height: 8,
+                              width: double.infinity,
+                              color: _primaryColor.withOpacity(0.8),
+                            ),
+                            // Add padding around the bank widget
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: bankName, // Your unchanged logic goes here
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  // ========== BANK WIDGETS ==========
+  // ========== BANK WIDGETS (Theme applied) ==========
+
+  // Helper function for styled dropdown
+  InputDecoration _getDropdownDecoration() {
+    return InputDecoration(
+      filled: true,
+      fillColor: _scaffoldBgTop.withOpacity(0.7),
+      hintText: 'Select the valuation type',
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: _primaryColor, width: 2),
+      ),
+    );
+  }
+
+  // Helper for styled bank title
+  Widget _buildBankTitle(String title) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 24, // Slightly smaller to fit in card
+        color: _primaryColor,
+      ),
+    );
+  }
 
   Widget LIC(BuildContext ctx) {
     final List<String> loanTypes = [
@@ -106,36 +204,25 @@ class LoanType extends StatelessWidget {
       'HOUSE CONSTRUCTION (PVR - 1)',
       'HOUSE RENOVATION (PVR - 3)',
     ];
-
     String? selectedValue = loanTypes[0];
 
     return Column(
       children: [
-        const SizedBox(
-          height: 20,
-        ),
-        const Text('LIC',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 28,
-            )),
+        const SizedBox(height: 10), // Reduced spacing
+        _buildBankTitle('LIC'), // Styled title
         const SizedBox(height: 10),
-        Image.asset('assets/images/lic.jpeg'),
-        const SizedBox(height: 50),
+        Image.asset('assets/images/lic.jpeg', height: 100), // Fixed height
+        const SizedBox(height: 30), // Reduced spacing
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: StatefulBuilder(
             builder: (context, setState) {
               return DropdownButtonFormField<String>(
                 value: selectedValue,
-                decoration: const InputDecoration(border: OutlineInputBorder()),
-                hint: const Text('Select the valuation type'),
+                decoration: _getDropdownDecoration(), // Styled dropdown
                 isExpanded: true,
                 items: loanTypes.map((e) {
-                  return DropdownMenuItem<String>(
-                    value: e,
-                    child: Text(e),
-                  );
+                  return DropdownMenuItem<String>(value: e, child: Text(e));
                 }).toList(),
                 onChanged: (value) {
                   setState(() {
@@ -162,36 +249,25 @@ class LoanType extends StatelessWidget {
       '---SELECT---',
       'VALUATION REPORT',
     ];
-
     String? selectedValue = loanTypes[0];
 
     return Column(
       children: [
-        const SizedBox(
-          height: 20,
-        ),
-        const Text('IDBI Bank',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 28,
-            )),
         const SizedBox(height: 10),
-        Image.asset('assets/images/idbi.jpeg'),
-        const SizedBox(height: 50),
+        _buildBankTitle('IDBI Bank'), // Styled title
+        const SizedBox(height: 10),
+        Image.asset('assets/images/idbi.jpeg', height: 100),
+        const SizedBox(height: 30),
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: StatefulBuilder(
             builder: (context, setState) {
               return DropdownButtonFormField<String>(
                 value: selectedValue,
-                decoration: const InputDecoration(border: OutlineInputBorder()),
-                hint: const Text('Select the valuation type'),
+                decoration: _getDropdownDecoration(), // Styled dropdown
                 isExpanded: true,
                 items: loanTypes.map((e) {
-                  return DropdownMenuItem<String>(
-                    value: e,
-                    child: Text(e),
-                  );
+                  return DropdownMenuItem<String>(value: e, child: Text(e));
                 }).toList(),
                 onChanged: (value) {
                   setState(() {
@@ -215,36 +291,25 @@ class LoanType extends StatelessWidget {
       '---SELECT---',
       'LAND AND BUILDING',
     ];
-
     String? selectedValue = loanTypes[0];
 
     return Column(
       children: [
-        const SizedBox(
-          height: 20,
-        ),
-        const Text('FEDERAL BANK',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 28,
-            )),
         const SizedBox(height: 10),
-        Image.asset('assets/images/federal.jpeg'),
-        const SizedBox(height: 50),
+        _buildBankTitle('FEDERAL BANK'), // Styled title
+        const SizedBox(height: 10),
+        Image.asset('assets/images/federal.jpeg', height: 100),
+        const SizedBox(height: 30),
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: StatefulBuilder(
             builder: (context, setState) {
               return DropdownButtonFormField<String>(
                 value: selectedValue,
-                decoration: const InputDecoration(border: OutlineInputBorder()),
-                hint: const Text('Select the valuation type'),
+                decoration: _getDropdownDecoration(), // Styled dropdown
                 isExpanded: true,
                 items: loanTypes.map((e) {
-                  return DropdownMenuItem<String>(
-                    value: e,
-                    child: Text(e),
-                  );
+                  return DropdownMenuItem<String>(value: e, child: Text(e));
                 }).toList(),
                 onChanged: (value) {
                   setState(() {
@@ -264,54 +329,36 @@ class LoanType extends StatelessWidget {
   }
 
   Widget Canara(BuildContext ctx) {
-    final List<String> loanTypes = [
-      '---SELECT---',
-      /* 'Plant And Machinery',
-      'Property (Land & BUILDING)',
-      'VALUATION OF COMMERCIAL BUILDING BY RENT CAPITALISATION METHOD',
-      'VALUATION OF FLAT BY COMPOSITE RATE METHOD',
-      'GENERAL FORMAT VALUATION REPORT OTHER PROPERTIES',
-      'VALUATION OF VACANT SITES/ RESIDENTIAL PLOT / COMMERCIAL SITE / LAND',
-      'VALUATION REPORT (IN RESPECT OF AGRICULTURAL LANDS)', */
-      'CANARA FORM'
-    ];
-
+    final List<String> loanTypes = ['---SELECT---', 'CANARA FORM'];
     String? selectedValue = loanTypes[0];
 
     return Column(
       children: [
-        const SizedBox(
-          height: 20,
-        ),
-        const Text('CANARA BANK',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 28,
-            )),
+        const SizedBox(height: 10),
+        _buildBankTitle('CANARA BANK'), // Styled title
         const SizedBox(height: 15),
-        Image.asset('assets/images/canara.jpeg'),
-        const SizedBox(height: 50),
+        Image.asset('assets/images/canara.jpeg', height: 100),
+        const SizedBox(height: 30),
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: StatefulBuilder(
             builder: (context, setState) {
               return DropdownButtonFormField<String>(
                 value: selectedValue,
-                decoration: const InputDecoration(border: OutlineInputBorder()),
-                hint: const Text('Select the valuation type'),
+                decoration: _getDropdownDecoration(), // Styled dropdown
                 isExpanded: true,
                 items: loanTypes.map((e) {
-                  return DropdownMenuItem<String>(
-                    value: e,
-                    child: Text(e),
-                  );
+                  return DropdownMenuItem<String>(value: e, child: Text(e));
                 }).toList(),
                 onChanged: (value) {
                   setState(() {
                     selectedValue = value;
                   });
-                  Navigator.of(ctx).push(MaterialPageRoute(
-                      builder: (_) => const PropertyValuationReportPage()));
+                  // Added check for placeholder
+                  if (value != null && value != '---SELECT---') {
+                    Navigator.of(ctx).push(MaterialPageRoute(
+                        builder: (_) => const PropertyValuationReportPage()));
+                  }
                 },
               );
             },
@@ -328,36 +375,25 @@ class LoanType extends StatelessWidget {
       'VALUATION REPORT (IN RESPECT OF FLATS)',
       'VALUATION REPORT (IN RESPECT OF VACANT LAND / SITE)',
     ];
-
     String? selectedValue = loanTypes[0];
 
     return Column(
       children: [
-        const SizedBox(
-          height: 20,
-        ),
-        const Text('SOUTH INDIAN BANK',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 28,
-            )),
         const SizedBox(height: 10),
-        Image.asset('assets/images/south indian.jpeg'),
-        const SizedBox(height: 50),
+        _buildBankTitle('SOUTH INDIAN BANK'), // Styled title
+        const SizedBox(height: 10),
+        Image.asset('assets/images/south indian.jpeg', height: 100),
+        const SizedBox(height: 30),
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: StatefulBuilder(
             builder: (context, setState) {
               return DropdownButtonFormField<String>(
                 value: selectedValue,
-                decoration: const InputDecoration(border: OutlineInputBorder()),
-                hint: const Text('Select the valuation type'),
+                decoration: _getDropdownDecoration(), // Styled dropdown
                 isExpanded: true,
                 items: loanTypes.map((e) {
-                  return DropdownMenuItem<String>(
-                    value: e,
-                    child: Text(e),
-                  );
+                  return DropdownMenuItem<String>(value: e, child: Text(e));
                 }).toList(),
                 onChanged: (value) {
                   setState(() {
@@ -391,36 +427,25 @@ class LoanType extends StatelessWidget {
       'VALUATION REPORT (IN RESPECT OF FLATS)',
       'VALUATION REPORT (IN RESPECT OF VACANT LAND / SITE)',
     ];
-
     String? selectedValue = loanTypes[0];
 
     return Column(
       children: [
-        const SizedBox(
-          height: 20,
-        ),
-        const Text('STATE BANK OF INDIA',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 28,
-            )),
         const SizedBox(height: 10),
-        Image.asset('assets/images/sbi.png'),
-        const SizedBox(height: 50),
+        _buildBankTitle('STATE BANK OF INDIA'), // Styled title
+        const SizedBox(height: 10),
+        Image.asset('assets/images/sbi.png', height: 100),
+        const SizedBox(height: 30),
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: StatefulBuilder(
             builder: (context, setState) {
               return DropdownButtonFormField<String>(
                 value: selectedValue,
-                decoration: const InputDecoration(border: OutlineInputBorder()),
-                hint: const Text('Select the valuation type'),
+                decoration: _getDropdownDecoration(), // Styled dropdown
                 isExpanded: true,
                 items: loanTypes.map((e) {
-                  return DropdownMenuItem<String>(
-                    value: e,
-                    child: Text(e),
-                  );
+                  return DropdownMenuItem<String>(value: e, child: Text(e));
                 }).toList(),
                 onChanged: (value) {
                   setState(() {
@@ -445,5 +470,38 @@ class LoanType extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+// *** Custom Painter for the background lines (Copied from HomeScreen) ***
+class _TilePatternPainter extends CustomPainter {
+  final Color lineColor;
+  final double strokeWidth;
+
+  _TilePatternPainter({required this.lineColor, required this.strokeWidth});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = lineColor
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke;
+
+    const double spacing = 40.0; // The distance between lines
+
+    // Draw diagonal lines (/)
+    for (double i = -size.height; i < size.width; i += spacing) {
+      canvas.drawLine(
+        Offset(i, 0), // Start from top edge
+        Offset(i + size.height, size.height), // End on bottom edge
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _TilePatternPainter oldDelegate) {
+    return oldDelegate.lineColor != lineColor ||
+        oldDelegate.strokeWidth != strokeWidth;
   }
 }

@@ -59,7 +59,7 @@ class _PropertyValuationReportPageState
     super.initState();
     if (widget.propertyData != null) {
       // Use the passed data to initialize your form only if it exists
-      debugPrint('Received property data: ${widget.propertyData}');
+      // debugPrint('Received property data: ${widget.propertyData}');
       // Example:
       // _fileNoController.text = widget.propertyData!['fileNo'].toString();
     } else {
@@ -483,7 +483,7 @@ class _PropertyValuationReportPageState
     final latitude = _nearByLat.text.trim();
     final longitude = _nearByLong.text.trim();
 
-    debugPrint(latitude);
+    // debugPrint(latitude);
 
     if (latitude.isEmpty || longitude.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -509,10 +509,10 @@ class _PropertyValuationReportPageState
         final List<dynamic> responseData = jsonDecode(response.body);
 
         // Debug print the array
-        debugPrint('Response Data (Array):');
-        for (var item in responseData) {
-          debugPrint(item.toString()); // Print each item in the array
-        }
+        // debugPrint('Response Data (Array):');
+        // for (var item in responseData) {
+        //   debugPrint(item.toString()); // Print each item in the array
+        // }
 
         if (context.mounted) {
           // Navigator.of(context).push(
@@ -577,11 +577,11 @@ class _PropertyValuationReportPageState
       final ownerName = _ownerNameController.text ?? '[is null]';
       final marketValue = _presentValueController.text ?? '[is null]';
 
-      debugPrint('------------------------------------------');
-      debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
-      debugPrint('Owner Name from Controller: "$ownerName"');
-      debugPrint('Market Value from Controller: "$marketValue"');
-      debugPrint('------------------------------------------');
+      // debugPrint('------------------------------------------');
+      // debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
+      // debugPrint('Owner Name from Controller: "$ownerName"');
+      // debugPrint('Market Value from Controller: "$marketValue"');
+      // debugPrint('------------------------------------------');
       // --- STEP 3: Build the payload with the correct data ---
       final dataToSave = {
         // Use the coordinates from the image we found
@@ -606,7 +606,7 @@ class _PropertyValuationReportPageState
       } else {
         debugPrint(
             'Failed to save to nearby collection: ${response.statusCode}');
-        debugPrint('Response body: ${response.body}');
+        // debugPrint('Response body: ${response.body}');
       }
     } catch (e) {
       debugPrint('Error in _saveToNearbyCollection: $e');
@@ -1368,11 +1368,11 @@ class _PropertyValuationReportPageState
               if (response.statusCode == 200) {
                 Uint8List imageBytes = response.bodyBytes;
 
-               _imagesWithLocation.add(ImageWithLocation(
-                imageBytes: imageBytes,
-                latitude: imgData['latitude'],
-                longitude: imgData['longitude'],
-              ));
+                _imagesWithLocation.add(ImageWithLocation(
+                  imageBytes: imageBytes,
+                  latitude: imgData['latitude'],
+                  longitude: imgData['longitude'],
+                ));
               } else {
                 debugPrint('Failed to load image: ${response.statusCode}');
               }
@@ -1385,7 +1385,6 @@ class _PropertyValuationReportPageState
         debugPrint('Error in fetchImagesFromUploads: $e');
       }
 
-     
       if (mounted) setState(() {});
 
       debugPrint('Form initialized with property data');

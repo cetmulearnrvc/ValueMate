@@ -56,8 +56,8 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
   final List<ValuationImage> _valuationImages = [];
 
   // --- ALL CONTROLLERS AND STATE VARIABLES ---
-  final _valuerNameCtrl = TextEditingController();
-  final _valuerCodeCtrl = TextEditingController();
+  final _valuerNameCtrl = TextEditingController(text: "VIGNESH");
+  final _valuerCodeCtrl = TextEditingController(text: "TVV0001");
   DateTime _inspectionDate = DateTime.now();
   final _fileNoCtrl = TextEditingController();
   final _applicantNameCtrl = TextEditingController();
@@ -148,7 +148,6 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
   final _buildingStageValueMarket = TextEditingController();
 
   bool _isNotValidState = false;
-  
 
   Future<void> _saveToNearbyCollection() async {
     try {
@@ -215,11 +214,7 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
       // Validate required fields
       if (_valuerNameCtrl.text.isEmpty ||
           _valuerCodeCtrl.text.isEmpty ||
-          _fileNoCtrl.text.isEmpty ||
-          // _applicantNameCtrl.text.isEmpty ||
-          // _ownerNameCtrl.text.isEmpty ||
-          // _propertyLocationCtrl.text.isEmpty ||
-          _landValueMarketCtrl.text.isEmpty) {
+          _fileNoCtrl.text.isEmpty) {
         debugPrint("not all field available");
         setState(() => _isNotValidState = true);
         return;
@@ -464,7 +459,6 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
     }
   }
 
-  
   void _initializeFormWithPropertyData() async {
     if (widget.propertyData != null) {
       final data = widget.propertyData!;
