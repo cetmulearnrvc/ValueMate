@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 
 const canaraSchema = new mongoose.Schema({
     // Basic Information
+    referenceNo:String,
+    Date:String,
     purpose: String,
     inspectionDate: String,
     valuationDate: String,
