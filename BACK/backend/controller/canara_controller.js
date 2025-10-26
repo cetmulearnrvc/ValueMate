@@ -46,7 +46,7 @@ export const saveCanaraData = async(req,res)=>{
 
     try{
         const newCanaraData = await Canara.findOneAndUpdate(
-          { ownerName: CanaraData.ownerName},
+          { referenceNo: CanaraData.referenceNo},
           {$set:CanaraData},
           {
               upsert: true,
