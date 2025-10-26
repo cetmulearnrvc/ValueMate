@@ -6,9 +6,9 @@ import {
   searchByDate
 } from "../controller/sbi_vacantland_controller.js";
  import upload from "../multer/upload.js";
-
+import { handleUpload } from "../middleware/handleUpload.js";
 // Save vacant land data with images
-sbivacantLandRouter.post("/sbi/vacant-land/save", upload.array("images",10), saveVacantLand);
+sbivacantLandRouter.post("/sbi/vacant-land/save", upload.array("images",10),handleUpload, saveVacantLand);
 
 // Get nearby vacant lands (changed to POST to match your example)
 // sbivacantLandRouter.post("/sbi/vacant-land/nearby", getNearbyVacantLands);

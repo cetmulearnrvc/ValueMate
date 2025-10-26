@@ -646,11 +646,21 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
           final List<dynamic> imagesData = data['images'];
           for (var imgData in imagesData) {
             try {
-              String fileName = imgData['fileName']?.toString() ?? '';
-              String signedUrl = await fetchSignedUrl(fileName);
-              // debugPrint(signedUrl);
-              Uint8List imageBytes = await fetchImageBytes(signedUrl);
-              _images.add(imageBytes);
+              final String filePath = imgData['filePath'];
+
+              // Build the full URL (e.g., http://your-server.com/uploads/abc123.png)
+              final String imageUrl = '$baseUrl/$filePath';
+
+              // Fetch image bytes
+              final response = await http.get(Uri.parse(imageUrl));
+
+              if (response.statusCode == 200) {
+                Uint8List imageBytes = response.bodyBytes;
+
+                _images.add(imageBytes);
+              } else {
+                debugPrint('Failed to load image: ${response.statusCode}');
+              }
             } catch (e) {
               // debugPrint('Error loading image: $e');
             }

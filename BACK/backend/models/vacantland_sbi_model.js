@@ -6,10 +6,10 @@ const sbivaluationImageSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  // filePath: {
-  //   type: String,
-  //   required: true
-  // },
+  filePath: {
+    type: String,
+    required: true
+  },
   // latitude: Number,
   // longitude: Number,
 }, { _id: false });
