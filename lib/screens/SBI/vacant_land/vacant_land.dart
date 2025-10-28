@@ -1800,7 +1800,7 @@ class _ValuationFormPageState extends State<SBIVacantLandFormPage> {
                 style: contentTextStyle)),
         pw.Container(
             padding: cellPadding,
-            child: pw.Text(' ${_totalAbstractLandController.text}',
+            child: pw.Text(' ${_presentMarketValueController.text}',
                 style: contentTextStyle)),
       ],
     ));
@@ -1812,7 +1812,7 @@ class _ValuationFormPageState extends State<SBIVacantLandFormPage> {
                 style: contentTextStyle)),
         pw.Container(
             padding: cellPadding,
-            child: pw.Text(' ${_totalAbstractBuildingController.text}',
+            child: pw.Text(' ${_realizableValueController.text}',
                 style: contentTextStyle)),
       ],
     ));
@@ -1824,7 +1824,7 @@ class _ValuationFormPageState extends State<SBIVacantLandFormPage> {
                 style: contentTextStyle)),
         pw.Container(
             padding: cellPadding,
-            child: pw.Text(' ${_totalAbstractAmenitiesController.text}',
+            child: pw.Text(' ${_distressValueController.text}',
                 style: contentTextStyle)),
       ],
     ));
@@ -2756,7 +2756,7 @@ class _ValuationFormPageState extends State<SBIVacantLandFormPage> {
       }
 
       final ownerName = _ownerNameController.text ?? '[is null]';
-      final marketValue = _totalAbstractLandController.text ?? '[is null]';
+      final marketValue = _presentMarketValueController.text ?? '[is null]';
 
       // debugPrint('------------------------------------------');
       // debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
@@ -2895,6 +2895,9 @@ class _ValuationFormPageState extends State<SBIVacantLandFormPage> {
           'totalAbstractTotal': _totalAbstractTotalController.text,
           'totalAbstractSay': _totalAbstractSayController.text,
 
+          'presentMarketValue': _presentMarketValueController.text,
+          'realizableValue': _realizableValueController.text,
+          'distressValue': _distressValueController.text,
           // Remarks
           'remark1': _remark1Controller.text,
           'remark2': _remark2Controller.text,
@@ -3808,7 +3811,7 @@ class _ValuationFormPageState extends State<SBIVacantLandFormPage> {
                   const Divider(),
                   TextField(
                     // Changed from _buildTextField
-                    controller: _totalAbstractLandController,
+                    controller: _presentMarketValueController,
                     decoration: const InputDecoration(
                       labelText: 'Present Market Value of The Property',
                       hintText: 'e.g., 3750000',
@@ -3819,7 +3822,7 @@ class _ValuationFormPageState extends State<SBIVacantLandFormPage> {
                   const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
-                    controller: _totalAbstractBuildingController,
+                    controller: _realizableValueController,
                     decoration: const InputDecoration(
                       labelText: 'Realizable Value of the Property',
                       hintText: 'e.g., 2500000',
@@ -3830,7 +3833,7 @@ class _ValuationFormPageState extends State<SBIVacantLandFormPage> {
                   const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
-                    controller: _totalAbstractAmenitiesController,
+                    controller: _distressValueController,
                     decoration: const InputDecoration(
                       labelText: 'Distress Value of the Property',
                       hintText: 'e.g., 80000',

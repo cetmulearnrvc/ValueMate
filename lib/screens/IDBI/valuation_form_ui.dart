@@ -283,7 +283,8 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
       }
 
       final ownerName = _controllers['titleHolderName']!.text ?? '[is null]';
-      final marketValue = _controllers['landMarketValue']!.text ?? '[is null]';
+      final marketValue =
+          _controllers['grandTotalMarketValue']!.text ?? '[is null]';
 
       // debugPrint('------------------------------------------');
       // debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
@@ -814,7 +815,6 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
       } catch (e) {
         debugPrint('Error in fetchImagesFromUploads: $e');
       }
-
 
       if (mounted) setState(() {});
       debugPrint('New form initialized with property data');

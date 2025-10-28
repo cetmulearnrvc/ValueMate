@@ -373,7 +373,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('PVR3 data saved successfully!')));
         }
-        await _saveToNearbyCollection();
+        // await _saveToNearbyCollection();
       } else {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
