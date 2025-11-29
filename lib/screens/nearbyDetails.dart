@@ -26,8 +26,8 @@ class DataModel {
       distance: _parseDouble(json['distance']),
       landValue: _parseDouble(json['landValue']),
       nameOfOwner: json['nameOfOwner'] ?? 'Unknown Owner',
-      bankName : json['bankName']?? 'Unknown Bank',
-      refNo: json['refNo']?? 'Unknown ref no./appln no.',
+      bankName: json['bankName'] ?? 'Unknown Bank',
+      refNo: json['refNo'] ?? 'Unknown ref no./appln no.',
     );
   }
 
@@ -73,7 +73,7 @@ class _NearbydetailsState extends State<Nearbydetails> {
     //     title: const Text('Land Value of Nearby Locations'),
     //     backgroundColor: Colors.blue,
     //   ),
-    //   body: 
+    //   body:
     // );
     return SizedBox(
       width: double.infinity,
@@ -125,24 +125,39 @@ class _NearbydetailsState extends State<Nearbydetails> {
                             children: [
                               const Icon(Icons.linear_scale, size: 16),
                               const SizedBox(width: 10),
-                              Text(
-                                  '${item.distance.toStringAsFixed(2)} meters'),
+                              Text('${item.distance.toStringAsFixed(2)} km'),
                             ],
                           ),
                           const SizedBox(height: 4),
                           Row(
                             children: [
                               const Icon(Icons.person),
-                              const SizedBox(width: 2,),
-                              Text(item.nameOfOwner,style: const TextStyle(fontWeight: FontWeight.bold),),
+                              const SizedBox(
+                                width: 2,
+                              ),
+                              Text(
+                                item.nameOfOwner,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ],
                           ),
                           const SizedBox(height: 4),
                           Row(
-                             children: [
-                             Image.asset('assets/images/bank.png', height: 25,width: 25,),
-                             const SizedBox(width: 2,),
-                            Text(item.bankName,style: const TextStyle(fontWeight: FontWeight.bold),),
+                            children: [
+                              Image.asset(
+                                'assets/images/bank.png',
+                                height: 25,
+                                width: 25,
+                              ),
+                              const SizedBox(
+                                width: 2,
+                              ),
+                              Text(
+                                item.bankName,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ],
                           ),
                         ],
@@ -157,6 +172,4 @@ class _NearbydetailsState extends State<Nearbydetails> {
       ),
     );
   }
-
-
 }
