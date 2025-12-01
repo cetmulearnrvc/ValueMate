@@ -89,6 +89,7 @@ const vacantLandValuationSchema = new mongoose.Schema({
   typeOfRoad: String,
   widthOfRoad: String,
   isLandLocked: String,
+  typeOfDemarcation: String,
 
   // Land Valuation
   landAreaDetails: String,

@@ -191,6 +191,7 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
 
   // New controller for the "Land locked" field (Item 21)
   final TextEditingController _isLandLockedController = TextEditingController();
+  final TextEditingController _typeOfDemarcationController = TextEditingController();
 
   // Controllers for the new Land Valuation Table
   final TextEditingController _landAreaDetailsController =
@@ -548,6 +549,7 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
       _typeOfRoadController.text = data['typeOfRoad']?.toString() ?? '';
       _widthOfRoadController.text = data['widthOfRoad']?.toString() ?? '';
       _isLandLockedController.text = data['isLandLocked']?.toString() ?? '';
+      _typeOfDemarcationController.text = data['typeOfDemarcation']?.toString() ?? '';
 
       // Land Valuation
       _landAreaDetailsController.text =
@@ -1671,7 +1673,7 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
       pw.Container(
           padding: cellPadding,
           child:
-              pw.Text(_isLandLockedController.text, style: contentTextStyle)),
+              pw.Text(_typeOfDemarcationController.text, style: contentTextStyle)),
     ]));
 
     return rows;
@@ -2878,6 +2880,7 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
           'typeOfRoad': _typeOfRoadController.text,
           'widthOfRoad': _widthOfRoadController.text,
           'isLandLocked': _isLandLockedController.text,
+          'typeOfDemarcation': _typeOfDemarcationController.text,
 
           // Land valuation
           'landAreaDetails': _landAreaDetailsController.text,
@@ -3700,7 +3703,7 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
                   const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
-                    controller: _isLandLockedController,
+                    controller: _typeOfDemarcationController,
                     decoration: const InputDecoration(
                       labelText: 'Type of Demarcation (Side stone/Fencing)',
                       border: OutlineInputBorder(
