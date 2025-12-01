@@ -438,9 +438,9 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
       _ownerNameController.text = data['ownerName']?.toString() ?? '';
       _applicantNameController.text = data['applicantName']?.toString() ?? '';
       _addressDocController.text =
-          data['addressAsPerDocument']?.toString() ?? '';
+          data['addressDocument']?.toString() ?? '';
       _addressActualController.text =
-          data['addressAsPerActual']?.toString() ?? '';
+          data['addressActual']?.toString() ?? '';
       _deviationsController.text = data['deviations']?.toString() ?? '';
       _propertyTypeController.text = data['propertyType']?.toString() ?? '';
       _propertyZoneController.text = data['propertyZone']?.toString() ?? '';
@@ -2821,8 +2821,8 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
           'purpose': _purposeController.text,
           'ownerName': _ownerNameController.text,
           'applicantName': _applicantNameController.text,
-          'addressAsPerDocument': _addressDocController.text,
-          'addressAsPerActual': _addressActualController.text,
+          'addressDocument': _addressDocController.text,
+          'addressActual': _addressActualController.text,
           'deviations': _deviationsController.text,
           'propertyType': _propertyTypeController.text,
           'propertyZone': _propertyZoneController.text,
