@@ -98,7 +98,9 @@ const pvr1Schema = new mongoose.Schema({
     buildingStageValueGuide: String,
     
     buildingStageValueMarket: String,
-    buildingCompletionValue: String,
+    buildingCompletionValueApp: String,
+    buildingCompletionValueGuide: String,
+    buildingCompletionValueMarket: String,
     marketValueSource: String,
     
     // Safety and Amenities

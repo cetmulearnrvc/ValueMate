@@ -58,7 +58,7 @@ export const saveToNearby = async (req, res) => {
 };
 
 export const getNearby = async (req, res) => {
-    const SEARCH_RADIUS_KM = 20;
+    const SEARCH_RADIUS_KM = 15;
     // console.log("Received request to get nearby properties:", req.body);
 
     try {

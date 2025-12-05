@@ -157,9 +157,39 @@ class _ValuationFormScreenState extends State<ValuationFormScreen> {
             'No image with location data found. Skipping save to nearby collection.');
         return; // Exit the function early.
       }
+      double totalMarketValue = 0;
 
+      if (_selectedPropertyType == PropertyType.House) {
+        // Calculate Land Value
+        final landVal = (double.tryParse(_landAreaCtrl.text) ?? 0) *
+            (double.tryParse(_landUnitRateCtrl.text) ?? 0);
+
+        // Calculate Amenities Value
+        final amenitiesVal = (double.tryParse(_amenitiesAreaCtrl.text) ?? 0) *
+            (double.tryParse(_amenitiesUnitRateCtrl.text) ?? 0);
+
+        // Calculate Floors Value
+        double floorsVal = 0;
+        for (var floor in _floors) {
+          floorsVal += (double.tryParse(floor.area) ?? 0) *
+              (double.tryParse(floor.marketRate) ?? 0);
+        }
+
+        totalMarketValue = landVal + amenitiesVal + floorsVal;
+      } else {
+        // For Flats, take the market value directly
+        totalMarketValue = double.tryParse(_flatValueMarketCtrl.text) ?? 0;
+      }
+
+      // Add Improvements Amount
+      final improvementTotal =
+          double.tryParse(_improvementAmountCtrl.text) ?? 0;
+
+      // Final Calculation
+      final double estimatedValueAfterImprovements =
+          totalMarketValue + improvementTotal;
       final ownerName = _applicantNameCtrl.text ?? '[is null]';
-      final marketValue = _marketValueSourceHouseCtrl.text ?? '[is null]';
+      final marketValue = estimatedValueAfterImprovements;
 
       // debugPrint('------------------------------------------');
       // debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
@@ -373,7 +403,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('PVR3 data saved successfully!')));
         }
-        // await _saveToNearbyCollection();
+        await _saveToNearbyCollection();
       } else {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(

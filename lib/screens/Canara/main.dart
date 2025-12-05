@@ -477,11 +477,13 @@ class _PropertyValuationReportPageState
   bool _isGenerating = false;
   final _nearByLat = TextEditingController();
   final _nearByLong = TextEditingController();
+  final _lat = TextEditingController();
+  final _long = TextEditingController();
   bool _isNotValidState = false;
 
   Future<void> _getNearbyProperty() async {
-    final latitude = _nearByLat.text.trim();
-    final longitude = _nearByLong.text.trim();
+    final latitude = _lat.text.trim();
+    final longitude = _long.text.trim();
 
     // debugPrint(latitude);
 
@@ -1739,12 +1741,12 @@ class _PropertyValuationReportPageState
               ),
               const SizedBox(height: 16),
               TextFormField(
-                controller: _nearByLat,
+                controller: _lat,
                 decoration: const InputDecoration(labelText: 'Latitude'),
               ),
               const SizedBox(height: 8),
               TextFormField(
-                controller: _nearByLong,
+                controller: _long,
                 decoration: const InputDecoration(labelText: 'Longitude'),
               ),
               const SizedBox(height: 8),
@@ -1756,7 +1758,7 @@ class _PropertyValuationReportPageState
                     children: [
                       Expanded(
                         child: ElevatedButton.icon(
-                          onPressed: _getCurrentLocation, // Call our new method
+                          onPressed: _getLocation, // Call our new method
                           icon: const Icon(Icons.my_location),
                           label: const Text('Get Location'),
                         ),
@@ -3977,6 +3979,71 @@ class _PropertyValuationReportPageState
     }
   }
 
+  Future<void> _getLocation() async {
+    // Set loading state at the beginning
+    setState(() {
+      _isLoadingImages = true; // Using the existing loading flag
+      _locationError = null;
+    });
+
+    try {
+      // 1. Check if location services are enabled.
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        // If not, throw an error to be caught by the catch block.
+        throw Exception('Location services are disabled.');
+      }
+
+      // 2. Check for permissions.
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          // If denied, throw an error.
+          throw Exception('Location permissions are denied');
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        // If permanently denied, throw an error.
+        throw Exception(
+            'Location permissions are permanently denied, we cannot request permissions.');
+      }
+
+      // 3. When we reach here, permissions are granted. Fetch position.
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+
+      // 4. Update the state with the new location data.
+      setState(() {
+        _latitude = position.latitude;
+        _longitude = position.longitude;
+        // Also update the controller to display the coordinates in the text field
+
+        _lat.text = _latitude!.toStringAsFixed(6);
+        _long.text = _longitude!.toStringAsFixed(6);
+        // Assuming you have a controller for the lat-long text field
+        _latitude = null; // Clear outdated location data on error
+        _longitude = null;
+        // _latitudelongitudeController.text =
+        //     '${_latitude!.toStringAsFixed(6)}, ${_longitude!.toStringAsFixed(6)}';
+        _locationError = null; // Clear any previous error
+      });
+    } catch (e) {
+      // If any error occurs, update the state to show the error.
+      setState(() {
+        _locationError = e.toString();
+        _latitude = null; // Clear outdated location data on error
+        _longitude = null;
+      });
+    } finally {
+      // Always turn off the loading indicator at the end.
+      setState(() {
+        _isLoadingImages = false;
+      });
+    }
+  }
+
   /// Fetches the current device's location and updates the state.
   Future<void> _getCurrentLocation() async {
     // Set loading state at the beginning
@@ -4019,8 +4086,8 @@ class _PropertyValuationReportPageState
         _longitude = position.longitude;
         // Also update the controller to display the coordinates in the text field
 
-        _nearByLat.text = _latitude!.toStringAsFixed(6);
-        _nearByLong.text = _longitude!.toStringAsFixed(6);
+        // _nearByLat.text = _latitude!.toStringAsFixed(6);
+        // _nearByLong.text = _longitude!.toStringAsFixed(6);
         // Assuming you have a controller for the lat-long text field
 
         _latitudelongitudeController.text =

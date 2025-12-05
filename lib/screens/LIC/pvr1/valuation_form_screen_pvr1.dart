@@ -116,7 +116,9 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
   final _landValueGuideCtrl = TextEditingController();
   final _landValueMarketCtrl = TextEditingController();
   final _buildingStageValueAppCtrl = TextEditingController();
-  final _buildingCompletionValueCtrl = TextEditingController();
+  final _buildingCompletionValueAppCtrl = TextEditingController();
+  final _buildingCompletionValueGuideCtrl = TextEditingController();
+  final _buildingCompletionValueMarketCtrl = TextEditingController();
   final _marketValueSourceCtrl = TextEditingController();
   final _buildingUsageCtrl = TextEditingController();
   final _recBackgroundCtrl = TextEditingController();
@@ -171,7 +173,11 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
       }
 
       final ownerName = _ownerNameCtrl.text ?? '[is null]';
-      final marketValue = _landValueMarketCtrl.text ?? '[is null]';
+      final double landVal = double.tryParse(_landValueMarketCtrl.text) ?? 0.0;
+      final double buildingVal =
+          double.tryParse(_buildingCompletionValueMarketCtrl.text) ?? 0.0;
+      final double totalValue = landVal + buildingVal;
+      final String marketValue = totalValue.toString();
 
       // debugPrint('------------------------------------------');
       // debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
@@ -297,7 +303,10 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
         "landValueGuide": _landValueGuideCtrl.text,
         "landValueMarket": _landValueMarketCtrl.text,
         "buildingStageValueApp": _buildingStageValueAppCtrl.text,
-        "buildingCompletionValue": _buildingCompletionValueCtrl.text,
+        "buildingCompletionValueApp": _buildingCompletionValueAppCtrl.text,
+        "buildingCompletionValueGuide": _buildingCompletionValueGuideCtrl.text,
+        "buildingCompletionValueMarket":
+            _buildingCompletionValueMarketCtrl.text,
         "marketValueSource": _marketValueSourceCtrl.text,
         "buildingUsage": _buildingUsageCtrl.text,
         "recBackground": _recBackgroundCtrl.text,
@@ -597,10 +606,15 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
       _buildingStageValueMarket.text =
           data['buildingStageValueMarket']?.toString() ??
               _buildingStageValueMarket.text;
-      _buildingCompletionValueCtrl.text =
-          data['buildingCompletionValue']?.toString() ??
-              _buildingCompletionValueCtrl.text;
-
+      _buildingCompletionValueAppCtrl.text =
+          data['buildingCompletionValueApp']?.toString() ??
+              _buildingCompletionValueAppCtrl.text;
+      _buildingCompletionValueGuideCtrl.text =
+          data['buildingCompletionValueGuide']?.toString() ??
+              _buildingCompletionValueGuideCtrl.text;
+      _buildingCompletionValueMarketCtrl.text =
+          data['buildingCompletionValueMarket']?.toString() ??
+              _buildingCompletionValueMarketCtrl.text;
       //Recomended fields
       _recBackgroundCtrl.text =
           data['recBackground']?.toString() ?? _recBackgroundCtrl.text;
@@ -940,7 +954,9 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
         landValueGuide: _landValueGuideCtrl.text,
         landValueMarket: _landValueMarketCtrl.text,
         buildingStageValueApp: _buildingStageValueAppCtrl.text,
-        buildingCompletionValue: _buildingCompletionValueCtrl.text,
+        buildingCompletionValueApp: _buildingCompletionValueAppCtrl.text,
+        buildingCompletionValueGuide: _buildingCompletionValueGuideCtrl.text,
+        buildingCompletionValueMarket: _buildingCompletionValueMarketCtrl.text,
         marketValueSource: _marketValueSourceCtrl.text,
         buildingUsage: _buildingUsageCtrl.text,
         recBackground: _recBackgroundCtrl.text,
@@ -1348,18 +1364,29 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
                   decoration: const InputDecoration(
                       labelText: '2. Stage value of building (Applicant)')),
               TextFormField(
-                  controller: _buildingStageValueAppCtrl,
+                  controller: _buildingStageValueGuide,
                   decoration: const InputDecoration(
                       labelText:
                           '2. Stage value of building (Guideline Value)')),
               TextFormField(
-                  controller: _buildingStageValueAppCtrl,
+                  controller: _buildingStageValueMarket,
                   decoration: const InputDecoration(
                       labelText: '2. Stage value of building (Market Value)')),
               TextFormField(
-                  controller: _buildingCompletionValueCtrl,
+                  controller: _buildingCompletionValueAppCtrl,
                   decoration: const InputDecoration(
-                      labelText: '4. Value of building on completion')),
+                      labelText:
+                          '4. Value of building on completion (Application)')),
+              TextFormField(
+                  controller: _buildingCompletionValueGuideCtrl,
+                  decoration: const InputDecoration(
+                      labelText:
+                          '4. Value of building on completion (Guideline Value)')),
+              TextFormField(
+                  controller: _buildingCompletionValueMarketCtrl,
+                  decoration: const InputDecoration(
+                      labelText:
+                          '4. Value of building on completion (Market Value)')),
               TextFormField(
                   controller: _marketValueSourceCtrl,
                   decoration: const InputDecoration(
