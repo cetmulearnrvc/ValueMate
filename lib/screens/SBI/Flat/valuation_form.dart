@@ -9,6 +9,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:login_screen/ref_id.dart';
 import 'package:login_screen/screens/SBI/Flat/config.dart';
 import 'package:login_screen/screens/SBI/Flat/data_model.dart';
 import 'package:login_screen/screens/SBI/Flat/pdf_generator.dart';
@@ -347,39 +348,39 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
   Future<void> _loadInitialImages(Map<String, dynamic> data) async {
     final List<ValuationImage> loadedImages = [];
     try {
-        if (data['images'] != null && data['images'] is List) {
-          final List<dynamic> imagesData = data['images'];
+      if (data['images'] != null && data['images'] is List) {
+        final List<dynamic> imagesData = data['images'];
 
-          for (var imgData in imagesData) {
-            try {
-              // The backend returned something like "uploads/abc123.png"
-              final String filePath = imgData['filePath'];
+        for (var imgData in imagesData) {
+          try {
+            // The backend returned something like "uploads/abc123.png"
+            final String filePath = imgData['filePath'];
 
-              // Build the full URL (e.g., http://your-server.com/uploads/abc123.png)
-              final String imageUrl = '$baseUrl/$filePath';
+            // Build the full URL (e.g., http://your-server.com/uploads/abc123.png)
+            final String imageUrl = '$baseUrl/$filePath';
 
-              // Fetch image bytes
-              final response = await http.get(Uri.parse(imageUrl));
+            // Fetch image bytes
+            final response = await http.get(Uri.parse(imageUrl));
 
-              if (response.statusCode == 200) {
-                Uint8List imageBytes = response.bodyBytes;
+            if (response.statusCode == 200) {
+              Uint8List imageBytes = response.bodyBytes;
 
-                _valuationImages.add(ValuationImage(
-                  imageFile: imageBytes,
-                  latitude: imgData['latitude']?.toString() ?? '',
-                  longitude: imgData['longitude']?.toString() ?? '',
-                ));
-              } else {
-                debugPrint('Failed to load image: ${response.statusCode}');
-              }
-            } catch (e) {
-              debugPrint('Error loading image from uploads: $e');
+              _valuationImages.add(ValuationImage(
+                imageFile: imageBytes,
+                latitude: imgData['latitude']?.toString() ?? '',
+                longitude: imgData['longitude']?.toString() ?? '',
+              ));
+            } else {
+              debugPrint('Failed to load image: ${response.statusCode}');
             }
+          } catch (e) {
+            debugPrint('Error loading image from uploads: $e');
           }
         }
-      } catch (e) {
-        debugPrint('Error in fetchImagesFromUploads: $e');
       }
+    } catch (e) {
+      debugPrint('Error in fetchImagesFromUploads: $e');
+    }
     if (mounted) {
       setState(() {});
     }
@@ -1182,6 +1183,54 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
                   _buildTextField('Valuer Email', 'valuerEmail'),
                   const Divider(height: 20),
                   _buildTextField('Ref No.', 'refNo'),
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            const Color.fromARGB(255, 172, 208, 237),
+                        foregroundColor: Colors.black),
+                    icon: Icon(Icons.autorenew),
+                    onPressed: () async {
+                      bool shouldGenerate = true;
+                      if (_controllers['refNo']?.text.isNotEmpty ?? false) {
+                        shouldGenerate = await showDialog<bool>(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text("Confirm"),
+                                content: const Text(
+                                  "Generate a new ID?",
+                                  style: TextStyle(fontWeight: FontWeight.w100),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context, true);
+                                    },
+                                    child: const Text("YES"),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      // FIX 4: Close dialog and pass 'false' back
+                                      Navigator.pop(context, false);
+                                    },
+                                    child: const Text("NO"),
+                                  ),
+                                ],
+                              ),
+                            ) ??
+                            false; // If they click outside the box, default to false
+                      }
+
+                      // Now this only runs if they said YES (or if the field was empty)
+                      if (shouldGenerate) {
+                        String refID = await RefIdService.generateUniqueId();
+                        setState(() {
+                          _controllers['refNo']?.text = refID;
+                        });
+                      }
+                    },
+                    label: const Text('Generate New ID',
+                        style: TextStyle(fontWeight: FontWeight.w300)),
+                  ),
                   _buildTextField('Bank Name', 'bankName'),
                   _buildTextField('Branch Name', 'branchName'),
                   _buildTextField('Branch Address', 'branchAddress'),

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:login_screen/ref_id.dart';
 import 'package:login_screen/screens/IDBI/savedDraftsIDBI.dart';
 import 'package:login_screen/screens/nearbyDetails.dart';
 import 'package:pdf/pdf.dart';
@@ -1204,6 +1205,54 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
                 _buildTextField(
                   'Application no.',
                   _controllers['applicationNo']!,
+                ),
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 172, 208, 237),
+                      foregroundColor: Colors.black),
+                  icon: Icon(Icons.autorenew),
+                  onPressed: () async {
+                    bool shouldGenerate = true;
+                    if (_controllers['applicationNo']?.text.isNotEmpty ??
+                        false) {
+                      shouldGenerate = await showDialog<bool>(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text("Confirm"),
+                              content: const Text(
+                                "Generate a new ID?",
+                                style: TextStyle(fontWeight: FontWeight.w100),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context, true);
+                                  },
+                                  child: const Text("YES"),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    // FIX 4: Close dialog and pass 'false' back
+                                    Navigator.pop(context, false);
+                                  },
+                                  child: const Text("NO"),
+                                ),
+                              ],
+                            ),
+                          ) ??
+                          false; // If they click outside the box, default to false
+                    }
+
+                    // Now this only runs if they said YES (or if the field was empty)
+                    if (shouldGenerate) {
+                      String refID = await RefIdService.generateUniqueId();
+                      setState(() {
+                        _controllers['applicationNo']?.text = refID;
+                      });
+                    }
+                  },
+                  label: const Text('Generate New ID',
+                      style: TextStyle(fontWeight: FontWeight.w300)),
                 ),
                 _buildTextField(
                   'Name of the title holder',

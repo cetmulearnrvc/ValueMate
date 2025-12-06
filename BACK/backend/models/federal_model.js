@@ -10,6 +10,7 @@ const federalSchema = new mongoose.Schema({
         required:true,
         type:String
     },
+    refNo:String,
     nameOfTheProspectivePurchaser: String,
     builderNameAndRERAID: String,
     propertyDescription: String,

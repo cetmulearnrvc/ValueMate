@@ -314,7 +314,7 @@ class _SavedDraftsFederalState extends State<SavedDraftsFederal> {
                                             contentPadding:
                                                 const EdgeInsets.all(16),
                                             title: Text(
-                                              'Owner: ${property['ownerOfTheProperty'] ?? 'N/A'}',
+                                              'Ref No: ${property['refNo'] ?? 'N/A'}',
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 16,
@@ -329,6 +329,12 @@ class _SavedDraftsFederalState extends State<SavedDraftsFederal> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   _buildInfoRow(
+                                                      Icons.person,
+                                                      property[
+                                                              'ownerOfTheProperty'] ??
+                                                          'N/A'),
+                                                  const SizedBox(height: 4),
+                                                  _buildInfoRow(
                                                       Icons.account_balance,
                                                       'Federal Bank'),
                                                   const SizedBox(height: 4),
@@ -338,17 +344,6 @@ class _SavedDraftsFederalState extends State<SavedDraftsFederal> {
                                                               'propertyAddressAsPerSiteVisit'] ??
                                                           'N/A'),
                                                   const SizedBox(height: 4),
-                                                  _buildInfoRow(
-                                                      Icons.event,
-                                                      property['createdAt'] !=
-                                                              null
-                                                          ? DateFormat(
-                                                                  'dd-MM-yyyy')
-                                                              .format(DateTime.parse(
-                                                                      property[
-                                                                          'createdAt'])
-                                                                  .toLocal())
-                                                          : 'N/A'),
                                                 ],
                                               ),
                                             ),

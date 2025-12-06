@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:login_screen/ref_id.dart';
 import 'package:login_screen/screens/SIB/vacant_land/savedDraftsSIBVacantland.dart';
 import 'package:login_screen/screens/nearbyDetails.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -191,7 +192,8 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
 
   // New controller for the "Land locked" field (Item 21)
   final TextEditingController _isLandLockedController = TextEditingController();
-  final TextEditingController _typeOfDemarcationController = TextEditingController();
+  final TextEditingController _typeOfDemarcationController =
+      TextEditingController();
 
   // Controllers for the new Land Valuation Table
   final TextEditingController _landAreaDetailsController =
@@ -437,10 +439,8 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
 
       _ownerNameController.text = data['ownerName']?.toString() ?? '';
       _applicantNameController.text = data['applicantName']?.toString() ?? '';
-      _addressDocController.text =
-          data['addressDocument']?.toString() ?? '';
-      _addressActualController.text =
-          data['addressActual']?.toString() ?? '';
+      _addressDocController.text = data['addressDocument']?.toString() ?? '';
+      _addressActualController.text = data['addressActual']?.toString() ?? '';
       _deviationsController.text = data['deviations']?.toString() ?? '';
       _propertyTypeController.text = data['propertyType']?.toString() ?? '';
       _propertyZoneController.text = data['propertyZone']?.toString() ?? '';
@@ -549,7 +549,8 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
       _typeOfRoadController.text = data['typeOfRoad']?.toString() ?? '';
       _widthOfRoadController.text = data['widthOfRoad']?.toString() ?? '';
       _isLandLockedController.text = data['isLandLocked']?.toString() ?? '';
-      _typeOfDemarcationController.text = data['typeOfDemarcation']?.toString() ?? '';
+      _typeOfDemarcationController.text =
+          data['typeOfDemarcation']?.toString() ?? '';
 
       // Land Valuation
       _landAreaDetailsController.text =
@@ -1672,8 +1673,8 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
           padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
       pw.Container(
           padding: cellPadding,
-          child:
-              pw.Text(_typeOfDemarcationController.text, style: contentTextStyle)),
+          child: pw.Text(_typeOfDemarcationController.text,
+              style: contentTextStyle)),
     ]));
 
     return rows;
@@ -3228,6 +3229,58 @@ class _ValuationFormPageState extends State<VacantLandFormPage> {
                       borderRadius: BorderRadius.all(Radius.circular(20))),
                 ),
                 controller: _refId,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Center(
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 172, 208, 237),
+                      foregroundColor: Colors.black),
+                  icon: Icon(Icons.autorenew),
+                  onPressed: () async {
+                    bool shouldGenerate = true;
+                    if (_refId.text.isNotEmpty ?? false) {
+                      shouldGenerate = await showDialog<bool>(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text("Confirm"),
+                              content: const Text(
+                                "Generate a new ID?",
+                                style: TextStyle(fontWeight: FontWeight.w100),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context, true);
+                                  },
+                                  child: const Text("YES"),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    // FIX 4: Close dialog and pass 'false' back
+                                    Navigator.pop(context, false);
+                                  },
+                                  child: const Text("NO"),
+                                ),
+                              ],
+                            ),
+                          ) ??
+                          false; // If they click outside the box, default to false
+                    }
+
+                    // Now this only runs if they said YES (or if the field was empty)
+                    if (shouldGenerate) {
+                      String refID = await RefIdService.generateUniqueId();
+                      setState(() {
+                        _refId.text = refID;
+                      });
+                    }
+                  },
+                  label: const Text('Generate New ID',
+                      style: TextStyle(fontWeight: FontWeight.w300)),
+                ),
               ),
 
               const SizedBox(height: 20),

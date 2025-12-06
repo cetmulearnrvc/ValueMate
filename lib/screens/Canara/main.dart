@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:login_screen/ref_id.dart';
 import 'package:login_screen/screens/Canara/savedDraftsCanara.dart';
 import 'package:login_screen/screens/nearbyDetails.dart';
 import 'package:pdf/pdf.dart';
@@ -1777,21 +1778,23 @@ class _PropertyValuationReportPageState
                   ),
                 ],
               )),
-              Padding(
-                padding: const EdgeInsets.only(
-                    right: 50, left: 50, top: 10, bottom: 10),
-                child: FloatingActionButton.extended(
-                  heroTag: "f2",
-                  icon: const Icon(Icons.search),
-                  label: const Text('Search Saved Drafts'),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const SavedDraftsCanara(),
-                      ),
-                    );
-                  },
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      right: 50, left: 50, top: 10, bottom: 10),
+                  child: FloatingActionButton.extended(
+                    heroTag: "f2",
+                    icon: const Icon(Icons.search),
+                    label: const Text('Search Saved Drafts'),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SavedDraftsCanara(),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
 
@@ -1804,6 +1807,53 @@ class _PropertyValuationReportPageState
                     labelText: 'Reference Number',
                     border: OutlineInputBorder(),
                   ),
+                ),
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 172, 208, 237),
+                      foregroundColor: Colors.black),
+                  icon: Icon(Icons.autorenew),
+                  onPressed: () async {
+                    bool shouldGenerate = true;
+                    if (_referenceNoController.text.isNotEmpty ?? false) {
+                      shouldGenerate = await showDialog<bool>(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text("Confirm"),
+                              content: const Text(
+                                "Generate a new ID?",
+                                style: TextStyle(fontWeight: FontWeight.w100),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context, true);
+                                  },
+                                  child: const Text("YES"),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    // FIX 4: Close dialog and pass 'false' back
+                                    Navigator.pop(context, false);
+                                  },
+                                  child: const Text("NO"),
+                                ),
+                              ],
+                            ),
+                          ) ??
+                          false; // If they click outside the box, default to false
+                    }
+
+                    // Now this only runs if they said YES (or if the field was empty)
+                    if (shouldGenerate) {
+                      String refID = await RefIdService.generateUniqueId();
+                      setState(() {
+                        _referenceNoController.text = refID;
+                      });
+                    }
+                  },
+                  label: const Text('Generate New ID',
+                      style: TextStyle(fontWeight: FontWeight.w300)),
                 ),
                 TextFormField(
                   controller: _reportDateController,

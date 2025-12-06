@@ -11,7 +11,7 @@ export const saveFederalData = async(req,res)=>{
     
     
     const federalData=req.body;
-    if(!federalData.applicantNameAndBranchDetails || !federalData.ownerOfTheProperty)
+    if(!federalData.refNo)
     {
         return res.status(400).json({success:false,message:"please enter all required fields"})
     }

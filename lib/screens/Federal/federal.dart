@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:login_screen/ref_id.dart';
 import 'package:login_screen/screens/Federal/savedDraftsFederal.dart';
 import 'package:login_screen/screens/nearbyDetails.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -69,6 +70,7 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
 
   final Map<String, TextEditingController> controllers = {
     // SECTION 1: INTRODUCTION
+    'Reference No': TextEditingController(),
     'Applicant Name and Branch Details': TextEditingController(),
     'Owner of the Property': TextEditingController(),
     'Name of the prospective purchaser(s)': TextEditingController(),
@@ -406,15 +408,8 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
       final marketValue =
           controllers['Present Market Rate of the Property']!.text;
 
-      // debugPrint('------------------------------------------');
-      // debugPrint('DEBUGGING SAVE TO NEARBY COLLECTION:');
-      // debugPrint('Owner Name from Controller: "$ownerName"');
-      // debugPrint('Market Value from Controller: "$marketValue"');
-      // debugPrint('------------------------------------------');
-
       final dataToSave = {
-        //  'refNo': _fileNoCtrl.text ?? '',
-        'refNo': ownerName,
+        'refNo': controllers['Reference No']!.text,
         'latitude': latitude,
         'longitude': longitude,
 
@@ -445,8 +440,7 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
   Future<void> _saveData() async {
     try {
       // Validate required fields
-      if (controllers['Applicant Name and Branch Details']!.text.isEmpty ||
-          controllers['Owner of the Property']!.text.isEmpty) {
+      if (controllers['Reference No']!.text.isEmpty) {
         debugPrint("Not all required fields are filled");
         setState(() => _isNotValidState = true);
         return;
@@ -470,6 +464,7 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
       // Add all text fields from controllers
       request.fields.addAll({
         // SECTION 1: BASIC INFORMATION
+        "refNo": controllers['Reference No']!.text,
         "applicantNameAndBranchDetails":
             controllers['Applicant Name and Branch Details']!.text,
         "ownerOfTheProperty": controllers['Owner of the Property']!.text,
@@ -1003,7 +998,7 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
       // Set latitude and longitude
       _latController.text = data['latitude']?.toString() ?? '';
       _lonController.text = data['longitude']?.toString() ?? '';
-
+      controllers['Reference No']?.text = data['refNo']?.toString() ?? '';
       // SECTION 1: INTRODUCTION
       controllers['Applicant Name and Branch Details']?.text =
           data['applicantNameAndBranchDetails']?.toString() ?? '';
@@ -4761,6 +4756,70 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
               ),
             ),
             // Section 1: INTRODUCTION
+            TextFormField(
+              controller: controllers['Reference No'],
+              decoration: InputDecoration(
+                labelText: 'Reference number',
+                border: const OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 210),
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 172, 208, 237),
+                    foregroundColor: Colors.black),
+                icon: Icon(Icons.autorenew),
+                onPressed: () async {
+                  bool shouldGenerate = true;
+                  if (controllers['Reference No']?.text.isNotEmpty ?? false) {
+                    shouldGenerate = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text("Confirm"),
+                            content: const Text(
+                              "Generate a new ID?",
+                              style: TextStyle(fontWeight: FontWeight.w100),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context, true);
+                                },
+                                child: const Text("YES"),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  // FIX 4: Close dialog and pass 'false' back
+                                  Navigator.pop(context, false);
+                                },
+                                child: const Text("NO"),
+                              ),
+                            ],
+                          ),
+                        ) ??
+                        false; // If they click outside the box, default to false
+                  }
+
+                  // Now this only runs if they said YES (or if the field was empty)
+                  if (shouldGenerate) {
+                    String refID = await RefIdService.generateUniqueId();
+                    setState(() {
+                      controllers['Reference No']?.text = refID;
+                    });
+                  }
+                },
+                label: const Text('Generate New ID',
+                    style: TextStyle(fontWeight: FontWeight.w300)),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
             ExpansionTile(
               title: const Text(
                 "1. INTRODUCTION",

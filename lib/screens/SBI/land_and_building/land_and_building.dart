@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:login_screen/ref_id.dart';
 import 'package:login_screen/screens/SBI/land_and_building/savedDraftsSBIland.dart';
 import 'package:login_screen/screens/nearbyDetails.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -1048,7 +1049,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           data['vcCaveatsLimitations']?.toString() ?? '';
 
       // Load images if available
-     try {
+      try {
         if (data['images'] != null && data['images'] is List) {
           final List<dynamic> imagesData = data['images'];
 
@@ -5127,7 +5128,58 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                 ),
                 controller: _refId,
               ),
+              const SizedBox(
+                height: 10,
+              ),
+              Center(
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 172, 208, 237),
+                      foregroundColor: Colors.black),
+                  icon: Icon(Icons.autorenew),
+                  onPressed: () async {
+                    bool shouldGenerate = true;
+                    if (_refId.text.isNotEmpty ?? false) {
+                      shouldGenerate = await showDialog<bool>(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text("Confirm"),
+                              content: const Text(
+                                "Generate a new ID?",
+                                style: TextStyle(fontWeight: FontWeight.w100),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context, true);
+                                  },
+                                  child: const Text("YES"),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    // FIX 4: Close dialog and pass 'false' back
+                                    Navigator.pop(context, false);
+                                  },
+                                  child: const Text("NO"),
+                                ),
+                              ],
+                            ),
+                          ) ??
+                          false; // If they click outside the box, default to false
+                    }
 
+                    // Now this only runs if they said YES (or if the field was empty)
+                    if (shouldGenerate) {
+                      String refID = await RefIdService.generateUniqueId();
+                      setState(() {
+                        _refId.text = refID;
+                      });
+                    }
+                  },
+                  label: const Text('Generate New ID',
+                      style: TextStyle(fontWeight: FontWeight.w300)),
+                ),
+              ),
               const SizedBox(height: 20),
               // Collapsible Section: I. PROPERTY DETAILS
               ExpansionTile(
