@@ -7,7 +7,7 @@ export const saveCanaraData = async(req,res)=>{
     
     const CanaraData=req.body;
     CanaraData.typo="Canara"
-    if(!CanaraData.ownerName)
+    if(!CanaraData.referenceNo)
     {
         return res.status(400).json({success:false,message:"please enter all fields"})
     }

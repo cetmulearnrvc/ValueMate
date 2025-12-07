@@ -440,10 +440,24 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
   Future<void> _saveData() async {
     try {
       // Validate required fields
-      if (_refId.text.isEmpty || _ownerNameController.text.isEmpty) {
+      if (_refId.text.isEmpty) {
         //debugPrint("Not all required fields are filled");
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please fill all required fields')),
+          const SnackBar(content: Text('Please fill Reference ID')),
+        );
+        return;
+      }
+      if (_latitudeLongitudeController.text.isEmpty) {
+        //debugPrint("Not all required fields are filled");
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please fill Latitude, Longitude')),
+        );
+        return;
+      }
+      if (_images.isEmpty) {
+        //debugPrint("Not all required fields are filled");
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please add atleast one image')),
         );
         return;
       }

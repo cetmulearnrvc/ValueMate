@@ -442,7 +442,9 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
       // Validate required fields
       if (controllers['Reference No']!.text.isEmpty) {
         debugPrint("Not all required fields are filled");
-        setState(() => _isNotValidState = true);
+        // setState(() => _isNotValidState = true);
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Please add at least one image')));
         return;
       }
 
@@ -4768,7 +4770,7 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
             ),
 
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 210),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 172, 208, 237),

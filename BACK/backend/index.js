@@ -15,6 +15,7 @@ import sbi_flat_router from "./router/sbi_flat_router.js";
 import sbi_land_router from "./router/sbi_land_router.js";
 import sbivacantLandRouter from "./router/sbi_vacantland_router.js";
 import router from "./imagesRoute.js";
+import routerRef from "./router/ref_routes.js";
 
 dotenv.config();
 
@@ -23,7 +24,7 @@ app.get('/',(req,res)=>{
 })
 
 
-
+app.use('/api/v1',routerRef)
 app.use('/api/v1',pvr1_router)
 app.use('/api/v1',flat_router)
 app.use('/api/v1',nearby_router)

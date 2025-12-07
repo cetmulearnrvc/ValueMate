@@ -232,10 +232,11 @@ class _ValuationFormScreenState extends State<ValuationFormScreen> {
       // Validate required fields
       if (_valuerNameCtrl.text.isEmpty ||
           _valuerCodeCtrl.text.isEmpty ||
-          _fileNoCtrl.text.isEmpty ||
-          _applicantNameCtrl.text.isEmpty) {
+          _fileNoCtrl.text.isEmpty) {
         debugPrint("not all required fields available");
-        setState(() => _isNotValidState = true);
+        // setState(() => _isNotValidState = true);
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Please fill Application Number')));
         return;
       }
 

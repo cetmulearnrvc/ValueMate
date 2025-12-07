@@ -438,16 +438,29 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
 
   //SaveData function
   Future<void> _saveData() async {
-    try {
-      // Validate required fields
-      if (_refId.text.isEmpty || _ownerNameController.text.isEmpty) {
-        //debugPrint("Not all required fields are filled");
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please fill all required fields')),
-        );
-        return;
-      }
+    if (_refId.text.isEmpty) {
+      //debugPrint("Not all required fields are filled");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill Reference ID')),
+      );
+      return;
+    }
+    if (_latitudeLongitudeController.text.isEmpty) {
+      //debugPrint("Not all required fields are filled");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill Latitude, Longitude')),
+      );
+      return;
+    }
+    if (_images.isEmpty) {
+      //debugPrint("Not all required fields are filled");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please add atleast one image')),
+      );
+      return;
+    }
 
+    try {
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -680,7 +693,7 @@ class _ValuationFormPageState extends State<ValuationFormPage> {
       } else {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Upload failed: ${response.reasonPhrase}')),
+            SnackBar(content: Text('Upload failed: ${response.statusCode}')),
           );
         }
       }

@@ -2800,6 +2800,28 @@ class _ValuationFormPageState extends State<SBIVacantLandFormPage> {
 
   Future<void> _saveForm() async {
     if (_formKey.currentState!.validate()) {
+      if (_refId.text.isEmpty) {
+        //debugPrint("Not all required fields are filled");
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please fill Reference ID')),
+        );
+        return;
+      }
+      if (_latitudeLongitudeController.text.isEmpty) {
+        //debugPrint("Not all required fields are filled");
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please fill Latitude, Longitude')),
+        );
+        return;
+      }
+      if (_images.isEmpty) {
+        //debugPrint("Not all required fields are filled");
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please add atleast one image')),
+        );
+        return;
+      }
+
       try {
         // Show loading dialog
         showDialog(

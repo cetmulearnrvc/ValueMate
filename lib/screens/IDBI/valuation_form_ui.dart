@@ -802,8 +802,8 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
 
                 _valuationImages.add(ValuationImage(
                   imageFile: imageBytes,
-                  latitude: imgData['latitude'],
-                  longitude: imgData['longitude'],
+                  latitude: imgData['latitude']?.toString() ?? '',
+                  longitude: imgData['longitude']?.toString() ?? '',
                 ));
               } else {
                 debugPrint('Failed to load image: ${response.statusCode}');
@@ -1746,12 +1746,12 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
           labelText: label,
           border: const OutlineInputBorder(),
         ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter a value';
-          }
-          return null;
-        },
+        // validator: (value) {
+        //   if (value == null || value.isEmpty) {
+        //     return 'Please enter a value';
+        //   }
+        //   return null;
+        // },
       ),
     );
   }

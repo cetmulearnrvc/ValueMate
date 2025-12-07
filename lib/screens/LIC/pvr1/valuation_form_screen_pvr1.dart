@@ -222,7 +222,9 @@ class _ValuationFormScreenPVR1State extends State<ValuationFormScreenPVR1> {
           _valuerCodeCtrl.text.isEmpty ||
           _fileNoCtrl.text.isEmpty) {
         debugPrint("not all field available");
-        setState(() => _isNotValidState = true);
+        // setState(() => _isNotValidState = true);
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Please fill Application Number')));
         return;
       }
 

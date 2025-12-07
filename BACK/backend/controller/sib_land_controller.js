@@ -12,7 +12,7 @@ export const savelandData = async(req,res)=>{
     
     
     const landData=req.body;
-    if(!landData.refId || !landData.ownerName)
+    if(!landData.refId)
     {
         return res.status(400).json({success:false,message:"please enter all required fields"})
     }

@@ -9,7 +9,7 @@ export const savePVR3Data = async(req,res)=>{
     
     const pvr3Data=req.body;
     pvr3Data.typo="pvr3"
-    if(!pvr3Data.valuerName || !pvr3Data.valuerCode || !pvr3Data.fileNo || !pvr3Data.applicantName )
+    if(!pvr3Data.valuerName || !pvr3Data.valuerCode || !pvr3Data.fileNo)
     {
         
         return res.status(400).json({success:false,message:"please enter all required fields"})

@@ -619,9 +619,11 @@ class _PropertyValuationReportPageState
   Future<void> _saveData() async {
     try {
       // Validate required fields (adjust as needed)
-      if (_ownerNameController.text.isEmpty) {
+      if (_referenceNoController.text.isEmpty) {
         debugPrint("Not all required fields available");
-        setState(() => _isNotValidState = true);
+        // setState(() => _isNotValidState = true);
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Please add reference number')));
         return;
       }
 

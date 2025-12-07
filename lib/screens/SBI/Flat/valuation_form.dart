@@ -833,6 +833,18 @@ class _SBIValuationFormScreenState extends State<SBIValuationFormScreen> {
   }
 
   Future<void> _saveData() async {
+    if (_controllers['refNo']!.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please add Reference Number')));
+      return;
+    }
+
+    if (_valuationImages.isEmpty) {
+      debugPrint("not all imgs available");
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please add at least one image')));
+      return;
+    }
     try {
       showDialog(
         context: context,
