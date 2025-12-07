@@ -4770,7 +4770,7 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
             ),
 
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 30),
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 172, 208, 237),
