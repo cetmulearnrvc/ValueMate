@@ -26,12 +26,20 @@ const SBIValuationLandSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    applicantName: String,
+    locationOfProperty: String,
+    briefdesc:String,
     addressDocument: String,
     addressActual: String,
-    deviations: String,
+    postalAddress: String,
     propertyType: String,
     propertyZone: String,
+    plotNo:String,
+    doorNo:String,
+TSNO:String,
+wardNo:String,
+Mandal:String,
+
+city:String,
 
     // Page 2 fields
     classificationArea: String,
