@@ -40,10 +40,12 @@ wardNo:String,
 Mandal:String,
 
 city:String,
+residential:String,
+commercial:String,
+industrial:String,
 
-    // Page 2 fields
-    classificationArea: String,
-    urbanSemiUrbanRural: String,
+rich:String,
+placetype:String,
     comingUnderCorporation: String,
     coveredUnderStateCentralGovt: String,
     agriculturalLandConversion: String,
