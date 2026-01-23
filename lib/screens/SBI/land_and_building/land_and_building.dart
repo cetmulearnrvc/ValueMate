@@ -131,8 +131,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
       TextEditingController();
   final TextEditingController _dimWestActualsController =
       TextEditingController();
-  final TextEditingController _dimTotalAreaActualsController =
-      TextEditingController();
+
   final TextEditingController _dimNorthDocumentsController =
       TextEditingController();
   final TextEditingController _dimSouthDocumentsController =
@@ -141,8 +140,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
       TextEditingController();
   final TextEditingController _dimWestDocumentsController =
       TextEditingController();
-  final TextEditingController _dimTotalAreaDocumentsController =
-      TextEditingController();
+
   final TextEditingController _dimNorthAdoptedController =
       TextEditingController();
   final TextEditingController _dimSouthAdoptedController =
@@ -151,14 +149,14 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
       TextEditingController();
   final TextEditingController _dimWestAdoptedController =
       TextEditingController();
-  final TextEditingController _dimTotalAreaAdoptedController =
-      TextEditingController();
   final TextEditingController _dimDeviationsController =
       TextEditingController();
 
   // Occupancy details controllers
   final TextEditingController _latitudeLongitudeController =
       TextEditingController();
+  final TextEditingController _extent = TextEditingController();
+  final TextEditingController _extentConsidered = TextEditingController();
   final TextEditingController _occupiedBySelfTenantController =
       TextEditingController();
   final TextEditingController _rentReceivedPerMonthController =
@@ -536,21 +534,20 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         "dimSouthActuals": _dimSouthActualsController.text,
         "dimEastActuals": _dimEastActualsController.text,
         "dimWestActuals": _dimWestActualsController.text,
-        "dimTotalAreaActuals": _dimTotalAreaActualsController.text,
         "dimNorthDocuments": _dimNorthDocumentsController.text,
         "dimSouthDocuments": _dimSouthDocumentsController.text,
         "dimEastDocuments": _dimEastDocumentsController.text,
         "dimWestDocuments": _dimWestDocumentsController.text,
-        "dimTotalAreaDocuments": _dimTotalAreaDocumentsController.text,
         "dimNorthAdopted": _dimNorthAdoptedController.text,
         "dimSouthAdopted": _dimSouthAdoptedController.text,
         "dimEastAdopted": _dimEastAdoptedController.text,
         "dimWestAdopted": _dimWestAdoptedController.text,
-        "dimTotalAreaAdopted": _dimTotalAreaAdoptedController.text,
         "dimDeviations": _dimDeviationsController.text,
 
         // Occupancy details
         "latitudeLongitude": _latitudeLongitudeController.text,
+        "extent": _extent.text,
+        "extentConsidered": _extentConsidered.text,
         "occupiedBySelfTenant": _occupiedBySelfTenantController.text,
         "rentReceivedPerMonth": _rentReceivedPerMonthController.text,
         "occupiedByTenantSince": _occupiedByTenantSinceController.text,
@@ -890,8 +887,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           data['dimSouthActuals']?.toString() ?? '';
       _dimEastActualsController.text = data['dimEastActuals']?.toString() ?? '';
       _dimWestActualsController.text = data['dimWestActuals']?.toString() ?? '';
-      _dimTotalAreaActualsController.text =
-          data['dimTotalAreaActuals']?.toString() ?? '';
       _dimNorthDocumentsController.text =
           data['dimNorthDocuments']?.toString() ?? '';
       _dimSouthDocumentsController.text =
@@ -900,21 +895,19 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           data['dimEastDocuments']?.toString() ?? '';
       _dimWestDocumentsController.text =
           data['dimWestDocuments']?.toString() ?? '';
-      _dimTotalAreaDocumentsController.text =
-          data['dimTotalAreaDocuments']?.toString() ?? '';
       _dimNorthAdoptedController.text =
           data['dimNorthAdopted']?.toString() ?? '';
       _dimSouthAdoptedController.text =
           data['dimSouthAdopted']?.toString() ?? '';
       _dimEastAdoptedController.text = data['dimEastAdopted']?.toString() ?? '';
       _dimWestAdoptedController.text = data['dimWestAdopted']?.toString() ?? '';
-      _dimTotalAreaAdoptedController.text =
-          data['dimTotalAreaAdopted']?.toString() ?? '';
       _dimDeviationsController.text = data['dimDeviations']?.toString() ?? '';
 
       // Occupancy details
       _latitudeLongitudeController.text =
           data['latitudeLongitude']?.toString() ?? '';
+      _extent.text = data['extent']?.toString() ?? '';
+      _extentConsidered.text = data['extentConsidered']?.toString() ?? '';
       _occupiedBySelfTenantController.text =
           data['occupiedBySelfTenant']?.toString() ?? '';
       _rentReceivedPerMonthController.text =
@@ -1440,7 +1433,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
 
   // Helper function to get table rows for Page 1 (Items 1-9)
   List<pw.TableRow> _getPage1TableRows() {
-    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 8);
+    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 10);
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
     List<pw.TableRow> rows = [];
@@ -1867,7 +1860,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
 
   List<pw.TableRow> _getPage2Table1Rows() {
     const pw.TextStyle contentTextStyle = pw.TextStyle(
-      fontSize: 10,
+      fontSize: 11,
     ); // Increased font size to 10
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
@@ -2184,29 +2177,29 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
 
   List<pw.TableRow> _getPage2Table2RowsHeading() {
     const pw.TextStyle contentTextStyle = pw.TextStyle(
-      fontSize: 10,
+      fontSize: 11,
     ); // Increased font size to 10
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
     List<pw.TableRow> rows = [];
 
-    rows.add(
-      pw.TableRow(
-        children: [
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text('14.', style: contentTextStyle),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              'Boundaries of the property:',
-              style: contentTextStyle,
-            ),
-          ), // empty
-        ],
-      ),
-    );
+    // rows.add(
+    //   pw.TableRow(
+    //     children: [
+    //       pw.Container(
+    //         padding: cellPadding,
+    //         child: pw.Text('14.', style: contentTextStyle),
+    //       ),
+    //       pw.Container(
+    //         padding: cellPadding,
+    //         child: pw.Text(
+    //           'Boundaries of the property:',
+    //           style: contentTextStyle,
+    //         ),
+    //       ), // empty
+    //     ],
+    //   ),
+    // );
 
     return rows;
   }
@@ -2214,7 +2207,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
   // Helper function to get table rows for Page 2 - Table 2 (Item 15)
   List<pw.TableRow> _getPage2Table2Rows() {
     const pw.TextStyle contentTextStyle = pw.TextStyle(
-      fontSize: 10,
+      fontSize: 11,
     ); // Increased font size to 10
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
@@ -2222,10 +2215,15 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
     rows.add(
       pw.TableRow(
         children: [
-          pw.Container(padding: cellPadding, child: pw.Text('')),
           pw.Container(
             padding: cellPadding,
-            child: pw.Text('Directions', style: contentTextStyle),
+            child: pw.Text('13.', textScaleFactor: 0.9),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child:
+                pw.Text('Boundaries of the property', style: contentTextStyle),
+            alignment: pw.Alignment.center,
           ),
           pw.Container(
             padding: cellPadding,
@@ -2233,11 +2231,13 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           ),
           pw.Container(
             padding: cellPadding,
-            child: pw.Text('As per Title Deed', style: contentTextStyle),
+            child: pw.Text('As per Location Sketch', style: contentTextStyle),
+            alignment: pw.Alignment.center,
           ),
           pw.Container(
             padding: cellPadding,
-            child: pw.Text('As per Location Sketch', style: contentTextStyle),
+            child: pw.Text('Actual', style: contentTextStyle),
+            alignment: pw.Alignment.center,
           ),
         ],
       ),
@@ -2358,66 +2358,66 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         ],
       ),
     );
-    rows.add(
-      pw.TableRow(
-        children: [
-          pw.Container(padding: cellPadding, child: pw.Text('')),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text('Deviations if any :', style: contentTextStyle),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(''),
-          ), // Empty cell for colon column
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _boundaryDeviationsController.text,
-              style: contentTextStyle,
-            ),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(''),
-          ), // Empty cell for 5th column
-        ],
-      ),
-    );
+    // rows.add(
+    //   pw.TableRow(
+    //     children: [
+    //       pw.Container(padding: cellPadding, child: pw.Text('')),
+    //       pw.Container(
+    //         padding: cellPadding,
+    //         child: pw.Text('Deviations if any :', style: contentTextStyle),
+    //       ),
+    //       pw.Container(
+    //         padding: cellPadding,
+    //         child: pw.Text(''),
+    //       ), // Empty cell for colon column
+    //       pw.Container(
+    //         padding: cellPadding,
+    //         child: pw.Text(
+    //           _boundaryDeviationsController.text,
+    //           style: contentTextStyle,
+    //         ),
+    //       ),
+    //       pw.Container(
+    //         padding: cellPadding,
+    //         child: pw.Text(''),
+    //       ), // Empty cell for 5th column
+    //     ],
+    //   ),
+    // );
 
     return rows;
   }
 
   List<pw.TableRow> _getPage2Table2RowsPart2Heading() {
     const pw.TextStyle contentTextStyle = pw.TextStyle(
-      fontSize: 10,
+      fontSize: 11,
     ); // Increased font size to 10
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
     List<pw.TableRow> rows = [];
 
     // Item 15. Dimensions of the site (main header, 4-column like before)
-    rows.add(
-      pw.TableRow(
-        children: [
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text('15.', style: contentTextStyle),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text('Dimensions of the site', style: contentTextStyle),
-          ),
-        ],
-      ),
-    );
+    // rows.add(
+    //   pw.TableRow(
+    //     children: [
+    //       pw.Container(
+    //         padding: cellPadding,
+    //         child: pw.Text('14.1', style: contentTextStyle),
+    //       ),
+    //       pw.Container(
+    //         padding: cellPadding,
+    //         child: pw.Text('Dimensions of the site', style: contentTextStyle),
+    //       ),
+    //     ],
+    //   ),
+    // );
 
     return rows;
   }
 
   List<pw.TableRow> _getPage2Table2RowsPart2() {
     const pw.TextStyle contentTextStyle = pw.TextStyle(
-      fontSize: 10,
+      fontSize: 11,
     ); // Increased font size to 10
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
@@ -2427,25 +2427,76 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
     rows.add(
       pw.TableRow(
         children: [
+          // 1. S.No column
           pw.Container(
             padding: cellPadding,
-            child: pw.Text(''),
-          ), // S.No column (empty)
+            child: pw.Text('14.1', textScaleFactor: 0.8),
+          ),
+          // 2. Dimensions column
           pw.Container(
             padding: cellPadding,
-            child: pw.Text('Directions', style: contentTextStyle),
+            child: pw.Text('Dimensions of the site (SITE PLAN)',
+                style: contentTextStyle),
           ),
           pw.Container(
             padding: cellPadding,
-            child: pw.Text('As per Actuals', style: contentTextStyle),
+            child: pw.Text(':', style: contentTextStyle),
           ),
           pw.Container(
-            padding: cellPadding,
-            child: pw.Text('As per Documents', style: contentTextStyle),
+            padding: const pw.EdgeInsets.all(0),
+            child: pw.Column(
+              children: [
+                pw.Container(
+                  width: double
+                      .infinity, // Ensure it stretches the full width of the column
+                  padding: cellPadding, // Apply the padding here instead
+                  decoration: const pw.BoxDecoration(
+                    border: pw.Border(
+                      bottom: pw.BorderSide(
+                        width: 0.5, // Adjust width to match your table's border
+                      ),
+                    ),
+                  ),
+                  child: pw.Text('A', style: contentTextStyle),
+                  alignment: pw.Alignment.center,
+                ),
+                // BOTTOM ROW: "As per deed"
+                pw.Container(
+                  width: double.infinity,
+                  padding: cellPadding, // Apply the padding here instead
+                  child: pw.Text('As per deed', style: contentTextStyle),
+                  alignment: pw.Alignment.center,
+                ),
+              ],
+            ),
           ),
           pw.Container(
-            padding: cellPadding,
-            child: pw.Text('Adopted area in Sft', style: contentTextStyle),
+            padding: const pw.EdgeInsets.all(0),
+            child: pw.Column(
+              children: [
+                pw.Container(
+                  width: double
+                      .infinity, // Ensure it stretches the full width of the column
+                  padding: cellPadding, // Apply the padding here instead
+                  decoration: const pw.BoxDecoration(
+                    border: pw.Border(
+                      bottom: pw.BorderSide(
+                        width: 0.5, // Adjust width to match your table's border
+                      ),
+                    ),
+                  ),
+                  child: pw.Text('B', style: contentTextStyle),
+                  alignment: pw.Alignment.center,
+                ),
+                // BOTTOM ROW: "As per deed"
+                pw.Container(
+                  width: double.infinity,
+                  padding: cellPadding, // Apply the padding here instead
+                  child: pw.Text('ACTUAL', style: contentTextStyle),
+                  alignment: pw.Alignment.center,
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -2460,6 +2511,10 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           ),
           pw.Container(
             padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
             child: pw.Text(
               _dimNorthActualsController.text,
               style: contentTextStyle,
@@ -2469,13 +2524,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
             padding: cellPadding,
             child: pw.Text(
               _dimNorthDocumentsController.text,
-              style: contentTextStyle,
-            ),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _dimNorthAdoptedController.text,
               style: contentTextStyle,
             ),
           ),
@@ -2492,6 +2540,10 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           ),
           pw.Container(
             padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
             child: pw.Text(
               _dimSouthActualsController.text,
               style: contentTextStyle,
@@ -2501,13 +2553,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
             padding: cellPadding,
             child: pw.Text(
               _dimSouthDocumentsController.text,
-              style: contentTextStyle,
-            ),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _dimSouthAdoptedController.text,
               style: contentTextStyle,
             ),
           ),
@@ -2524,6 +2569,10 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           ),
           pw.Container(
             padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
             child: pw.Text(
               _dimEastActualsController.text,
               style: contentTextStyle,
@@ -2533,13 +2582,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
             padding: cellPadding,
             child: pw.Text(
               _dimEastDocumentsController.text,
-              style: contentTextStyle,
-            ),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _dimEastAdoptedController.text,
               style: contentTextStyle,
             ),
           ),
@@ -2556,6 +2598,10 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           ),
           pw.Container(
             padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
             child: pw.Text(
               _dimWestActualsController.text,
               style: contentTextStyle,
@@ -2568,59 +2614,52 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
               style: contentTextStyle,
             ),
           ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _dimWestAdoptedController.text,
-              style: contentTextStyle,
-            ),
-          ),
         ],
       ),
     );
-    rows.add(
-      pw.TableRow(
-        children: [
-          pw.Container(padding: cellPadding, child: pw.Text('')),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text('Total Area', style: contentTextStyle),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _dimTotalAreaActualsController.text,
-              style: contentTextStyle,
-            ),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _dimTotalAreaDocumentsController.text,
-              style: contentTextStyle,
-            ),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _dimTotalAreaAdoptedController.text,
-              style: contentTextStyle,
-            ),
-          ),
-        ],
-      ),
-    );
-    rows.add(
-      pw.TableRow(
-        children: [
-          pw.Container(padding: cellPadding, child: pw.Text('')),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text('Deviations if any :', style: contentTextStyle),
-          ),
-        ],
-      ),
-    );
+    // rows.add(
+    //   pw.TableRow(
+    //     children: [
+    //       pw.Container(padding: cellPadding, child: pw.Text('')),
+    //       pw.Container(
+    //         padding: cellPadding,
+    //         child: pw.Text('Total Area', style: contentTextStyle),
+    //       ),
+    //       pw.Container(
+    //         padding: cellPadding,
+    //         child: pw.Text(
+    //           _dimTotalAreaActualsController.text,
+    //           style: contentTextStyle,
+    //         ),
+    //       ),
+    //       pw.Container(
+    //         padding: cellPadding,
+    //         child: pw.Text(
+    //           _dimTotalAreaDocumentsController.text,
+    //           style: contentTextStyle,
+    //         ),
+    //       ),
+    //       pw.Container(
+    //         padding: cellPadding,
+    //         child: pw.Text(
+    //           _dimTotalAreaAdoptedController.text,
+    //           style: contentTextStyle,
+    //         ),
+    //       ),
+    //     ],
+    //   ),
+    // );
+    // rows.add(
+    //   pw.TableRow(
+    //     children: [
+    //       pw.Container(padding: cellPadding, child: pw.Text('')),
+    //       pw.Container(
+    //         padding: cellPadding,
+    //         child: pw.Text('Deviations if any :', style: contentTextStyle),
+    //       ),
+    //     ],
+    //   ),
+    // );
 
     return rows;
   }
@@ -2628,7 +2667,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
   // Helper function to get table rows for Page 2 - Table 3 (Items 16-17)
   List<pw.TableRow> _getPage2Table3Rows() {
     const pw.TextStyle contentTextStyle = pw.TextStyle(
-      fontSize: 10,
+      fontSize: 11,
     ); // Increased font size to 10
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
@@ -2640,7 +2679,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         children: [
           pw.Container(
             padding: cellPadding,
-            child: pw.Text('16.', style: contentTextStyle),
+            child: pw.Text('14.2', style: contentTextStyle),
           ),
           pw.Container(
             padding: cellPadding,
@@ -2664,13 +2703,69 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
       ),
     );
 
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('15', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Extent of the site',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _extent.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('16', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Extent of the site considered for valuation (least of 14 A & 14 B) ',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _extentConsidered.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
     return rows;
   }
 
   // Helper function to get table rows for new section 18
   List<pw.TableRow> _getPage2Table4Rows() {
     const pw.TextStyle contentTextStyle = pw.TextStyle(
-      fontSize: 10,
+      fontSize: 11,
     ); // Increased font size to 10
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
@@ -2825,7 +2920,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
   // Helper function to get table rows for new section (Items 19-20)
   List<pw.TableRow> _getPage2Table5Rows() {
     const pw.TextStyle contentTextStyle = pw.TextStyle(
-      fontSize: 10,
+      fontSize: 11,
     ); // Increased font size to 10
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
@@ -2887,7 +2982,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
 
   // Helper function to get table rows for Page 3 (Item 21)
   List<pw.TableRow> _getPage3TableRows() {
-    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 10);
+    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 11);
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
     List<pw.TableRow> rows = [];
@@ -2978,9 +3073,9 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
   List<pw.TableRow> _getLandValuationTableRows() {
     final pw.TextStyle headerTextStyle = pw.TextStyle(
       fontWeight: pw.FontWeight.bold,
-      fontSize: 10,
+      fontSize: 11,
     );
-    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 10);
+    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 11);
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
     List<pw.TableRow> rows = [];
@@ -3130,9 +3225,9 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
     final pw.TextStyle headerTextStyle = pw.TextStyle(
       fontWeight: pw.FontWeight.bold,
-      fontSize: 10,
+      fontSize: 11,
     );
-    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 10);
+    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 11);
 
     List<pw.TableRow> rows = [];
 
@@ -3158,7 +3253,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
   }
 
   List<pw.TableRow> _getBuildingValuationTableRows() {
-    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 10);
+    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 11);
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
     List<pw.TableRow> rows = [];
@@ -3344,9 +3439,9 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
   List<pw.TableRow> _getBuildUpAreaTableRows() {
     final pw.TextStyle headerTextStyle = pw.TextStyle(
       fontWeight: pw.FontWeight.bold,
-      fontSize: 10,
+      fontSize: 11,
     );
-    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 10);
+    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 11);
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
     List<pw.TableRow> rows = [];
@@ -3622,9 +3717,9 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
   List<pw.TableRow> _getAmenitiesTableRows() {
     final pw.TextStyle headerTextStyle = pw.TextStyle(
       fontWeight: pw.FontWeight.bold,
-      fontSize: 10,
+      fontSize: 11,
     );
-    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 10);
+    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 11);
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
     List<pw.TableRow> rows = [];
@@ -3772,9 +3867,9 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
   List<pw.TableRow> _getTotalAbstractTableRows() {
     final pw.TextStyle headerTextStyle = pw.TextStyle(
       fontWeight: pw.FontWeight.bold,
-      fontSize: 10,
+      fontSize: 11,
     );
-    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 10);
+    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 11);
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
     List<pw.TableRow> rows = [];
@@ -3910,7 +4005,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
 
   // NEW: Helper function to get table rows for the final valuation table
   List<pw.TableRow> _getFinalValuationTableRows() {
-    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 10);
+    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 11);
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
     List<pw.TableRow> rows = [];
@@ -4003,7 +4098,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
   List<pw.TableRow> _getValuerCommentsTableRows() {
     final pw.TextStyle headerTextStyle = pw.TextStyle(
       fontWeight: pw.FontWeight.bold,
-      fontSize: 10,
+      fontSize: 11,
     );
     const pw.TextStyle contentTextStyle = pw.TextStyle(
       fontSize: 9,
@@ -4487,7 +4582,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                 width: 0.5,
               ),
               columnWidths: {
-                0: const pw.FlexColumnWidth(0.5), // S.No
+                0: const pw.FlexColumnWidth(0.6), // S.No
                 1: const pw.FlexColumnWidth(5.0), // Description
                 2: const pw.FlexColumnWidth(0.2), // Colon (very small width)
                 3: const pw.FlexColumnWidth(4.3),
@@ -4506,7 +4601,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                 width: 0.5,
               ),
               columnWidths: {
-                0: const pw.FlexColumnWidth(0.1), // S.No
+                0: const pw.FlexColumnWidth(0.05), // S.No
                 1: const pw.FlexColumnWidth(1.5), // Directions
               },
               children: [
@@ -4520,14 +4615,14 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                 width: 0.5,
               ),
               columnWidths: {
-                0: const pw.FlexColumnWidth(0.5), // S.No
+                0: const pw.FlexColumnWidth(0.4), // S.No
                 1: const pw.FlexColumnWidth(1.5), // Directions
-                2: const pw.FlexColumnWidth(0.2), // As per Actuals
+                2: const pw.FlexColumnWidth(0.1), // As per Actuals
                 3: const pw.FlexColumnWidth(
                   2.0,
                 ), // As per Documents (slightly wider for text)
                 4: const pw.FlexColumnWidth(
-                  2.5,
+                  2.0,
                 ), // Adopted area in Sft (wider to accommodate text)
               },
               children: [
@@ -4541,7 +4636,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                 width: 0.5,
               ),
               columnWidths: {
-                0: const pw.FlexColumnWidth(0.1), // S.No
+                0: const pw.FlexColumnWidth(0.05), // S.No
                 1: const pw.FlexColumnWidth(1.5), // Directions
               },
               children: [
@@ -4555,14 +4650,14 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                 width: 0.5,
               ),
               columnWidths: {
-                0: const pw.FlexColumnWidth(0.5), // S.No
+                0: const pw.FlexColumnWidth(0.4), // S.No
                 1: const pw.FlexColumnWidth(1.5), // Directions
-                2: const pw.FlexColumnWidth(1.5), // As per Actuals
+                2: const pw.FlexColumnWidth(0.1), // As per Actuals
                 3: const pw.FlexColumnWidth(
                   2.0,
                 ), // As per Documents (slightly wider for text)
                 4: const pw.FlexColumnWidth(
-                  2.5,
+                  2.0,
                 ), // Adopted area in Sft (wider to accommodate text)
               },
               children: [
@@ -4577,7 +4672,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                 width: 0.5,
               ),
               columnWidths: {
-                0: const pw.FlexColumnWidth(0.5), // S.No
+                0: const pw.FlexColumnWidth(0.6), // S.No
                 1: const pw.FlexColumnWidth(5.0), // Description
                 2: const pw.FlexColumnWidth(0.2), // Colon (very small width)
                 3: const pw.FlexColumnWidth(4.3), // Value
@@ -4589,44 +4684,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
             // No SizedBox before the new table as requested.
 
             // New Table for Item 18 (Floor Details) and Items 19-20 (Road Details)
-            pw.Table(
-              border: pw.TableBorder.all(
-                color: pdfLib.PdfColors.black,
-                width: 0.5,
-              ),
-              columnWidths: {
-                0: const pw.FlexColumnWidth(0.5), // S.No.
-                1: const pw.FlexColumnWidth(
-                  1.5,
-                ), // Details /Floors / Description
-                2: const pw.FlexColumnWidth(
-                  1.5,
-                ), // Occupancy (Self/Rented) / Colon
-                3: const pw.FlexColumnWidth(1.0), // No. Of Room / Value
-                4: const pw.FlexColumnWidth(1.0), // No. Of Kitchen
-                5: const pw.FlexColumnWidth(1.0), // No. of Bathroom
-                6: const pw.FlexColumnWidth(2.0), // Usage Remarks (Resi/Comm)
-              },
-              children: [
-                ...page2Table4Rows, // Add rows for the floor details
-              ],
-            ),
-
-            pw.Table(
-              border: pw.TableBorder.all(
-                color: pdfLib.PdfColors.black,
-                width: 0.5,
-              ),
-              columnWidths: {
-                0: const pw.FlexColumnWidth(0.5), // S.No
-                1: const pw.FlexColumnWidth(5.0), // Description
-                2: const pw.FlexColumnWidth(0.2), // Colon (very small width)
-                3: const pw.FlexColumnWidth(4.3), // Value
-              },
-              children: [
-                ...page2Table5Rows, // Add rows for the second table on page 2
-              ],
-            ),
           ];
         },
       ),
@@ -4762,6 +4819,43 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         pageFormat: pdfLib.PdfPageFormat.a4,
         build: (pw.Context context) {
           return [
+            pw.Table(
+              border: pw.TableBorder.all(
+                color: pdfLib.PdfColors.black,
+                width: 0.5,
+              ),
+              columnWidths: {
+                0: const pw.FlexColumnWidth(0.5), // S.No.
+                1: const pw.FlexColumnWidth(
+                  1.5,
+                ), // Details /Floors / Description
+                2: const pw.FlexColumnWidth(
+                  1.5,
+                ), // Occupancy (Self/Rented) / Colon
+                3: const pw.FlexColumnWidth(1.0), // No. Of Room / Value
+                4: const pw.FlexColumnWidth(1.0), // No. Of Kitchen
+                5: const pw.FlexColumnWidth(1.0), // No. of Bathroom
+                6: const pw.FlexColumnWidth(2.0), // Usage Remarks (Resi/Comm)
+              },
+              children: [
+                ...page2Table4Rows, // Add rows for the floor details
+              ],
+            ),
+            pw.Table(
+              border: pw.TableBorder.all(
+                color: pdfLib.PdfColors.black,
+                width: 0.5,
+              ),
+              columnWidths: {
+                0: const pw.FlexColumnWidth(0.5), // S.No
+                1: const pw.FlexColumnWidth(5.0), // Description
+                2: const pw.FlexColumnWidth(0.2), // Colon (very small width)
+                3: const pw.FlexColumnWidth(4.3), // Value
+              },
+              children: [
+                ...page2Table5Rows, // Add rows for the second table on page 2
+              ],
+            ),
             pw.Center(
               child: pw.Text(
                 'Details of Valuation',
@@ -4841,19 +4935,19 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
             pw.SizedBox(height: 30),
             pw.Text(
               '1. ${_remark1Controller.text}',
-              style: const pw.TextStyle(fontSize: 10),
+              style: const pw.TextStyle(fontSize: 11),
             ),
             pw.Text(
               '2. ${_remark2Controller.text}',
-              style: const pw.TextStyle(fontSize: 10),
+              style: const pw.TextStyle(fontSize: 11),
             ),
             pw.Text(
               '3. ${_remark3Controller.text}',
-              style: const pw.TextStyle(fontSize: 10),
+              style: const pw.TextStyle(fontSize: 11),
             ),
             pw.Text(
               '4. ${_remark4Controller.text}',
-              style: const pw.TextStyle(fontSize: 10),
+              style: const pw.TextStyle(fontSize: 11),
             ),
           ];
         },
@@ -5751,10 +5845,18 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                           children: [
                             Expanded(flex: 2, child: Text('Directions')),
                             Expanded(flex: 1, child: Text(':')),
-                            Expanded(flex: 3, child: Text('As per Title Deed')),
+                            Expanded(
+                                flex: 3,
+                                child: Text(
+                                  'As per Location Sketch',
+                                  textAlign: TextAlign.center,
+                                )),
                             Expanded(
                               flex: 3,
-                              child: Text('As per Location Sketch'),
+                              child: Text(
+                                'As per Actual',
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                           ],
                         ),
@@ -5781,21 +5883,23 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 13),
-                  TextField(
-                    // Changed from _buildTextField
-                    controller: _boundaryDeviationsController,
-                    decoration: const InputDecoration(
-                      labelText: 'Deviations if any',
-                      hintText: 'Enter any deviations (e.g., "None")',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                    ),
-                  ),
+                  // const SizedBox(height: 13),
+                  // TextField(
+                  //   // Changed from _buildTextField
+                  //   controller: _boundaryDeviationsController,
+                  //   decoration: const InputDecoration(
+                  //     labelText: 'Deviations if any',
+                  //     hintText: 'Enter any deviations (e.g., "None")',
+                  //     border: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.all(Radius.circular(20)),
+                  //     ),
+                  //   ),
+                  // ),
+                  const Divider(),
+
                   const SizedBox(height: 30),
                   const Text(
-                    '15. Dimensions of the site',
+                    '14.1. Dimensions of the site',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   Padding(
@@ -5805,58 +5909,39 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                         const Row(
                           children: [
                             Expanded(flex: 3, child: Text('Directions')),
-                            Expanded(flex: 2, child: Text('As per Actuals')),
-                            Expanded(flex: 2, child: Text('As per Documents')),
-                            Expanded(
-                              flex: 3,
-                              child: Text('   Adopted area in   Sft'),
-                            ),
+                            Expanded(flex: 2, child: Text('As per deed')),
+                            Expanded(flex: 2, child: Text('Actual')),
+                            // Expanded(
+                            //   flex: 3,
+                            //   child: Text('   Adopted area in   Sft'),
+                            // ),
                           ],
                         ),
                         _buildDimensionsRow(
                           'North',
                           _dimNorthActualsController,
                           _dimNorthDocumentsController,
-                          _dimNorthAdoptedController,
+                          // _dimNorthAdoptedController,
                         ),
                         _buildDimensionsRow(
                           'South',
                           _dimSouthActualsController,
                           _dimSouthDocumentsController,
-                          _dimSouthAdoptedController,
+                          // _dimSouthAdoptedController,
                         ),
                         _buildDimensionsRow(
                           'East',
                           _dimEastActualsController,
                           _dimEastDocumentsController,
-                          _dimEastAdoptedController,
+                          // _dimEastAdoptedController,
                         ),
                         _buildDimensionsRow(
                           'West',
                           _dimWestActualsController,
                           _dimWestDocumentsController,
-                          _dimWestAdoptedController,
-                        ),
-                        _buildDimensionsRow(
-                          'Total Area',
-                          _dimTotalAreaActualsController,
-                          _dimTotalAreaDocumentsController,
-                          _dimTotalAreaAdoptedController,
-                          isTotalArea: true,
+                          // _dimWestAdoptedController,
                         ),
                       ],
-                    ),
-                  ),
-                  const SizedBox(height: 13),
-                  TextField(
-                    // Changed from _buildTextField
-                    controller: _dimDeviationsController,
-                    decoration: const InputDecoration(
-                      labelText: 'Deviations if any',
-                      hintText: 'Enter any deviations (e.g., "None")',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
                     ),
                   ),
                 ],
@@ -5877,7 +5962,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                     controller: _latitudeLongitudeController,
                     decoration: const InputDecoration(
                       labelText:
-                          '16. Latitude, Longitude and Coordinates of the site',
+                          '14.2. Latitude, Longitude and Coordinates of the site',
                       hintText: 'e.g., 9.1234, 76.5678',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -5907,10 +5992,34 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                   const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
+                    controller: _extent,
+                    decoration: const InputDecoration(
+                      labelText: '15. Extent of the site',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 13),
+                  TextField(
+                    // Changed from _buildTextField
+                    controller: _extentConsidered,
+                    decoration: const InputDecoration(
+                      labelText:
+                          '16. Extent of the site considered for valuation (least of 14 A & 14 B) ',
+                      hintText: 'e.g., Self or Tenant',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 13),
+                  TextField(
+                    // Changed from _buildTextField
                     controller: _occupiedBySelfTenantController,
                     decoration: const InputDecoration(
-                      labelText: '17. Whether occupied by the Self /tenant?',
-                      hintText: 'e.g., Self or Tenant',
+                      labelText:
+                          '17. Whether occupied by the owner / tenant? If occupied by tenant, since how long? Rent received per month. ',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
@@ -7209,8 +7318,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
   Widget _buildDimensionsRow(
     String direction,
     TextEditingController actualsController,
-    TextEditingController documentsController,
-    TextEditingController adoptedController, {
+    TextEditingController documentsController, {
     bool isTotalArea = false,
   }) {
     return Padding(
@@ -7248,20 +7356,20 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
             ),
           ),
           const SizedBox(width: 10),
-          Expanded(
-            flex: 3,
-            child: TextField(
-              // Changed from _buildTextField
-              controller: adoptedController,
-              decoration: const InputDecoration(
-                labelText: '',
-                hintText: 'Adopted area in Sft',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                ), // Applied new styling
-              ),
-            ),
-          ),
+          // Expanded(
+          //   flex: 3,
+          //   child: TextField(
+          //     // Changed from _buildTextField
+          //     controller: adoptedController,
+          //     decoration: const InputDecoration(
+          //       labelText: '',
+          //       hintText: 'Adopted area in Sft',
+          //       border: OutlineInputBorder(
+          //         borderRadius: BorderRadius.all(Radius.circular(20)),
+          //       ), // Applied new styling
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
