@@ -15,6 +15,8 @@ import 'dart:io'; // For File class (used conditionally for non-web)
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'config.dart';
+import 'package:number_to_indian_words/number_to_indian_words.dart';
+
 // import 'package:login_screen/screens/driveAPIconfig.dart';
 
 void main() {
@@ -277,11 +279,13 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
       TextEditingController();
   final TextEditingController _totalAbstractBuildingController =
       TextEditingController();
+  final TextEditingController _totalAbstractExtraItemsController =
+      TextEditingController();
   final TextEditingController _totalAbstractAmenitiesController =
       TextEditingController();
-  final TextEditingController _totalAbstractTotalController =
+  final TextEditingController _totalAbstractMiscController =
       TextEditingController();
-  final TextEditingController _totalAbstractSayController =
+  final TextEditingController _totalAbstractServiceController =
       TextEditingController();
 
   // NEW: Controllers for Consolidated Remarks/ Observations of the property
@@ -297,9 +301,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
       TextEditingController();
   final TextEditingController _distressValueController =
       TextEditingController();
-  final TextEditingController _insurableValueController =
-      TextEditingController();
-
   // NEW: Controllers for editable dates in FORMAT E declaration
   final TextEditingController _declarationDateAController =
       TextEditingController();
@@ -344,7 +345,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
   final TextEditingController _BuildingCompletionPlan = TextEditingController();
   final TextEditingController _ThandapperDocument = TextEditingController();
   final TextEditingController _BuildingTaxReceipt = TextEditingController();
-
+  final TextEditingController _place = TextEditingController();
   Future<pw.MemoryImage> loadLogoImage() async {
     final Uint8List bytes = await rootBundle
         .load('assets/images/logo.png')
@@ -486,6 +487,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         "buildingCompletionPlan": _BuildingCompletionPlan.text,
         "thandapperDocument": _ThandapperDocument.text,
         "buildingTaxReceipt": _BuildingTaxReceipt.text,
+        "place": _place.text,
         "plotNo": _PlotNo.text,
         "doorNo": _DoorNo.text,
         "TSNO": _TSNO.text,
@@ -625,9 +627,10 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         // Total abstract
         "totalAbstractLand": _totalAbstractLandController.text,
         "totalAbstractBuilding": _totalAbstractBuildingController.text,
+        "totalAbstractExtraItems": _totalAbstractExtraItemsController.text,
         "totalAbstractAmenities": _totalAbstractAmenitiesController.text,
-        "totalAbstractTotal": _totalAbstractTotalController.text,
-        "totalAbstractSay": _totalAbstractSayController.text,
+        "totalAbstractMisc": _totalAbstractMiscController.text,
+        "totalAbstractService": _totalAbstractServiceController.text,
 
         // Consolidated Remarks
         "remark1": _remark1Controller.text,
@@ -639,7 +642,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         "presentMarketValue": _presentMarketValueController.text,
         "realizableValue": _realizableValueController.text,
         "distressValue": _distressValueController.text,
-        "insurableValue": _insurableValueController.text,
 
         // Declaration dates
         "declarationDateA": _declarationDateAController.text,
@@ -826,6 +828,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
       _BuildingCompletionPlan.text = data['buildingCompletionPlan'];
       _ThandapperDocument.text = data['thandapperDocument'];
       _BuildingTaxReceipt.text = data['buildingTaxReceipt'];
+      _place.text = data['place'];
       // Page 1 fields
       _purposeController.text = data['purpose']?.toString() ?? '';
       _dateOfInspectionController.text =
@@ -1027,11 +1030,13 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
       _totalAbstractBuildingController.text =
           data['totalAbstractBuilding']?.toString() ?? '';
       _totalAbstractAmenitiesController.text =
+          data['totalAbstractExtraItems']?.toString() ?? '';
+      _totalAbstractAmenitiesController.text =
           data['totalAbstractAmenities']?.toString() ?? '';
-      _totalAbstractTotalController.text =
-          data['totalAbstractTotal']?.toString() ?? '';
-      _totalAbstractSayController.text =
-          data['totalAbstractSay']?.toString() ?? '';
+      _totalAbstractMiscController.text =
+          data['totalAbstractMisc']?.toString() ?? '';
+      _totalAbstractServiceController.text =
+          data['totalAbstractService']?.toString() ?? '';
 
       // Consolidated Remarks
       _remark1Controller.text = data['remark1']?.toString() ?? '';
@@ -1045,7 +1050,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
       _realizableValueController.text =
           data['realizableValue']?.toString() ?? '';
       _distressValueController.text = data['distressValue']?.toString() ?? '';
-      _insurableValueController.text = data['insurableValue']?.toString() ?? '';
 
       // Declaration dates
       _declarationDateAController.text =
@@ -1433,7 +1437,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
 
   // Helper function to get table rows for Page 1 (Items 1-9)
   List<pw.TableRow> _getPage1TableRows() {
-    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 10);
+    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 10.5);
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
     List<pw.TableRow> rows = [];
@@ -1495,7 +1499,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           pw.Container(
             padding: cellPadding,
             child: pw.Text(
-              '    b) Date on which the valuation is made',
+              'b) Date on which the valuation is made',
               style: contentTextStyle,
             ),
           ),
@@ -3864,7 +3868,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
   }
 
   // NEW: Helper function to get table rows for "Total abstract of the entire property"
-  List<pw.TableRow> _getTotalAbstractTableRows() {
+  List<pw.TableRow> _page7() {
     final pw.TextStyle headerTextStyle = pw.TextStyle(
       fontWeight: pw.FontWeight.bold,
       fontSize: 11,
@@ -3879,7 +3883,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         children: [
           pw.Container(
             padding: cellPadding,
-            child: pw.Text('Part- A', style: headerTextStyle),
+            child: pw.Text('Part- A', style: contentTextStyle),
           ),
           pw.Container(
             padding: cellPadding,
@@ -3904,7 +3908,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         children: [
           pw.Container(
             padding: cellPadding,
-            child: pw.Text('Part- B', style: headerTextStyle),
+            child: pw.Text('Part- B', style: contentTextStyle),
           ),
           pw.Container(
             padding: cellPadding,
@@ -3929,7 +3933,32 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         children: [
           pw.Container(
             padding: cellPadding,
-            child: pw.Text('Part- C', style: headerTextStyle),
+            child: pw.Text('Part- C', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('Extra Items', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Rs ${_totalAbstractExtraItemsController.text}',
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('Part- D', style: contentTextStyle),
           ),
           pw.Container(
             padding: cellPadding,
@@ -3954,11 +3983,11 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         children: [
           pw.Container(
             padding: cellPadding,
-            child: pw.Text('', style: contentTextStyle),
+            child: pw.Text('Part- E', style: contentTextStyle),
           ),
           pw.Container(
             padding: cellPadding,
-            child: pw.Text('Total', style: headerTextStyle),
+            child: pw.Text('Miscellaneous', style: contentTextStyle),
           ),
           pw.Container(
             padding: cellPadding,
@@ -3967,7 +3996,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           pw.Container(
             padding: cellPadding,
             child: pw.Text(
-              'Rs ${_totalAbstractTotalController.text}',
+              'Rs ${_totalAbstractMiscController.text}',
               style: contentTextStyle,
             ),
           ),
@@ -3979,11 +4008,11 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         children: [
           pw.Container(
             padding: cellPadding,
-            child: pw.Text('', style: contentTextStyle),
+            child: pw.Text('Part- F', style: contentTextStyle),
           ),
           pw.Container(
             padding: cellPadding,
-            child: pw.Text('Say', style: headerTextStyle),
+            child: pw.Text('Services', style: contentTextStyle),
           ),
           pw.Container(
             padding: cellPadding,
@@ -3992,7 +4021,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           pw.Container(
             padding: cellPadding,
             child: pw.Text(
-              'Rs ${_totalAbstractSayController.text}',
+              'Rs ${_totalAbstractServiceController.text}',
               style: contentTextStyle,
             ),
           ),
@@ -4023,7 +4052,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           pw.Container(
             padding: cellPadding,
             child: pw.Text(
-              _presentMarketValueController.text,
+              'Rs. ${_presentMarketValueController.text}',
               style: contentTextStyle,
             ),
           ),
@@ -4043,7 +4072,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           pw.Container(
             padding: cellPadding,
             child: pw.Text(
-              _realizableValueController.text,
+              'Rs. ${_realizableValueController.text}',
               style: contentTextStyle,
             ),
           ),
@@ -4063,33 +4092,33 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           pw.Container(
             padding: cellPadding,
             child: pw.Text(
-              _distressValueController.text,
+              'Rs. ${_distressValueController.text}',
               style: contentTextStyle,
             ),
           ),
         ],
       ),
     );
-    rows.add(
-      pw.TableRow(
-        children: [
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              'Insurable Value of the property',
-              style: contentTextStyle,
-            ),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _insurableValueController.text,
-              style: contentTextStyle,
-            ),
-          ),
-        ],
-      ),
-    );
+    // rows.add(
+    //   pw.TableRow(
+    //     children: [
+    //       pw.Container(
+    //         padding: cellPadding,
+    //         child: pw.Text(
+    //           'Insurable Value of the property',
+    //           style: contentTextStyle,
+    //         ),
+    //       ),
+    //       pw.Container(
+    //         padding: cellPadding,
+    //         child: pw.Text(
+    //           _insurableValueController.text,
+    //           style: contentTextStyle,
+    //         ),
+    //       ),
+    //     ],
+    //   ),
+    // );
 
     return rows;
   }
@@ -4098,10 +4127,10 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
   List<pw.TableRow> _getValuerCommentsTableRows() {
     final pw.TextStyle headerTextStyle = pw.TextStyle(
       fontWeight: pw.FontWeight.bold,
-      fontSize: 11,
+      fontSize: 12,
     );
     const pw.TextStyle contentTextStyle = pw.TextStyle(
-      fontSize: 9,
+      fontSize: 10.8,
     ); // Slightly smaller font for content
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
@@ -4259,12 +4288,13 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         _getBuildUpAreaTableRows(); // NEW: Get rows for build up area table
     final List<pw.TableRow> amenitiesTableRows =
         _getAmenitiesTableRows(); // NEW: Get rows for amenities table
-    final List<pw.TableRow> totalAbstractTableRows =
-        _getTotalAbstractTableRows(); // NEW: Get rows for total abstract table
+    // NEW: Get rows for total abstract table
     final List<pw.TableRow> finalValuationTableRows =
         _getFinalValuationTableRows(); // NEW: Get rows for final valuation table
     final List<pw.TableRow> valuerCommentsTableRows =
         _getValuerCommentsTableRows(); // NEW: Get rows for valuer comments table
+
+    final List<pw.TableRow> page7 = _page7();
 
     final logoImage = await loadLogoImage();
     // Page 1
@@ -4897,36 +4927,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
             ),
             pw.SizedBox(height: 30),
 
-            pw.Center(
-              child: pw.Text(
-                'Total abstract of the entire property',
-                style: pw.TextStyle(
-                  fontWeight: pw.FontWeight.bold,
-                  fontSize: 12,
-                ),
-                textAlign: pw.TextAlign.center,
-              ),
-            ),
             pw.SizedBox(height: 30),
-
-            // NEW: Total abstract of the entire property Table
-            pw.Table(
-              border: pw.TableBorder.all(
-                color: pdfLib.PdfColors.black,
-                width: 0.5,
-              ),
-              columnWidths: {
-                0: const pw.FlexColumnWidth(1.0), // Part
-                1: const pw.FlexColumnWidth(2.0), // Description
-                2: const pw.FlexColumnWidth(0.2), // Colon
-                3: const pw.FlexColumnWidth(2.0), // Amount
-              },
-              children: [
-                ...totalAbstractTableRows, // Add rows for total abstract table
-              ],
-            ),
-            pw.SizedBox(height: 30),
-
             // NEW: Consolidated Remarks/ Observations of the property
             pw.Text(
               'Consolidated Remarks/ Observations of the property:',
@@ -4980,30 +4981,98 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                     "As a result of my appraisal and analysis, it is my considered opinion that the present value's of the above property in the prevailing condition with aforesaid specifications is ",
                   ),
                   pw.SizedBox(height: 30),
-                  pw.Table(
-                    border: pw.TableBorder.all(
-                      color: pdfLib.PdfColors.black,
-                      width: 0.5,
-                    ),
-                    columnWidths: {
-                      0: const pw.FlexColumnWidth(3.0), // Description
-                      1: const pw.FlexColumnWidth(2.0), // Value
-                    },
-                    children: [
-                      ...finalValuationTableRows, // Add rows for the new final valuation table
-                    ],
-                  ),
                 ],
               ),
             ),
             pw.SizedBox(height: 30),
+            pw.SizedBox(height: 50),
+            pw.Text('Encl: Declaration from the valuer in Format E'),
+          ];
+        },
+      ),
+    );
+    pdf.addPage(
+      pw.MultiPage(
+        pageFormat: pdfLib.PdfPageFormat.a4,
+        build: (pw.Context context) {
+          return [pw.Text('Page 6')];
+        },
+      ),
+    );
+    pdf.addPage(
+      pw.MultiPage(
+        pageFormat: pdfLib.PdfPageFormat.a4,
+        build: (pw.Context context) {
+          return [
+            pw.Center(
+              child: pw.Text(
+                'Total abstract of the entire property',
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 12,
+                ),
+                textAlign: pw.TextAlign.center,
+              ),
+            ),
+            pw.Table(
+              border: pw.TableBorder.all(
+                color: pdfLib.PdfColors.black,
+                width: 0.5,
+              ),
+              columnWidths: {
+                0: const pw.FlexColumnWidth(0.5), // Part
+                1: const pw.FlexColumnWidth(2.0), // Description
+                2: const pw.FlexColumnWidth(0.1), // Colon
+                3: const pw.FlexColumnWidth(2.0), // Amount
+              },
+              children: [
+                ...page7, // Add rows for total abstract table
+              ],
+            ),
+            pw.SizedBox(height: 5),
+            pw.Table(
+              border: pw.TableBorder.all(
+                color: pdfLib.PdfColors.black,
+                width: 0.5,
+              ),
+              columnWidths: {
+                0: const pw.FlexColumnWidth(3.0), // Description
+                1: const pw.FlexColumnWidth(2.0), // Value
+              },
+              children: [
+                ...finalValuationTableRows, // Add rows for the new final valuation table
+              ],
+            ),
+            pw.SizedBox(height: 5),
+            pw.Text('Note:-'),
+            pw.SizedBox(height: 5),
+            pw.RichText(
+              text: pw.TextSpan(
+                // Global style for the paragraph
+                style: pw.TextStyle(fontSize: 11),
+                children: [
+                  const pw.TextSpan(
+                      text:
+                          'As a result of my appraisal and analysis, it is my considered opinion that the realizable value of the above property in the prevailing condition with aforesaid specifications is ',
+                      style: pw.TextStyle(fontSize: 11)),
+                  pw.TextSpan(
+                    // The Bold Part
+                    text:
+                        'Rs. ${_realizableValueController.text} (${NumToWords.convertNumberToIndianWords(int.tryParse(_realizableValueController.text) ?? 0)})',
+                    style: pw.TextStyle(
+                        fontWeight: pw.FontWeight.bold, fontSize: 11),
+                  ),
+                ],
+              ),
+            ),
+            pw.SizedBox(height: 20),
             pw.Text(
-              'Place: ',
+              'Place: ${_place.text}',
               style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
             ),
             pw.SizedBox(height: 10),
             pw.Text(
-              'Date: ',
+              'Date: ${_dateOfValuationController.text}',
               style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
             ),
             pw.SizedBox(height: 10),
@@ -5027,36 +5096,60 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                 ],
               ),
             ),
-            pw.SizedBox(height: 50),
-            pw.Text('Encl: Declaration from the valuer in Format E'),
+            pw.SizedBox(height: 10),
+            pw.Text(
+                'The undersigned has inspected the property detailed in the Valuation Report dated on _____________. We are satisfied that the fair and reasonable market value of the property is Rs. ________ (Rupees __________________________________________________ only). ',
+                style: pw.TextStyle(fontSize: 11)),
+            pw.SizedBox(height: 42),
+            pw.Align(
+              alignment: pw.Alignment.centerRight,
+              child: pw.Column(
+                children: [
+                  pw.Text(
+                    'Signature',
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                  ),
+                  pw.SizedBox(height: 10),
+                  pw.Text(
+                    '(Name of the Branch Manager with Official seal)',
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+            pw.SizedBox(height: 10),
+            pw.Text('Date : ${_dateOfValuationController.text}',
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+            pw.SizedBox(height: 10),
+            pw.Text(
+                'Encl:\n \t\tTO BE OBTAINED FROM VALUERS ALONGWITH THE VALUATION REPORT\n\t\t\t[ ] Declaration-cum-undertaking from the valuer (Annexure-I)\n\t\t\t[ ] Model code of conduct for valuer (Annexure II )',
+                style: pw.TextStyle(fontSize: 11)),
           ];
         },
       ),
     );
-
     if (_images.isNotEmpty) {
+      // 1. Define Standard Layout Constants
       final double pageWidth =
-          pdfLib.PdfPageFormat.a4.availableWidth - (2 * 22); // Subtract margins
-      final double pageHeight = pdfLib.PdfPageFormat.a4.availableHeight -
-          (2 * 22); // Subtract margins
+          pdfLib.PdfPageFormat.a4.width - (2 * 22); // A4 Width - Margins
+      // Standard photo aspect ratio (4:3) is better than splitting page height by 2
+      const double imageAspectRatio = 4 / 3;
+      const int crossAxisCount = 2; // Standard: 2 photos per row
+      const double spacing = 15; // Space between photos
 
-      // Calculate desired image dimensions for 3 images per row, 2 rows (6 images total)
-      // Allow for some padding between images
-      const double imageHorizontalPadding = 10;
-      const double imageVerticalPadding = 10;
-      // Width for 3 images: (pageWidth - 2 * padding) / 3
+      // 2. Calculate Exact Width for each photo
       final double targetImageWidth =
-          (pageWidth - 2 * imageHorizontalPadding) / 3;
-      // Height for 2 rows: (pageHeight - padding for title - 2 * vertical padding) / 2
-      // Assuming 30 for title and its padding, and 20 for row spacing
-      final double targetImageHeight =
-          (pageHeight - 30 - 2 * imageVerticalPadding) / 2;
+          (pageWidth - (spacing * (crossAxisCount - 1))) / crossAxisCount;
+      // Calculate Height based on aspect ratio (keeps photos uniform)
+      final double targetImageHeight = targetImageWidth / imageAspectRatio;
 
+      // 3. Loop through images in batches of 6 (2 columns x 3 rows = 6 per page)
       for (int i = 0; i < _images.length; i += 6) {
         final List<pw.Widget> pageImages = [];
+
         for (int j = 0; j < 6 && (i + j) < _images.length; j++) {
-          final imageItem =
-              _images[i + j]; // Get the image item (File or Uint8List)
+          final imageItem = _images[i + j];
+
           try {
             pw.MemoryImage pwImage;
             if (imageItem is File) {
@@ -5064,79 +5157,60 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
             } else if (imageItem is Uint8List) {
               pwImage = pw.MemoryImage(imageItem);
             } else {
-              // Handle unexpected type, though with current logic this shouldn't happen
-              print('Unexpected image type: ${imageItem.runtimeType}');
               continue;
             }
 
-            // Calculate scaled dimensions to fit within target size without cropping
-            double originalWidth = pwImage.width?.toDouble() ?? 1.0;
-            double originalHeight = pwImage.height?.toDouble() ?? 1.0;
-
-            double scale = 1.0;
-            if (originalWidth > targetImageWidth) {
-              scale = targetImageWidth / originalWidth;
-            }
-            if (originalHeight * scale > targetImageHeight) {
-              scale = targetImageHeight / originalHeight;
-            }
-
-            final double finalWidth = originalWidth * scale;
-            final double finalHeight = originalHeight * scale;
-
             pageImages.add(
-              pw.SizedBox(
-                width: targetImageWidth, // Allocate full cell width
-                height: targetImageHeight, // Allocate full cell height
-                child: pw.Center(
-                  // Center the image within its allocated space
-                  child: pw.Image(
-                    pwImage,
-                    width: finalWidth,
-                    height: finalHeight,
-                    fit: pw.BoxFit.contain, // Use contain to avoid cropping
-                  ),
+              pw.Container(
+                width: targetImageWidth,
+                height: targetImageHeight,
+                decoration: pw.BoxDecoration(
+                  border: pw.Border.all(width: 0.5), // Optional: Add border
+                ),
+                child: pw.Image(
+                  pwImage,
+                  fit: pw.BoxFit.contain, // Ensures the whole photo is visible
                 ),
               ),
             );
           } catch (e) {
-            // Corrected from .name to .path for File, and just showing type for Uint8List
-            String errorSource = (imageItem is File)
-                ? imageItem.path
-                : imageItem.runtimeType.toString();
-            print('Error loading image: $errorSource, Error: $e');
-            pageImages.add(
-              pw.SizedBox(
-                width: targetImageWidth,
-                height: targetImageHeight,
-                child: pw.Center(
-                  child: pw.Text('Failed to load image: $errorSource'),
-                ),
-              ),
-            );
+            print('Error loading image: $e');
           }
         }
 
-        // Arrange images in a grid-like structure (2 rows of 3 images)
+        // 4. Build Rows for the PDF
         List<pw.Widget> rows = [];
-        for (int k = 0; k < pageImages.length; k += 3) {
+        for (int k = 0; k < pageImages.length; k += crossAxisCount) {
           List<pw.Widget> rowChildren = [];
-          for (int l = 0; l < 3 && (k + l) < pageImages.length; l++) {
-            rowChildren.add(pw.Expanded(child: pageImages[k + l]));
+          for (int l = 0; l < crossAxisCount; l++) {
+            if (k + l < pageImages.length) {
+              rowChildren.add(pageImages[k + l]);
+            } else {
+              // Add invisible spacer for empty slots to keep alignment
+              rowChildren.add(pw.SizedBox(
+                  width: targetImageWidth, height: targetImageHeight));
+            }
+
+            // Add spacing between columns (but not after the last one)
+            if (l < crossAxisCount - 1) {
+              rowChildren.add(pw.SizedBox(width: spacing));
+            }
           }
+
           rows.add(
             pw.Row(
-              mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+              mainAxisAlignment: pw.MainAxisAlignment.start, // Align left
               children: rowChildren,
             ),
           );
-          if (k + 3 < pageImages.length) {
-            rows.add(
-              pw.SizedBox(height: imageVerticalPadding),
-            ); // Space between rows
+
+          // Add spacing between rows
+          if (k + crossAxisCount < pageImages.length) {
+            rows.add(pw.SizedBox(height: spacing));
           }
         }
 
+        // 5. Add the Page
         pdf.addPage(
           pw.MultiPage(
             pageFormat: pdfLib.PdfPageFormat.a4,
@@ -5144,119 +5218,155 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
             build: (context) => [
               pw.Center(
                 child: pw.Text(
-                  'PHOTO REPORT', // Renumbered
+                  'PHOTO REPORT',
                   style: pw.TextStyle(
-                    fontSize: 12,
+                    fontSize: 14,
                     fontWeight: pw.FontWeight.bold,
                   ),
-                  textAlign: pw.TextAlign.center,
                 ),
               ),
-              pw.SizedBox(height: 10),
+              pw.SizedBox(height: 20),
               pw.Column(children: rows),
             ],
           ),
         );
       }
     }
-
-    // NEW: FORMAT E - DECLARATION FROM VALUERS page
     pdf.addPage(
       pw.MultiPage(
         pageFormat: pdfLib.PdfPageFormat.a4,
-        margin: const pw.EdgeInsets.all(50),
+        margin: const pw.EdgeInsets.all(32), // Standard document margin
         build: (context) => [
+          // --- HEADER SECTION ---
           pw.Center(
             child: pw.Text(
-              'FORMAT E',
-              style: pw.TextStyle(
-                fontSize: 12,
-                fontWeight: pw.FontWeight.bold,
-              ),
-              textAlign: pw.TextAlign.center,
+              'Annexure-I',
+              style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold),
             ),
+          ),
+          pw.SizedBox(height: 5),
+          pw.Center(
+            child: pw.Text(
+              'Format of undertaking to be submitted by Individuals/ proprietor/ partners/ directors DECLARATION- CUM- UNDERTAKING',
+              textAlign: pw.TextAlign.center,
+              style: pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold),
+            ),
+          ),
+          pw.SizedBox(height: 20),
+
+          // --- INTRODUCTORY SENTENCE ---
+          // Replace "Vignesh S..." with your variables: ${nameController.text}
+          pw.Text(
+            'I, Vignesh S, S/o S Subramania Iyer do hereby solemnly affirm and state that:',
+            style: pw.TextStyle(fontSize: 12),
           ),
           pw.SizedBox(height: 10),
-          pw.Center(
-            child: pw.Text(
-              'DECLARATION FROM VALUERS',
-              style: pw.TextStyle(
-                fontSize: 12,
-                fontWeight: pw.FontWeight.bold,
-              ),
-              textAlign: pw.TextAlign.center,
-            ),
-          ),
-          pw.SizedBox(height: 30),
-          pw.Text(
-            'I hereby declare that - ',
-            style: const pw.TextStyle(fontSize: 12),
-          ),
-          pw.SizedBox(height: 15),
-          pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              pw.Text(
-                'a. The information furnished in my valuation report dated ${_declarationDateAController.text} is true and correct to the best of my knowledge and belief and I have made an impartial and true valuation of the property.',
-                style: const pw.TextStyle(fontSize: 12),
-              ),
-              pw.SizedBox(height: 15),
-              pw.Text(
-                'b. I have no direct or indirect interest in the property valued;',
-                style: const pw.TextStyle(fontSize: 12),
-              ),
-              pw.SizedBox(height: 15),
-              pw.Text(
-                'c. I have personally inspected the property on ${_declarationDateCController.text} The work is not sub-contracted to any other valuer and carried out by myself.',
-                style: const pw.TextStyle(fontSize: 12),
-              ),
-              pw.SizedBox(height: 15),
-              pw.Text(
-                'd. I have not been convicted of any offence and sentenced to a term of Imprisonment;',
-                style: const pw.TextStyle(fontSize: 12),
-              ),
-              pw.SizedBox(height: 15),
-              pw.Text(
-                'e. I have not been found guilty of misconduct in my professional capacity.',
-                style: const pw.TextStyle(fontSize: 12),
-              ),
-              pw.SizedBox(height: 15),
-              pw.Text(
-                'f. I have read the Handbook on Policy, Standards and procedure for Real Estate Valuation, 2011 of the IBA and this report is in conformity to the Standards enshrined for valuation in the Part-B of the above handbook to the best of my ability.',
-                style: const pw.TextStyle(fontSize: 12),
-              ),
-              pw.SizedBox(height: 15),
-              pw.Text(
-                'g. I have read the International Valuation Standards (IVS) and the report submitted to the Bank for the respective asset class is in conformity to the Standards as enshrined for valuation in the IVS in General Standards and Asset Standards as applicable.',
-                style: const pw.TextStyle(fontSize: 12),
-              ),
-              pw.SizedBox(height: 15),
-              pw.Text(
-                'h. I abide by the Model Code of Conduct for empanelment of valuer in the Bank. (Annexure III- A signed copy of same to be taken and kept along with this declaration)',
-                style: const pw.TextStyle(fontSize: 12),
-              ),
-              pw.SizedBox(height: 15),
-              pw.Text(
-                'i. I am registered under Section 34 AB of the Wealth Tax Act, 1957.',
-                style: const pw.TextStyle(fontSize: 12),
-              ),
-              pw.SizedBox(height: 15),
-              pw.Text(
-                'j. I am the proprietor / partner / authorized official of the firm / company, who is competent to sign this valuation report.',
-                style: const pw.TextStyle(fontSize: 12),
-              ),
-              pw.SizedBox(height: 15),
-              pw.Text(
-                'k. Further, I hereby provide the following information.',
-                style: const pw.TextStyle(fontSize: 12),
-              ),
-            ],
-          ),
+
+          // --- BULLET POINTS (Images 1 & 2) ---
+          _buildBulletPoint('I am a citizen of India'),
+          pw.SizedBox(height: 5),
+
+          _buildBulletPoint(
+              'I will not undertake valuation of any assets in which I have a direct or indirect interest or become so interested at any time during a period of three years prior to my appointment as valuer or three years after the valuation of assets was conducted by me'),
+          pw.SizedBox(height: 5),
+
+          _buildBulletPoint(
+              'The information furnished in my valuation report dated 17.11.2025 is true and correct to the best of my knowledge and belief and I have made an impartial and true valuation of the property.'),
+          pw.SizedBox(height: 5),
+
+          _buildBulletPoint(
+              'I have personally inspected the property on 17.11.2025. The work is not subcontracted to any other valuer and carried out by myself.'),
+          pw.SizedBox(height: 5),
+
+          _buildBulletPoint(
+              'Valuation report is submitted in the format as prescribed by the Bank.'),
+          pw.SizedBox(height: 5),
+
+          _buildBulletPoint(
+              'I have not been depanelled/ delisted by any other bank and in case any such depanelment by other banks during my empanelment with you, I will inform you within 3 days of such depanelment.'),
+          pw.SizedBox(height: 5),
+
+          _buildBulletPoint(
+              'I have not been removed/dismissed from service/employment earlier'),
+          pw.SizedBox(height: 5),
+
+          _buildBulletPoint(
+              'I have not been convicted of any offence and sentenced to a term of imprisonment'),
+          pw.SizedBox(height: 5),
+
+          _buildBulletPoint(
+              'I have not been found guilty of misconduct in professional capacity'),
+          pw.SizedBox(height: 5),
+
+          _buildBulletPoint('I have not been declared to be unsound mind'),
+          pw.SizedBox(height: 5),
+
+          _buildBulletPoint(
+              'I am not an undischarged bankrupt, or has not applied to be adjudicated as a bankrupt;'),
+          pw.SizedBox(height: 5),
+
+          _buildBulletPoint('I am not an undischarged insolvent'),
+          pw.SizedBox(height: 5),
+
+          _buildBulletPoint(
+              'I have not been levied a penalty under section 271J of Income-tax Act, 1961 (43 of 1961) and time limit for filing appeal before Commissioner of Incometax (Appeals) or Income-tax Appellate Tribunal, as the case may be has expired, or such penalty has been confirmed by Income-tax Appellate Tribunal, and five years have not elapsed after levy of such penalty'),
+          pw.SizedBox(height: 5),
+
+          _buildBulletPoint(
+              'I have not been convicted of an offence connected with any proceeding under the Income Tax Act 1961, Wealth Tax Act 1957 or Gift Tax Act 1958 and'),
+          pw.SizedBox(height: 5),
+
+          _buildBulletPoint(
+              'My PAN Card number/Service Tax number as applicable is AAAPE4881H.'), // Replace with variable if needed
+          pw.SizedBox(height: 5),
+
+          _buildBulletPoint(
+              'I undertake to keep you informed of any events or happenings which would make me ineligible for empanelment as a valuer'),
+          pw.SizedBox(height: 5),
+
+          _buildBulletPoint(
+              'I have not concealed or suppressed any material information, facts and records and I have made a complete and full disclosure'),
+          pw.SizedBox(height: 5),
+
+          _buildBulletPoint(
+              'I have read the Handbook on Policy, Standards and procedure for Real Estate Valuation, 2011 of the IBA and this report is in conformity to the "Standards" enshrined for valuation in the Part-B of the above handbook to the best of my ability'),
+          pw.SizedBox(height: 5),
+
+          _buildBulletPoint(
+              'I have read the International Valuation Standards (IVS) and the report submitted to the Bank for the respective asset class is in conformity to the "Standards" as enshrined for valuation in the IVS in "General Standards" and "Asset Standards" as applicable'),
+          pw.SizedBox(height: 5),
+        ],
+      ),
+    );
+    pdf.addPage(
+      pw.MultiPage(
+        pageFormat: pdfLib.PdfPageFormat.a4,
+        margin: const pw.EdgeInsets.all(32), // Standard document margin
+        build: (context) => [
+          _buildBulletPoint(
+              'I abide by the Model Code of Conduct for empanelment of valuer in the Bank. (Annexure V- A signed copy of same to be taken and kept along with this declaration)'),
+          pw.SizedBox(height: 5),
+          _buildBulletPoint(
+              'I am registered under Section 34 AB of the Wealth Tax Act, 1957. (Strike off, if not applicable)'),
+          pw.SizedBox(height: 5),
+          _buildBulletPoint(
+              'I am valuer registered with Insolvency & Bankruptcy Board of India (IBBI) (Strike off, if not applicable)'),
+          pw.SizedBox(height: 5),
+          _buildBulletPoint(
+              'My CIBIL Score and credit worthiness is as per Bank\'s guidelines.'),
+          pw.SizedBox(height: 5),
+          _buildBulletPoint(
+              'I am the proprietor / partner / authorized official of the firm / company, who is competent to sign this valuation report.'),
+          pw.SizedBox(height: 5),
+          _buildBulletPoint(
+              'I will undertake the valuation work on receipt of Letter of Engagement generated from the system (i.e. LLMS/LOS) only.'),
+          pw.SizedBox(height: 5),
+          _buildBulletPoint(
+              'Further, I hereby provide the following information.'),
         ],
       ),
     );
 
-    // NEW: Valuer Comments Table (Page 8)
     pdf.addPage(
       pw.MultiPage(
         pageFormat: pdfLib.PdfPageFormat.a4,
@@ -5285,6 +5395,197 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
             },
             children: valuerCommentsTableRows, // Use the generated rows
           ),
+          pw.SizedBox(height: 10),
+          pw.Text(
+            'Date: ${_dateOfValuationController.text}',
+            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+          ),
+          pw.SizedBox(height: 10),
+          pw.Text(
+            'Place: ${_place.text}',
+            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+          ),
+          pw.SizedBox(height: 10),
+          pw.Align(
+            alignment: pw.Alignment.centerRight,
+            child: pw.Column(
+              children: [
+                pw.Text(
+                  'Signature',
+                  style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                ),
+                pw.SizedBox(height: 10),
+                pw.Text(
+                  'Vignesh S',
+                  style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+
+    pdf.addPage(
+      pw.MultiPage(
+        pageFormat: pdfLib.PdfPageFormat.a4,
+        margin: const pw.EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+        build: (context) => [
+          // Main Header
+          pw.Align(
+            alignment: pw.Alignment.topRight,
+            child: pw.Text('(Annexure-II)',
+                style:
+                    pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold)),
+          ),
+          pw.SizedBox(height: 10),
+          pw.Center(
+            child: pw.Text(
+              'MODEL CODE OF CONDUCT FOR VALUERS',
+              style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold),
+            ),
+          ),
+          pw.SizedBox(height: 20),
+
+          // 1. Integrity and Fairness
+          _buildSectionHeader('Integrity and Fairness'),
+          _buildBulletPoint(
+              'A valuer shall, in the conduct of his/its business, follow high standards of integrity and fairness in all his/its dealings with his/its clients and other valuers.'),
+          _buildBulletPoint(
+              'A valuer shall maintain integrity by being honest, straightforward, and forthright in all professional relationships.'),
+          _buildBulletPoint(
+              'A valuer shall endeavour to ensure that he/it provides true and adequate information and shall not misrepresent any facts or situations.'),
+          _buildBulletPoint(
+              'A valuer shall refrain from being involved in any action that would bring disrepute to the profession.'),
+          _buildBulletPoint(
+              'A valuer shall keep public interest foremost while delivering his services.'),
+
+          // 2. Professional Competence and Due Care
+          _buildSectionHeader('Professional Competence and Due Care'),
+          _buildBulletPoint(
+              'A valuer shall render at all times high standards of service, exercise due diligence, ensure proper care and exercise independent professional judgment.'),
+          _buildBulletPoint(
+              'A valuer shall carry out professional services in accordance with the relevant technical and professional standards that may be specified from time to time'),
+          _buildBulletPoint(
+              'A valuer shall continuously maintain professional knowledge and skill to provide competent professional service based on up-to-date developments in practice, prevailing regulations/guidelines and techniques.'),
+          _buildBulletPoint(
+              'In the preparation of a valuation report, the valuer shall not disclaim liability for his/its expertise or deny his/its duty of care, except to the extent that the assumptions are based on statements of fact provided by the company or its auditors or consultants or information available in public domain and not generated by the valuer.'),
+          _buildBulletPoint(
+              'A valuer shall not carry out any instruction of the client insofar as they are incompatible with the requirements of integrity, objectivity and independence.'),
+          _buildBulletPoint(
+              'A valuer shall clearly state to his client the services that he would be competent to provide and the services for which he would be relying on other valuers or professionals or for which the client can have a separate arrangement with other valuers.'),
+
+          // 3. Independence (Start) - Matching Image 2
+          _buildSectionHeader('Independence and Disclosure of Interest'),
+          _buildBulletPoint(
+              'A valuer shall act with objectivity in his/its professional dealings by ensuring that his/its decisions are made without the presence of any bias, conflict of interest, coercion, or undue influence of any party, whether directly connected to the valuation assignment or not.'),
+          _buildBulletPoint(
+              'A valuer shall not take up an assignment if he/it or any of his/its relatives or associates is not independent in terms of association to the company.'),
+        ],
+      ),
+    );
+
+// --- PAGE 2: Independence (Cont), Confidentiality, Info Management ---
+    pdf.addPage(
+      pw.MultiPage(
+        pageFormat: pdfLib.PdfPageFormat.a4,
+        margin: const pw.EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+        build: (context) => [
+          // 3. Independence (Continued from Image 3)
+          _buildBulletPoint(
+              'A valuer shall maintain complete independence in his/its professional relationships and shall conduct the valuation independent of external influences.'),
+          _buildBulletPoint(
+              'A valuer shall wherever necessary disclose to the clients, possible sources of conflicts of duties and interests, while providing unbiased services.'),
+          _buildBulletPoint(
+              'A valuer shall not deal in securities of any subject company after any time when he/it first becomes aware of the possibility of his/its association with the valuation, and in accordance with the Securities and Exchange Board of India (Prohibition of Insider Trading) Regulations, 2015 or till the time the valuation report becomes public, whichever is earlier.'),
+          _buildBulletPoint(
+              'A valuer shall not indulge in "mandate snatching" or offering "convenience valuations" in order to cater to a company or client\'s needs.'),
+          _buildBulletPoint(
+              'As an independent valuer, the valuer shall not charge success fee.'),
+          _buildBulletPoint(
+              'In any fairness opinion or independent expert opinion submitted by a valuer, if there has been a prior engagement in an unconnected transaction, the valuer shall declare the association with the company during the last five years.'),
+
+          // 4. Confidentiality
+          _buildSectionHeader('Confidentiality'),
+          _buildBulletPoint(
+              'A valuer shall not use or divulge to other clients or any other party any confidential information about the subject company, which has come to his/its knowledge without proper and specific authority or unless there is a legal or professional right or duty to disclose.'),
+
+          // 5. Information Management
+          _buildSectionHeader('Information Management'),
+          _buildBulletPoint(
+              'A valuer shall ensure that he/ it maintains written contemporaneous records for any decision taken, the reasons for taking the decision, and the information and evidence in support of such decision. This shall be maintained so as to sufficiently enable a reasonable person to take a view on the appropriateness of his/its decisions and actions.'),
+          _buildBulletPoint(
+              'A valuer shall appear, co-operate and be available for inspections and investigations carried out by the authority, any person authorised by the authority, the registered valuers organisation with which he/it is registered or any other statutory regulatory body.'),
+          _buildBulletPoint(
+              'A valuer shall provide all information and records as may be required by the authority, the Tribunal, Appellate Tribunal, the registered valuers organisation with which he/it is registered, or any other statutory regulatory body.'),
+          _buildBulletPoint(
+              'A valuer while respecting the confidentiality of information acquired during the course of performing professional services, shall maintain proper working papers for a period of three years or such longer period as required in its contract for a specific valuation, for production before a regulatory authority or for a peer review. In the event of a pending case before the Tribunal or Appellate Tribunal, the record shall be maintained till the disposal of the case.'),
+        ],
+      ),
+    );
+
+// --- PAGE 3: Gifts, Remuneration, Occupation, Misc ---
+    pdf.addPage(
+      pw.MultiPage(
+        pageFormat: pdfLib.PdfPageFormat.a4,
+        margin: const pw.EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+        build: (context) => [
+          // 6. Gifts and Hospitality
+          _buildSectionHeader('Gifts and hospitality.'),
+          _buildBulletPoint(
+              'A valuer or his/its relative shall not accept gifts or hospitality which undermines or affects his independence as a valuer.\nExplanation: For the purposes of this code the term \'relative\' shall have the same meaning as defined in clause (77) of Section 2 of the Companies Act, 2013 (18 of 2013).'),
+          _buildBulletPoint(
+              'A valuer shall not offer gifts or hospitality or a financial or any other advantage to a public servant or any other person with a view to obtain or retain work for himself/ itself, or to obtain or retain an advantage in the conduct of profession for himself/ itself.'),
+
+          // 7. Remuneration and Costs
+          _buildSectionHeader('Remuneration and Costs.'),
+          _buildBulletPoint(
+              'A valuer shall provide services for remuneration which is charged in a transparent manner, is a reasonable reflection of the work necessarily and properly undertaken, and is not inconsistent with the applicable rules.'),
+          _buildBulletPoint(
+              'A valuer shall not accept any fees or charges other than those which are disclosed in a written contract with the person to whom he would be rendering service.'),
+
+          // 8. Occupation etc.
+          _buildSectionHeader('Occupation, employability and restrictions.'),
+          _buildBulletPoint(
+              'A valuer shall refrain from accepting too many assignments, if he/it is unlikely to be able to devote adequate time to each of his/ its assignments.'),
+          _buildBulletPoint(
+              'A valuer shall not conduct business which in the opinion of the authority or the registered valuer organisation discredits the profession.'),
+
+          // 9. Miscellaneous
+          _buildSectionHeader('Miscellaneous'),
+          _buildBulletPoint(
+              'A valuer shall refrain from undertaking to review the work of another valuer of the same client except under written orders from the bank or housing finance institutions and with knowledge of the concerned valuer.'),
+          _buildBulletPoint(
+              'A valuer shall follow this code as amended or revised from time to time'),
+          pw.SizedBox(height: 15),
+          pw.Text(
+            'Date: ${_dateOfValuationController.text}',
+            // style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+          ),
+          pw.SizedBox(height: 10),
+          pw.Text(
+            'Place: ${_place.text}',
+            // style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+          ),
+          pw.SizedBox(height: 10),
+          pw.Align(
+            alignment: pw.Alignment.centerRight,
+            child: pw.Column(
+              children: [
+                pw.Text(
+                  'Signature',
+                  // style: pw.TextStyle(
+                  //   fontWeight: pw.FontWeight.bold,
+                  // ),
+                ),
+                pw.SizedBox(height: 10),
+                pw.Text(
+                    'Vignesh S\nTC - 37/777(1)\nBig Palla Street, Fort P.O.\nThiruvananthapuram - 695023\nPh:- +91 8903042635',
+                    style: pw.TextStyle(),
+                    textAlign: pw.TextAlign.center),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -5292,6 +5593,38 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
     // Open the printing preview page instead of sharing/downloading directly
     await Printing.layoutPdf(
       onLayout: (pdfLib.PdfPageFormat format) async => pdf.save(),
+    );
+  }
+
+// Helper for Bold Section Headers
+  pw.Widget _buildSectionHeader(String text) {
+    return pw.Header(
+      level: 1,
+      child: pw.Text(
+        text,
+        style: pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold),
+      ),
+      padding: const pw.EdgeInsets.only(top: 10, bottom: 5),
+      decoration: const pw.BoxDecoration(), // Removes default underline
+    );
+  }
+
+  pw.Widget _buildBulletPoint(String text) {
+    return pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(width: 15),
+        pw.Text('* ',
+            style: pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold)),
+        pw.SizedBox(width: 5),
+        pw.Expanded(
+          child: pw.Text(
+            text,
+            textAlign: pw.TextAlign.justify,
+            style: pw.TextStyle(fontSize: 12),
+          ),
+        ),
+      ],
     );
   }
 
@@ -6838,9 +7171,23 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                   const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
+                    controller: _totalAbstractExtraItemsController,
+                    decoration: const InputDecoration(
+                      labelText: 'Part- C Extra Items (Amount in Rs.)',
+                      hintText: 'e.g., 80000',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 13,
+                  ),
+                  TextField(
+                    // Changed from _buildTextField
                     controller: _totalAbstractAmenitiesController,
                     decoration: const InputDecoration(
-                      labelText: 'Part- C Amenities (Amount in Rs.)',
+                      labelText: 'Part- D Amenities (Amount in Rs.)',
                       hintText: 'e.g., 80000',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -6850,9 +7197,9 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                   const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
-                    controller: _totalAbstractTotalController,
+                    controller: _totalAbstractMiscController,
                     decoration: const InputDecoration(
-                      labelText: 'Total (Amount in Rs.)',
+                      labelText: 'Part- E Miscellaneous (Amount in Rs.)',
                       hintText: 'e.g., 6330000',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -6862,9 +7209,9 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                   const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
-                    controller: _totalAbstractSayController,
+                    controller: _totalAbstractServiceController,
                     decoration: const InputDecoration(
-                      labelText: 'Say (Amount in Rs.)',
+                      labelText: 'Part- F Services (Amount in Rs.)',
                       hintText: 'e.g., 6330000',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -6982,10 +7329,9 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                   const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
-                    controller: _insurableValueController,
+                    controller: _place,
                     decoration: const InputDecoration(
-                      labelText: 'Insurable Value of the property',
-                      hintText: 'Enter value',
+                      labelText: 'Place',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),

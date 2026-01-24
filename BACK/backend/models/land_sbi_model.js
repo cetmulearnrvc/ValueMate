@@ -154,9 +154,10 @@ placetype:String,
     // Total abstract
     totalAbstractLand: String,
     totalAbstractBuilding: String,
+    totalAbstractExtraItems: String,
     totalAbstractAmenities: String,
-    totalAbstractTotal: String,
-    totalAbstractSay: String,
+    totalAbstractMisc: String,
+    totalAbstractService: String,
 
     // Consolidated Remarks
     remark1: String,
@@ -168,7 +169,7 @@ placetype:String,
     presentMarketValue: String,
     realizableValue: String,
     distressValue: String,
-    insurableValue: String,
+    place: String,
 
     // Declaration dates
     declarationDateA: String,
