@@ -189,6 +189,135 @@ placetype:String,
     vcMajorFactors2: String,
     vcCaveatsLimitations: String,
 
+
+    //Page - 5(New format)
+    foundationGround: String,
+    foundationOther: String,
+    basementGround: String,
+    basementOther: String,
+    superstructureGround: String,
+    superstructureOther: String,
+    joineryGround: String,
+    joineryOther: String,
+    rccWorksGround: String,
+    rccWorksOther: String,
+    plasteringGround: String,
+    plasteringOther: String,
+    flooringGround: String,
+    flooringOther: String,
+    specialFinishGround: String,
+    specialFinishOther: String,
+    roofingGround: String,
+    roofingOther: String,
+    drainageGround: String,
+    drainageOther: String,
+    kitchenGround: String,
+    kitchenOther: String,
+
+    //page 5 (second page)
+    // --- SECTION 2: COMPOUND WALL ---
+compoundWallGround: String,
+compoundWallOther:String,
+cwHeightGround:String,
+cwHeightOther: String,
+cwLengthGround: String,
+cwLengthOther: String,
+cwTypeGround:String,
+cwTypeOther: String,
+
+// --- SECTION 3: ELECTRICAL INSTALLATION ---
+elecWiringGround:String, 
+elecWiringOther:String,
+elecFittingsGround:String,
+elecFittingsOther: String,
+elecLightPointsGround: String,
+elecLightPointsOther: String,
+elecFanPointsGround: String,
+elecFanPointsOther: String,
+elecPlugPointsGround: String,
+elecPlugPointsOther: String,
+elecOtherItemGround: String,
+elecOtherItemOther: String,
+
+// --- SECTION 4: PLUMBING INSTALLATION ---
+plumClosetsGround: String,
+plumClosetsOther:String,
+plumBasinsGround: String,
+plumBasinsOther: String,
+plumUrinalsGround: String,
+plumUrinalsOther:String,
+plumTubsGround:String,
+plumTubsOther: String,
+plumWaterMeterGround: String,
+plumWaterMeterOther: String,
+plumFixturesGround:String,
+plumFixturesOther:String,
+stageofcontruction:String,
+
+
+//page - 6(new format)
+// --- DETAILS OF VALUATION ---
+// Ground Floor (GF)
+valPlinthGF:String,
+valRoofHeightGF:String,
+valAgeGF: String,
+valRateGF: String,
+valReplaceCostGF: String,
+valDepreciationGF: String,
+valNetValueGF:String,
+
+// First Floor (FF)
+valPlinthFF: String,
+valRoofHeightFF: String,
+valAgeFF: String,
+valRateFF:String,
+valReplaceCostFF:String,
+valDepreciationFF:String,
+valNetValueFF:String,
+
+// Totals
+valTotalPlinth:String,
+valTotalReplaceCost: String,
+valTotalDepreciation:String,
+valTotalNetValue:String,
+
+
+// Part C
+extraPortico: String,
+extraOrnamentalDoor: String,
+extraSitout: String,
+extraWaterTank: String,
+extraSteelGates: String,
+extraTotal: String,
+
+// Part D
+amenWardrobes: String,
+amenGlazedTiles: String,
+amenSinksTubs:String,
+amenFlooring: String,
+amenDecorations: String,
+amenElevation: String,
+amenPanelling: String,
+amenAluminiumWorks: String,
+amenHandRails: String,
+amenFalseCeiling: String,
+amenTotal: String,
+
+// Part E
+miscToiletRoom: String,
+miscLumberRoom: String,
+miscSump: String,
+miscGardening:String,
+miscTotal:String,
+
+// Part F
+servWaterSupply: String,
+servDrainage: String,
+servCompoundWall: String,
+servDeposits:String,
+servPavement: String,
+servTotal: String,
+
     images: [{
         fileName: {
             type:String,

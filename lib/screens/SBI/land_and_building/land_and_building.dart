@@ -346,6 +346,233 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
   final TextEditingController _ThandapperDocument = TextEditingController();
   final TextEditingController _BuildingTaxReceipt = TextEditingController();
   final TextEditingController _place = TextEditingController();
+
+  // new textediting controllers for page - 5(There were no previously initialized controllers present in this page)
+  // 1. Foundation
+  final TextEditingController _foundationGroundController =
+      TextEditingController();
+  final TextEditingController _foundationOtherController =
+      TextEditingController();
+
+  // 2. Basement
+  final TextEditingController _basementGroundController =
+      TextEditingController();
+  final TextEditingController _basementOtherController =
+      TextEditingController();
+
+  // 3. Superstructure
+  final TextEditingController _superstructureGroundController =
+      TextEditingController();
+  final TextEditingController _superstructureOtherController =
+      TextEditingController();
+
+  // 4. Joinery / Doors & Windows
+  final TextEditingController _joineryGroundController =
+      TextEditingController();
+  final TextEditingController _joineryOtherController = TextEditingController();
+
+  // 5. RCC works
+  final TextEditingController _rccWorksGroundController =
+      TextEditingController();
+  final TextEditingController _rccWorksOtherController =
+      TextEditingController();
+
+// 6. Plastering
+  final TextEditingController _plasteringGroundController =
+      TextEditingController();
+  final TextEditingController _plasteringOtherController =
+      TextEditingController();
+
+// 7. Flooring, Skirting, dadoing
+  final TextEditingController _flooringGroundController =
+      TextEditingController();
+  final TextEditingController _flooringOtherController =
+      TextEditingController();
+
+// 8. Special finish (marble, granite, wooden paneling, grills, etc)
+  final TextEditingController _specialFinishGroundController =
+      TextEditingController();
+  final TextEditingController _specialFinishOtherController =
+      TextEditingController();
+
+// 9. Roofing including weather proof course
+  final TextEditingController _roofingGroundController =
+      TextEditingController();
+  final TextEditingController _roofingOtherController = TextEditingController();
+
+// 10. Drainage
+  final TextEditingController _drainageGroundController =
+      TextEditingController();
+  final TextEditingController _drainageOtherController =
+      TextEditingController();
+
+// 11. No of Kitchen
+  final TextEditingController _kitchenGroundController =
+      TextEditingController();
+  final TextEditingController _kitchenOtherController = TextEditingController();
+
+//Page 5 (second table new format)
+// --- SECTION 2: COMPOUND WALL ---
+  final TextEditingController _compoundWallGroundController =
+      TextEditingController();
+  final TextEditingController _compoundWallOtherController =
+      TextEditingController();
+  final TextEditingController _cwHeightGroundController =
+      TextEditingController();
+  final TextEditingController _cwHeightOtherController =
+      TextEditingController();
+  final TextEditingController _cwLengthGroundController =
+      TextEditingController();
+  final TextEditingController _cwLengthOtherController =
+      TextEditingController();
+  final TextEditingController _cwTypeGroundController = TextEditingController();
+  final TextEditingController _cwTypeOtherController = TextEditingController();
+
+// --- SECTION 3: ELECTRICAL INSTALLATION ---
+  final TextEditingController _elecWiringGroundController =
+      TextEditingController();
+  final TextEditingController _elecWiringOtherController =
+      TextEditingController();
+  final TextEditingController _elecFittingsGroundController =
+      TextEditingController();
+  final TextEditingController _elecFittingsOtherController =
+      TextEditingController();
+  final TextEditingController _elecLightPointsGroundController =
+      TextEditingController();
+  final TextEditingController _elecLightPointsOtherController =
+      TextEditingController();
+  final TextEditingController _elecFanPointsGroundController =
+      TextEditingController();
+  final TextEditingController _elecFanPointsOtherController =
+      TextEditingController();
+  final TextEditingController _elecPlugPointsGroundController =
+      TextEditingController();
+  final TextEditingController _elecPlugPointsOtherController =
+      TextEditingController();
+  final TextEditingController _elecOtherGroundController =
+      TextEditingController();
+  final TextEditingController _elecOtherOtherController =
+      TextEditingController();
+
+// --- SECTION 4: PLUMBING INSTALLATION ---
+  final TextEditingController _plumClosetsGroundController =
+      TextEditingController();
+  final TextEditingController _plumClosetsOtherController =
+      TextEditingController();
+  final TextEditingController _plumBasinsGroundController =
+      TextEditingController();
+  final TextEditingController _plumBasinsOtherController =
+      TextEditingController();
+  final TextEditingController _plumUrinalsGroundController =
+      TextEditingController();
+  final TextEditingController _plumUrinalsOtherController =
+      TextEditingController();
+  final TextEditingController _plumTubsGroundController =
+      TextEditingController();
+  final TextEditingController _plumTubsOtherController =
+      TextEditingController();
+  final TextEditingController _plumMetersGroundController =
+      TextEditingController();
+  final TextEditingController _plumMetersOtherController =
+      TextEditingController();
+  final TextEditingController _plumFixturesGroundController =
+      TextEditingController();
+  final TextEditingController _plumFixturesOtherController =
+      TextEditingController();
+
+  final TextEditingController _stageofcontruction = TextEditingController();
+
+  //page - 6 (new format controller)
+  // --- DETAILS OF VALUATION ---
+// Ground Floor (GF)
+  final TextEditingController _valPlinthGFController = TextEditingController();
+  final TextEditingController _valRoofHeightGFController =
+      TextEditingController();
+  final TextEditingController _valAgeGFController = TextEditingController();
+  final TextEditingController _valRateGFController = TextEditingController();
+  final TextEditingController _valReplaceCostGFController =
+      TextEditingController();
+  final TextEditingController _valDepreciationGFController =
+      TextEditingController();
+  final TextEditingController _valNetValueGFController =
+      TextEditingController();
+
+// First Floor (FF)
+  final TextEditingController _valPlinthFFController = TextEditingController();
+  final TextEditingController _valRoofHeightFFController =
+      TextEditingController();
+  final TextEditingController _valAgeFFController = TextEditingController();
+  final TextEditingController _valRateFFController = TextEditingController();
+  final TextEditingController _valReplaceCostFFController =
+      TextEditingController();
+  final TextEditingController _valDepreciationFFController =
+      TextEditingController();
+  final TextEditingController _valNetValueFFController =
+      TextEditingController();
+
+// Totals
+  final TextEditingController _valTotalPlinthController =
+      TextEditingController();
+  final TextEditingController _valTotalReplaceCostController =
+      TextEditingController();
+  final TextEditingController _valTotalDepreciationController =
+      TextEditingController();
+  final TextEditingController _valTotalNetValueController =
+      TextEditingController();
+
+  // --- PART C: EXTRA ITEMS ---
+  final TextEditingController _extraPorticoController = TextEditingController();
+  final TextEditingController _extraOrnamentalDoorController =
+      TextEditingController();
+  final TextEditingController _extraSitoutController = TextEditingController();
+  final TextEditingController _extraWaterTankController =
+      TextEditingController();
+  final TextEditingController _extraSteelGatesController =
+      TextEditingController();
+  final TextEditingController _extraTotalController = TextEditingController();
+
+// --- PART D: AMENITIES ---
+  final TextEditingController _amenWardrobesController =
+      TextEditingController();
+  final TextEditingController _amenGlazedTilesController =
+      TextEditingController();
+  final TextEditingController _amenSinksTubsController =
+      TextEditingController();
+  final TextEditingController _amenFlooringController = TextEditingController();
+  final TextEditingController _amenDecorationsController =
+      TextEditingController();
+  final TextEditingController _amenElevationController =
+      TextEditingController();
+  final TextEditingController _amenPanellingController =
+      TextEditingController();
+  final TextEditingController _amenAluminiumWorksController =
+      TextEditingController();
+  final TextEditingController _amenHandRailsController =
+      TextEditingController();
+  final TextEditingController _amenFalseCeilingController =
+      TextEditingController();
+  final TextEditingController _amenTotalController = TextEditingController();
+
+// --- PART E: MISCELLANEOUS ---
+  final TextEditingController _miscToiletRoomController =
+      TextEditingController();
+  final TextEditingController _miscLumberRoomController =
+      TextEditingController();
+  final TextEditingController _miscSumpController = TextEditingController();
+  final TextEditingController _miscGardeningController =
+      TextEditingController();
+  final TextEditingController _miscTotalController = TextEditingController();
+
+// --- PART F: SERVICES ---
+  final TextEditingController _servWaterSupplyController =
+      TextEditingController();
+  final TextEditingController _servDrainageController = TextEditingController();
+  final TextEditingController _servCompoundWallController =
+      TextEditingController();
+  final TextEditingController _servDepositsController = TextEditingController();
+  final TextEditingController _servPavementController = TextEditingController();
+  final TextEditingController _servTotalController = TextEditingController();
+
   Future<pw.MemoryImage> loadLogoImage() async {
     final Uint8List bytes = await rootBundle
         .load('assets/images/logo.png')
@@ -660,6 +887,127 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         "vcMajorFactors1": _vcMajorFactors1Controller.text,
         "vcMajorFactors2": _vcMajorFactors2Controller.text,
         "vcCaveatsLimitations": _vcCaveatsLimitationsController.text,
+
+        //New controllers for page - 5
+        "foundationGround": _foundationGroundController.text,
+        "foundationOther": _foundationOtherController.text,
+        "basementGround": _basementGroundController.text,
+        "basementOther": _basementOtherController.text,
+        "superstructureGround": _superstructureGroundController.text,
+        "superstructureOther": _superstructureOtherController.text,
+        "joineryGround": _joineryGroundController.text,
+        "joineryOther": _joineryOtherController.text,
+        "rccWorksGround": _rccWorksGroundController.text,
+        "rccWorksOther": _rccWorksOtherController.text,
+        "plasteringGround": _plasteringGroundController.text,
+        "plasteringOther": _plasteringOtherController.text,
+        "flooringGround": _flooringGroundController.text,
+        "flooringOther": _flooringOtherController.text,
+        "specialFinishGround": _specialFinishGroundController.text,
+        "specialFinishOther": _specialFinishOtherController.text,
+        "roofingGround": _roofingGroundController.text,
+        "roofingOther": _roofingOtherController.text,
+        "drainageGround": _drainageGroundController.text,
+        "drainageOther": _drainageOtherController.text,
+        "kitchenGround": _kitchenGroundController.text,
+        "kitchenOther": _kitchenOtherController.text,
+
+        //page 5 (new format second table)
+        // --- Section 2: Compound Wall ---
+        "compoundWallGround": _compoundWallGroundController.text,
+        "compoundWallOther": _compoundWallOtherController.text,
+        "cwHeightGround": _cwHeightGroundController.text,
+        "cwHeightOther": _cwHeightOtherController.text,
+        "cwLengthGround": _cwLengthGroundController.text,
+        "cwLengthOther": _cwLengthOtherController.text,
+        "cwTypeGround": _cwTypeGroundController.text,
+        "cwTypeOther": _cwTypeOtherController.text,
+
+// --- Section 3: Electrical Installation ---
+        "elecWiringGround": _elecWiringGroundController.text,
+        "elecWiringOther": _elecWiringOtherController.text,
+        "elecFittingsGround": _elecFittingsGroundController.text,
+        "elecFittingsOther": _elecFittingsOtherController.text,
+        "elecLightPointsGround": _elecLightPointsGroundController.text,
+        "elecLightPointsOther": _elecLightPointsOtherController.text,
+        "elecFanPointsGround": _elecFanPointsGroundController.text,
+        "elecFanPointsOther": _elecFanPointsOtherController.text,
+        "elecPlugPointsGround": _elecPlugPointsGroundController.text,
+        "elecPlugPointsOther": _elecPlugPointsOtherController.text,
+        "elecOtherItemGround": _elecOtherGroundController.text,
+        "elecOtherItemOther": _elecOtherOtherController.text,
+
+// --- Section 4: Plumbing Installation ---
+        "plumClosetsGround": _plumClosetsGroundController.text,
+        "plumClosetsOther": _plumClosetsOtherController.text,
+        "plumBasinsGround": _plumBasinsGroundController.text,
+        "plumBasinsOther": _plumBasinsOtherController.text,
+        "plumUrinalsGround": _plumUrinalsGroundController.text,
+        "plumUrinalsOther": _plumUrinalsOtherController.text,
+        "plumTubsGround": _plumTubsGroundController.text,
+        "plumTubsOther": _plumTubsOtherController.text,
+        "plumWaterMeterGround": _plumMetersGroundController.text,
+        "plumWaterMeterOther": _plumMetersOtherController.text,
+        "plumFixturesGround": _plumFixturesGroundController.text,
+        "plumFixturesOther": _plumFixturesOtherController.text,
+
+        "stageofcontruction": _stageofcontruction.text,
+
+        //page - 6 (new format)
+        "valPlinthGF": _valPlinthGFController.text,
+        "valRoofHeightGF": _valRoofHeightGFController.text,
+        "valAgeGF": _valAgeGFController.text,
+        "valRateGF": _valRateGFController.text,
+        "valReplaceCostGF": _valReplaceCostGFController.text,
+        "valDepreciationGF": _valDepreciationGFController.text,
+        "valNetValueGF": _valNetValueGFController.text,
+        "valPlinthFF": _valPlinthFFController.text,
+        "valRoofHeightFF": _valRoofHeightFFController.text,
+        "valAgeFF": _valAgeFFController.text,
+        "valRateFF": _valRateFFController.text,
+        "valReplaceCostFF": _valReplaceCostFFController.text,
+        "valDepreciationFF": _valDepreciationFFController.text,
+        "valNetValueFF": _valNetValueFFController.text,
+        "valTotalPlinth": _valTotalPlinthController.text,
+        "valTotalReplaceCost": _valTotalReplaceCostController.text,
+        "valTotalDepreciation": _valTotalDepreciationController.text,
+        "valTotalNetValue": _valTotalNetValueController.text,
+
+        // Part C
+        "extraPortico": _extraPorticoController.text,
+        "extraOrnamentalDoor": _extraOrnamentalDoorController.text,
+        "extraSitout": _extraSitoutController.text,
+        "extraWaterTank": _extraWaterTankController.text,
+        "extraSteelGates": _extraSteelGatesController.text,
+        "extraTotal": _extraTotalController.text,
+
+// Part D
+        "amenWardrobes": _amenWardrobesController.text,
+        "amenGlazedTiles": _amenGlazedTilesController.text,
+        "amenSinksTubs": _amenSinksTubsController.text,
+        "amenFlooring": _amenFlooringController.text,
+        "amenDecorations": _amenDecorationsController.text,
+        "amenElevation": _amenElevationController.text,
+        "amenPanelling": _amenPanellingController.text,
+        "amenAluminiumWorks": _amenAluminiumWorksController.text,
+        "amenHandRails": _amenHandRailsController.text,
+        "amenFalseCeiling": _amenFalseCeilingController.text,
+        "amenTotal": _amenTotalController.text,
+
+// Part E
+        "miscToiletRoom": _miscToiletRoomController.text,
+        "miscLumberRoom": _miscLumberRoomController.text,
+        "miscSump": _miscSumpController.text,
+        "miscGardening": _miscGardeningController.text,
+        "miscTotal": _miscTotalController.text,
+
+// Part F
+        "servWaterSupply": _servWaterSupplyController.text,
+        "servDrainage": _servDrainageController.text,
+        "servCompoundWall": _servCompoundWallController.text,
+        "servDeposits": _servDepositsController.text,
+        "servPavement": _servPavementController.text,
+        "servTotal": _servTotalController.text,
       });
 
       // Add images if available
@@ -1082,6 +1430,181 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           data['vcMajorFactors2']?.toString() ?? '';
       _vcCaveatsLimitationsController.text =
           data['vcCaveatsLimitations']?.toString() ?? '';
+
+      //page - 5 controllers
+      _foundationGroundController.text =
+          data['foundationGround']?.toString() ?? '';
+      _foundationOtherController.text =
+          data['foundationOther']?.toString() ?? '';
+      _basementGroundController.text = data['basementGround']?.toString() ?? '';
+      _basementOtherController.text = data['basementOther']?.toString() ?? '';
+      _superstructureGroundController.text =
+          data['superstructureGround']?.toString() ?? '';
+      _superstructureOtherController.text =
+          data['superstructureOther']?.toString() ?? '';
+      _joineryGroundController.text = data['joineryGround']?.toString() ?? '';
+      _joineryOtherController.text = data['joineryOther']?.toString() ?? '';
+      _rccWorksGroundController.text = data['rccWorksGround']?.toString() ?? '';
+      _rccWorksOtherController.text = data['rccWorksOther']?.toString() ?? '';
+      _plasteringGroundController.text =
+          data['plasteringGround']?.toString() ?? '';
+      _plasteringOtherController.text =
+          data['plasteringOther']?.toString() ?? '';
+      _flooringGroundController.text = data['flooringGround']?.toString() ?? '';
+      _flooringOtherController.text = data['flooringOther']?.toString() ?? '';
+      _specialFinishGroundController.text =
+          data['specialFinishGround']?.toString() ?? '';
+      _specialFinishOtherController.text =
+          data['specialFinishOther']?.toString() ?? '';
+      _roofingGroundController.text = data['roofingGround']?.toString() ?? '';
+      _roofingOtherController.text = data['roofingOther']?.toString() ?? '';
+      _drainageGroundController.text = data['drainageGround']?.toString() ?? '';
+      _drainageOtherController.text = data['drainageOther']?.toString() ?? '';
+      _kitchenGroundController.text = data['kitchenGround']?.toString() ?? '';
+      _kitchenOtherController.text = data['kitchenOther']?.toString() ?? '';
+
+      //page 5 (second table)
+      // --- SECTION 2: COMPOUND WALL ---
+      _compoundWallGroundController.text =
+          data['compoundWallGround']?.toString() ?? '';
+      _compoundWallOtherController.text =
+          data['compoundWallOther']?.toString() ?? '';
+      _cwHeightGroundController.text = data['cwHeightGround']?.toString() ?? '';
+      _cwHeightOtherController.text = data['cwHeightOther']?.toString() ?? '';
+      _cwLengthGroundController.text = data['cwLengthGround']?.toString() ?? '';
+      _cwLengthOtherController.text = data['cwLengthOther']?.toString() ?? '';
+      _cwTypeGroundController.text = data['cwTypeGround']?.toString() ?? '';
+      _cwTypeOtherController.text = data['cwTypeOther']?.toString() ?? '';
+
+// --- SECTION 3: ELECTRICAL INSTALLATION ---
+      _elecWiringGroundController.text =
+          data['elecWiringGround']?.toString() ?? '';
+      _elecWiringOtherController.text =
+          data['elecWiringOther']?.toString() ?? '';
+      _elecFittingsGroundController.text =
+          data['elecFittingsGround']?.toString() ?? '';
+      _elecFittingsOtherController.text =
+          data['elecFittingsOther']?.toString() ?? '';
+      _elecLightPointsGroundController.text =
+          data['elecLightPointsGround']?.toString() ?? '';
+      _elecLightPointsOtherController.text =
+          data['elecLightPointsOther']?.toString() ?? '';
+      _elecFanPointsGroundController.text =
+          data['elecFanPointsGround']?.toString() ?? '';
+      _elecFanPointsOtherController.text =
+          data['elecFanPointsOther']?.toString() ?? '';
+      _elecPlugPointsGroundController.text =
+          data['elecPlugPointsGround']?.toString() ?? '';
+      _elecPlugPointsOtherController.text =
+          data['elecPlugPointsOther']?.toString() ?? '';
+      _elecOtherGroundController.text =
+          data['elecOtherItemGround']?.toString() ?? '';
+      _elecOtherOtherController.text =
+          data['elecOtherItemOther']?.toString() ?? '';
+
+// --- SECTION 4: PLUMBING INSTALLATION ---
+      _plumClosetsGroundController.text =
+          data['plumClosetsGround']?.toString() ?? '';
+      _plumClosetsOtherController.text =
+          data['plumClosetsOther']?.toString() ?? '';
+      _plumBasinsGroundController.text =
+          data['plumBasinsGround']?.toString() ?? '';
+      _plumBasinsOtherController.text =
+          data['plumBasinsOther']?.toString() ?? '';
+      _plumUrinalsGroundController.text =
+          data['plumUrinalsGround']?.toString() ?? '';
+      _plumUrinalsOtherController.text =
+          data['plumUrinalsOther']?.toString() ?? '';
+      _plumTubsGroundController.text = data['plumTubsGround']?.toString() ?? '';
+      _plumTubsOtherController.text = data['plumTubsOther']?.toString() ?? '';
+      _plumMetersGroundController.text =
+          data['plumWaterMeterGround']?.toString() ?? '';
+      _plumMetersOtherController.text =
+          data['plumWaterMeterOther']?.toString() ?? '';
+      _plumFixturesGroundController.text =
+          data['plumFixturesGround']?.toString() ?? '';
+      _plumFixturesOtherController.text =
+          data['plumFixturesOther']?.toString() ?? '';
+
+      _stageofcontruction.text = data['stageofcontruction']?.toString() ?? '';
+
+      //page - 6(new format)
+      // Ground Floor
+      _valPlinthGFController.text = data['valPlinthGF']?.toString() ?? '';
+      _valRoofHeightGFController.text =
+          data['valRoofHeightGF']?.toString() ?? '';
+      _valAgeGFController.text = data['valAgeGF']?.toString() ?? '';
+      _valRateGFController.text = data['valRateGF']?.toString() ?? '';
+      _valReplaceCostGFController.text =
+          data['valReplaceCostGF']?.toString() ?? '';
+      _valDepreciationGFController.text =
+          data['valDepreciationGF']?.toString() ?? '';
+      _valNetValueGFController.text = data['valNetValueGF']?.toString() ?? '';
+
+// First Floor
+      _valPlinthFFController.text = data['valPlinthFF']?.toString() ?? '';
+      _valRoofHeightFFController.text =
+          data['valRoofHeightFF']?.toString() ?? '';
+      _valAgeFFController.text = data['valAgeFF']?.toString() ?? '';
+      _valRateFFController.text = data['valRateFF']?.toString() ?? '';
+      _valReplaceCostFFController.text =
+          data['valReplaceCostFF']?.toString() ?? '';
+      _valDepreciationFFController.text =
+          data['valDepreciationFF']?.toString() ?? '';
+      _valNetValueFFController.text = data['valNetValueFF']?.toString() ?? '';
+
+// Totals
+      _valTotalPlinthController.text = data['valTotalPlinth']?.toString() ?? '';
+      _valTotalReplaceCostController.text =
+          data['valTotalReplaceCost']?.toString() ?? '';
+      _valTotalDepreciationController.text =
+          data['valTotalDepreciation']?.toString() ?? '';
+      _valTotalNetValueController.text =
+          data['valTotalNetValue']?.toString() ?? '';
+
+      // --- PART C: EXTRA ITEMS ---
+      _extraPorticoController.text = data['extraPortico']?.toString() ?? '';
+      _extraOrnamentalDoorController.text =
+          data['extraOrnamentalDoor']?.toString() ?? '';
+      _extraSitoutController.text = data['extraSitout']?.toString() ?? '';
+      _extraWaterTankController.text = data['extraWaterTank']?.toString() ?? '';
+      _extraSteelGatesController.text =
+          data['extraSteelGates']?.toString() ?? '';
+      _extraTotalController.text = data['extraTotal']?.toString() ?? '';
+
+// --- PART D: AMENITIES ---
+      _amenWardrobesController.text = data['amenWardrobes']?.toString() ?? '';
+      _amenGlazedTilesController.text =
+          data['amenGlazedTiles']?.toString() ?? '';
+      _amenSinksTubsController.text = data['amenSinksTubs']?.toString() ?? '';
+      _amenFlooringController.text = data['amenFlooring']?.toString() ?? '';
+      _amenDecorationsController.text =
+          data['amenDecorations']?.toString() ?? '';
+      _amenElevationController.text = data['amenElevation']?.toString() ?? '';
+      _amenPanellingController.text = data['amenPanelling']?.toString() ?? '';
+      _amenAluminiumWorksController.text =
+          data['amenAluminiumWorks']?.toString() ?? '';
+      _amenHandRailsController.text = data['amenHandRails']?.toString() ?? '';
+      _amenFalseCeilingController.text =
+          data['amenFalseCeiling']?.toString() ?? '';
+      _amenTotalController.text = data['amenTotal']?.toString() ?? '';
+
+// --- PART E: MISCELLANEOUS ---
+      _miscToiletRoomController.text = data['miscToiletRoom']?.toString() ?? '';
+      _miscLumberRoomController.text = data['miscLumberRoom']?.toString() ?? '';
+      _miscSumpController.text = data['miscSump']?.toString() ?? '';
+      _miscGardeningController.text = data['miscGardening']?.toString() ?? '';
+      _miscTotalController.text = data['miscTotal']?.toString() ?? '';
+
+// --- PART F: SERVICES ---
+      _servWaterSupplyController.text =
+          data['servWaterSupply']?.toString() ?? '';
+      _servDrainageController.text = data['servDrainage']?.toString() ?? '';
+      _servCompoundWallController.text =
+          data['servCompoundWall']?.toString() ?? '';
+      _servDepositsController.text = data['servDeposits']?.toString() ?? '';
+      _servPavementController.text = data['servPavement']?.toString() ?? '';
+      _servTotalController.text = data['servTotal']?.toString() ?? '';
 
       // Load images if available
       try {
@@ -3867,6 +4390,1168 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
     return rows;
   }
 
+  // page - 5 (new format)(Specifications of construction (floor-wise) in respect of)
+
+  List<pw.TableRow> _getSpecificationsTableRows() {
+    final pw.TextStyle headerTextStyle = pw.TextStyle(
+      fontWeight: pw.FontWeight.bold,
+      fontSize: 11,
+    );
+    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 11);
+    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
+
+    List<pw.TableRow> rows = [];
+
+    // Table Header Row
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('S. No.', style: headerTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Description', style: headerTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Ground floor', style: headerTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Other floors', style: headerTextStyle)),
+        ],
+      ),
+    );
+
+    // 1. Foundation
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('1.', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Foundation', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_foundationGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_foundationOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+
+    // 2. Basement
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('2.', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Basement', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_basementGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_basementOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+
+    // 3. Superstructure
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('3.', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Superstructure', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_superstructureGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_superstructureOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+
+    // 4. Joinery/Doors & Windows
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('4.', style: contentTextStyle)),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Joinery/Doors & Windows (please furnish details about size of frames, shutters, glazing, fitting etc. and specify the species of timber)',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_joineryGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_joineryOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+
+    // 5. RCC works
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('5.', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('RCC works', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_rccWorksGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_rccWorksOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+
+    // 6. Plastering
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('6.', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Plastering', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_plasteringGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_plasteringOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+
+    // 7. Flooring, Skirting, dadoing
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('7.', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Flooring, Skirting, dadoing',
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_flooringGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_flooringOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+
+    // 8. Special finish
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('8.', style: contentTextStyle)),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Special finish as marble, granite, wooden paneling, grills, etc',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_specialFinishGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_specialFinishOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+
+    // 9. Roofing including weather proof course
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('9.', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Roofing including weather proof course',
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_roofingGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_roofingOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+
+    // 10. Drainage
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('10.', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Drainage', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_drainageGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_drainageOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+
+    // 11. No of Kitchen
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('11.', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('No of Kitchen', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_kitchenGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_kitchenOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+
+    return rows;
+  }
+
+  //page 5 (second table)
+  List<pw.TableRow> _getAdditionalSpecificationsTableRows() {
+    final pw.TextStyle headerTextStyle = pw.TextStyle(
+      fontWeight: pw.FontWeight.bold,
+      fontSize: 11,
+    );
+    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 11);
+    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
+
+    List<pw.TableRow> rows = [];
+
+    // Table Header Row
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('S. No.', style: headerTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Description', style: headerTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Ground floor', style: headerTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Other floors', style: headerTextStyle)),
+        ],
+      ),
+    );
+
+    // 2. Compound Wall
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('2.', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Compound wall', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_compoundWallGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_compoundWallOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(':', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Height', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_cwHeightGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_cwHeightOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(':', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Length', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_cwLengthGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_cwLengthOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Type of construction', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_cwTypeGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_cwTypeOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+
+    // 3. Electrical Installation
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('3.', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child:
+                  pw.Text('Electrical installation', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('', style: contentTextStyle)),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(':', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Type of wiring', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_elecWiringGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_elecWiringOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(':', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Class of fittings (superior / ordinary / poor)',
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_elecFittingsGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_elecFittingsOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(':', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child:
+                  pw.Text('Number of light points', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_elecLightPointsGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_elecLightPointsOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(':', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Fan points', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_elecFanPointsGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_elecFanPointsOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(':', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Spare plug points', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_elecPlugPointsGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_elecPlugPointsOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Any other item.', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_elecOtherGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_elecOtherOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+
+    // 4. Plumbing Installation
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('4.', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Plumbing installation', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('', style: contentTextStyle)),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('a)', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('No. of water closets and their type',
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_plumClosetsGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_plumClosetsOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('b)', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('No. of wash basins', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_plumBasinsGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_plumBasinsOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('c)', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('No. of urinals', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_plumUrinalsGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_plumUrinalsOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('d)', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('No. of bath tubs', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_plumTubsGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_plumTubsOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('e)', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child:
+                  pw.Text('Water meter, taps, etc.', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_plumMetersGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_plumMetersOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('f)', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Any other fixtures', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_plumFixturesGroundController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_plumFixturesOtherController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    );
+
+    return rows;
+  }
+
+  //page - 6(table - 1 new format)
+  List<pw.TableRow> _getValuationTableRows() {
+    final pw.TextStyle headerTextStyle =
+        pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9);
+    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 9);
+    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
+
+    return [
+      // Table Header
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Sr. no.', style: headerTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Particulars of item', style: headerTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Plinth area (Sqft)', style: headerTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Roof height', style: headerTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Age of building', style: headerTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Estimated replacement rate per sqft',
+                  style: headerTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Replacement cost Rs.', style: headerTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Depreciation Rs.', style: headerTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Net value after depreciation',
+                  style: headerTextStyle)),
+        ],
+      ),
+      // Row 1: GF
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('1', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('GF', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_valPlinthGFController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_valRoofHeightGFController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child:
+                  pw.Text(_valAgeGFController.text, style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child:
+                  pw.Text(_valRateGFController.text, style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_valReplaceCostGFController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_valDepreciationGFController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_valNetValueGFController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+      // Row 2: FF
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('2', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('FF', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_valPlinthFFController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_valRoofHeightFFController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child:
+                  pw.Text(_valAgeFFController.text, style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child:
+                  pw.Text(_valRateFFController.text, style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_valReplaceCostFFController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_valDepreciationFFController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_valNetValueFFController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+      // Total Row
+      pw.TableRow(
+        children: [
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('Total', style: headerTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_valTotalPlinthController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text('', style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_valTotalReplaceCostController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_valTotalDepreciationController.text,
+                  style: contentTextStyle)),
+          pw.Container(
+              padding: cellPadding,
+              child: pw.Text(_valTotalNetValueController.text,
+                  style: contentTextStyle)),
+        ],
+      ),
+    ];
+  }
+
+  List<pw.TableRow> _getExtraItemsTableRows() {
+    final pw.TextStyle headerTextStyle =
+        pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9);
+    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 9);
+    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
+
+    return [
+      pw.TableRow(children: [
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('1.', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('Portico', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child:
+                pw.Text(_extraPorticoController.text, style: contentTextStyle)),
+      ]),
+      pw.TableRow(children: [
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('2.', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('Ornamental front door', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text(_extraOrnamentalDoorController.text,
+                style: contentTextStyle)),
+      ]),
+      pw.TableRow(children: [
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('3.', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('Sit out/ Verandah with steel grills',
+                style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child:
+                pw.Text(_extraSitoutController.text, style: contentTextStyle)),
+      ]),
+      pw.TableRow(children: [
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('4.', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('Overhead water tank', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text(_extraWaterTankController.text,
+                style: contentTextStyle)),
+      ]),
+      pw.TableRow(children: [
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('5.', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('Extra steel/ collapsible gates',
+                style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text(_extraSteelGatesController.text,
+                style: contentTextStyle)),
+      ]),
+      pw.TableRow(children: [
+        pw.Padding(
+            padding: cellPadding, child: pw.Text('', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('Total', style: headerTextStyle)),
+        pw.Padding(
+            padding: cellPadding, child: pw.Text(':', style: headerTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text(_extraTotalController.text, style: headerTextStyle)),
+      ]),
+    ];
+  }
+
+  List<pw.TableRow> _getAmenitiesTableRows2() {
+    final pw.TextStyle headerTextStyle =
+        pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9);
+    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 9);
+    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
+
+    final List<List<String>> items = [
+      ['1.', 'Wardrobes', _amenWardrobesController.text],
+      ['2.', 'Glazed tiles', _amenGlazedTilesController.text],
+      ['3.', 'Extra sinks and bath tub', _amenSinksTubsController.text],
+      ['4.', 'Marble / Ceramic tiles flooring', _amenFlooringController.text],
+      ['5.', 'Interior decorations', _amenDecorationsController.text],
+      ['6.', 'Architectural elevation works', _amenElevationController.text],
+      ['7.', 'Panelling works', _amenPanellingController.text],
+      ['8.', 'Aluminium works', _amenAluminiumWorksController.text],
+      ['9.', 'Aluminium hand rails', _amenHandRailsController.text],
+      ['10.', 'False ceiling', _amenFalseCeilingController.text],
+    ];
+
+    return [
+      ...items.map((item) => pw.TableRow(children: [
+            pw.Padding(
+                padding: cellPadding,
+                child: pw.Text(item[0], style: contentTextStyle)),
+            pw.Padding(
+                padding: cellPadding,
+                child: pw.Text(item[1], style: contentTextStyle)),
+            pw.Padding(
+                padding: cellPadding,
+                child: pw.Text(':', style: contentTextStyle)),
+            pw.Padding(
+                padding: cellPadding,
+                child: pw.Text(item[2], style: contentTextStyle)),
+          ])),
+      pw.TableRow(children: [
+        pw.Padding(
+            padding: cellPadding, child: pw.Text('', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('Total', style: headerTextStyle)),
+        pw.Padding(
+            padding: cellPadding, child: pw.Text(':', style: headerTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text(_amenTotalController.text, style: headerTextStyle)),
+      ]),
+    ];
+  }
+
+  List<pw.TableRow> _getMiscTableRows() {
+    final pw.TextStyle headerTextStyle =
+        pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9);
+    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 9);
+    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
+
+    return [
+      pw.TableRow(children: [
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('1.', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('Separate toilet room', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text(_miscToiletRoomController.text,
+                style: contentTextStyle)),
+      ]),
+      pw.TableRow(children: [
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('2.', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('Separate lumber room', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text(_miscLumberRoomController.text,
+                style: contentTextStyle)),
+      ]),
+      pw.TableRow(children: [
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('3.', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child:
+                pw.Text('Separate water tank/ sump', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text(_miscSumpController.text, style: contentTextStyle)),
+      ]),
+      pw.TableRow(children: [
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('4.', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('Trees, gardening', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text(_miscGardeningController.text,
+                style: contentTextStyle)),
+      ]),
+      pw.TableRow(children: [
+        pw.Padding(
+            padding: cellPadding, child: pw.Text('', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('Total', style: headerTextStyle)),
+        pw.Padding(
+            padding: cellPadding, child: pw.Text(':', style: headerTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text(_miscTotalController.text, style: headerTextStyle)),
+      ]),
+    ];
+  }
+
+  List<pw.TableRow> _getServicesTableRows() {
+    final pw.TextStyle headerTextStyle =
+        pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9);
+    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 9);
+    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
+
+    return [
+      pw.TableRow(children: [
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('1.', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child:
+                pw.Text('Water supply arrangements', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text(_servWaterSupplyController.text,
+                style: contentTextStyle)),
+      ]),
+      pw.TableRow(children: [
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('2.', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('Drainage arrangements', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child:
+                pw.Text(_servDrainageController.text, style: contentTextStyle)),
+      ]),
+      pw.TableRow(children: [
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('3.', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('Compound wall', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text(_servCompoundWallController.text,
+                style: contentTextStyle)),
+      ]),
+      pw.TableRow(children: [
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('4.', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('C. B. deposits, fittings etc.',
+                style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child:
+                pw.Text(_servDepositsController.text, style: contentTextStyle)),
+      ]),
+      pw.TableRow(children: [
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('5.', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('Pavement', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding, child: pw.Text(':', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child:
+                pw.Text(_servPavementController.text, style: contentTextStyle)),
+      ]),
+      pw.TableRow(children: [
+        pw.Padding(
+            padding: cellPadding, child: pw.Text('', style: contentTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text('Total', style: headerTextStyle)),
+        pw.Padding(
+            padding: cellPadding, child: pw.Text(':', style: headerTextStyle)),
+        pw.Padding(
+            padding: cellPadding,
+            child: pw.Text(_servTotalController.text, style: headerTextStyle)),
+      ]),
+    ];
+  }
+
   // NEW: Helper function to get table rows for "Total abstract of the entire property"
   List<pw.TableRow> _page7() {
     final pw.TextStyle headerTextStyle = pw.TextStyle(
@@ -4295,6 +5980,18 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         _getValuerCommentsTableRows(); // NEW: Get rows for valuer comments table
 
     final List<pw.TableRow> page7 = _page7();
+
+    // page - 5(new format)
+    final List<pw.TableRow> getSpecificationsTableRows =
+        _getSpecificationsTableRows();
+    final List<pw.TableRow> getAdditionalSpecificationsTableRows =
+        _getAdditionalSpecificationsTableRows();
+    final List<pw.TableRow> getValuationTableRows = _getValuationTableRows();
+
+    final List<pw.TableRow> getExtraItemsTableRows = _getExtraItemsTableRows();
+    final List<pw.TableRow> getAmenitiesTableRows2 = _getAmenitiesTableRows2();
+    final List<pw.TableRow> getMiscTableRows = _getMiscTableRows();
+    final List<pw.TableRow> getServicesTableRows = _getServicesTableRows();
 
     final logoImage = await loadLogoImage();
     // Page 1
@@ -4955,50 +6652,151 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
       ),
     );
 
-    // Page 5 - New page for the final valuation table
+    // Page 5 - (New format)
     pdf.addPage(
       pw.MultiPage(
         pageFormat: pdfLib.PdfPageFormat.a4,
+        margin: const pw.EdgeInsets.all(32),
         build: (pw.Context context) {
           return [
             pw.Center(
-              child: pw.Column(
-                children: [
-                  pw.Text(
-                    '     (Valuation: Here the approved valuer should discuss in detail his approach to valuation of property and indicate how the value has been arrived at, supported by necessary calculations. Also, such aspects as i) Salability ii) Likely rental values in future in iii) Any likely income it may generate, may be discussed).',
-                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-                  ),
-                  pw.SizedBox(height: 10),
-                  pw.Text(
-                    'Photograph of owner/representative with property in background to be enclosed.',
-                  ),
-                  pw.SizedBox(height: 10),
-                  pw.Text(
-                    'Screen shot of longitude/latitude and co-ordinates of property using GPS/Various Apps/Internet sites',
-                  ),
-                  pw.SizedBox(height: 10),
-                  pw.Text(
-                    "As a result of my appraisal and analysis, it is my considered opinion that the present value's of the above property in the prevailing condition with aforesaid specifications is ",
-                  ),
-                  pw.SizedBox(height: 30),
-                ],
+              child: pw.Text(
+                'Specifications of construction (floor-wise) in respect of',
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 12,
+                ),
+                textAlign: pw.TextAlign.center,
               ),
             ),
-            pw.SizedBox(height: 30),
-            pw.SizedBox(height: 50),
-            pw.Text('Encl: Declaration from the valuer in Format E'),
+            pw.SizedBox(height: 10),
+            pw.Table(
+              border: pw.TableBorder.all(
+                color: pdfLib.PdfColors.black,
+                width: 0.5,
+              ),
+              columnWidths: {
+                0: const pw.FixedColumnWidth(30), // S. No.
+                1: const pw.FlexColumnWidth(3.5), // Description
+                2: const pw.FlexColumnWidth(1.5), // Ground floor
+                3: const pw.FlexColumnWidth(1.5), // Other floors
+              },
+              children: [
+                // Section 1: Rows 1 through 11 (Foundation to Kitchen)
+                ..._getSpecificationsTableRows(),
+
+                // Section 2: Rows for Compound Wall, Electrical, and Plumbing
+                // Note: Ensure the second function does not re-add the Header row
+                // if you want one continuous table without a mid-break header.
+                ..._getAdditionalSpecificationsTableRows(),
+              ],
+            ),
+            pw.Text(
+              'Stage of contruction: ${_stageofcontruction.text}',
+              style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+            )
           ];
         },
       ),
     );
+
     pdf.addPage(
       pw.MultiPage(
         pageFormat: pdfLib.PdfPageFormat.a4,
+        margin: const pw.EdgeInsets.all(32),
         build: (pw.Context context) {
-          return [pw.Text('Page 6')];
+          // Helper for Part Title Headers
+          pw.Widget buildPartHeader(String title, String amountLabel) {
+            return pw.Padding(
+              padding: const pw.EdgeInsets.only(top: 15, bottom: 5),
+              child: pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.Text(title,
+                      style: pw.TextStyle(
+                          fontWeight: pw.FontWeight.bold, fontSize: 10)),
+                  pw.Text(amountLabel, style: pw.TextStyle(fontSize: 9)),
+                ],
+              ),
+            );
+          }
+
+          // Standard Column Widths for Parts C, D, E, F
+          final partColumnWidths = {
+            0: const pw.FixedColumnWidth(25), // S.No
+            1: const pw.FlexColumnWidth(4), // Description
+            2: const pw.FixedColumnWidth(20), // Colon
+            3: const pw.FlexColumnWidth(2), // Amount
+          };
+
+          return [
+            pw.Center(
+              child: pw.Text(
+                'Details of valuation',
+                style:
+                    pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12),
+              ),
+            ),
+            pw.SizedBox(height: 10),
+
+            // Main Valuation Table
+            pw.Table(
+              border:
+                  pw.TableBorder.all(color: pdfLib.PdfColors.black, width: 0.5),
+              columnWidths: {
+                0: const pw.FixedColumnWidth(25),
+                1: const pw.FlexColumnWidth(1.5),
+                2: const pw.FlexColumnWidth(1.2),
+                3: const pw.FlexColumnWidth(1.0),
+                4: const pw.FlexColumnWidth(1.0),
+                5: const pw.FlexColumnWidth(1.5),
+                6: const pw.FlexColumnWidth(1.2),
+                7: const pw.FlexColumnWidth(1.2),
+                8: const pw.FlexColumnWidth(1.2),
+              },
+              children: [..._getValuationTableRows()],
+            ),
+
+            // --- PART C ---
+            buildPartHeader('Part C- (Extra Items)', '(Amount in Rs.)'),
+            pw.Table(
+              border:
+                  pw.TableBorder.all(color: pdfLib.PdfColors.black, width: 0.5),
+              columnWidths: partColumnWidths,
+              children: [..._getExtraItemsTableRows()],
+            ),
+
+            // --- PART D ---
+            buildPartHeader('Part D- (Amenities)', '(Amount in Rs.)'),
+            pw.Table(
+              border:
+                  pw.TableBorder.all(color: pdfLib.PdfColors.black, width: 0.5),
+              columnWidths: partColumnWidths,
+              children: [..._getAmenitiesTableRows2()],
+            ),
+
+            // --- PART E ---
+            buildPartHeader('Part E- (Miscellaneous)', '(Amount in Rs.)'),
+            pw.Table(
+              border:
+                  pw.TableBorder.all(color: pdfLib.PdfColors.black, width: 0.5),
+              columnWidths: partColumnWidths,
+              children: [..._getMiscTableRows()],
+            ),
+
+            // --- PART F ---
+            buildPartHeader('Part F- (Services)', '(Amount in Rs.)'),
+            pw.Table(
+              border:
+                  pw.TableBorder.all(color: pdfLib.PdfColors.black, width: 0.5),
+              columnWidths: partColumnWidths,
+              children: [..._getServicesTableRows()],
+            ),
+          ];
         },
       ),
     );
+
     pdf.addPage(
       pw.MultiPage(
         pageFormat: pdfLib.PdfPageFormat.a4,
@@ -7136,6 +8934,788 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
               ),
               const SizedBox(height: 20),
 
+              //Page 5 (New format)
+              ExpansionTile(
+                title: const Text(
+                  'Construction Specifications (Floor-wise)',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                initiallyExpanded: false,
+                children: <Widget>[
+                  const Divider(),
+
+                  // 1. Foundation
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                    child: Text("1. Foundation",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _foundationGroundController, 'Ground Floor')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _foundationOtherController, 'Other Floors')),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+
+                  // 2. Basement
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                    child: Text("2. Basement",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _basementGroundController, 'Ground Floor')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _basementOtherController, 'Other Floors')),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+
+                  // 3. Superstructure
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                    child: Text("3. Superstructure",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _superstructureGroundController, 'Ground Floor')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _superstructureOtherController, 'Other Floors')),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+
+                  // 4. Joinery / Doors & Windows
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                    child: Text(
+                        "4. Joinery / Doors & Windows (size, shutters, timber species etc.)",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  _buildSpecificationField(
+                      _joineryGroundController, 'Ground Floor (Details)',
+                      maxLines: 3),
+                  const SizedBox(height: 10),
+                  _buildSpecificationField(
+                      _joineryOtherController, 'Other Floors (Details)',
+                      maxLines: 3),
+                  const SizedBox(height: 15),
+
+                  // 5. RCC works
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                    child: Text("5. RCC works",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _rccWorksGroundController, 'Ground Floor')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _rccWorksOtherController, 'Other Floors')),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+
+                  // 6. Plastering
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                    child: Text("6. Plastering",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _plasteringGroundController, 'Ground Floor')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _plasteringOtherController, 'Other Floors')),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+
+                  // 7. Flooring, Skirting, dadoing
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                    child: Text("7. Flooring, Skirting, dadoing",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _flooringGroundController, 'Ground Floor')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _flooringOtherController, 'Other Floors')),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+
+                  // 8. Special finish
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                    child: Text(
+                        "8. Special finish (marble, granite, wooden paneling, grills, etc)",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  _buildSpecificationField(
+                      _specialFinishGroundController, 'Ground Floor (Details)',
+                      maxLines: 2),
+                  const SizedBox(height: 10),
+                  _buildSpecificationField(
+                      _specialFinishOtherController, 'Other Floors (Details)',
+                      maxLines: 2),
+                  const SizedBox(height: 15),
+
+                  // 9. Roofing
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                    child: Text("9. Roofing including weather proof course",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _roofingGroundController, 'Ground Floor')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _roofingOtherController, 'Other Floors')),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+
+                  // 10. Drainage
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                    child: Text("10. Drainage",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _drainageGroundController, 'Ground Floor')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _drainageOtherController, 'Other Floors')),
+                    ],
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  //11. No of Kitchen
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                    child: Text("11. No of Kitchen",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _kitchenGroundController, 'Ground Floor')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _kitchenOtherController, 'Other Floors')),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              ),
+              const SizedBox(height: 20),
+              //page 5(second table)
+              ExpansionTile(
+                title: const Text(
+                  'Additional Construction Specifications (Floor-wise)',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                initiallyExpanded: false,
+                children: <Widget>[
+                  const Divider(),
+
+                  // ... (Your existing items 1 - 11 here) ...
+
+                  // 2. Compound wall
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                    child: Text("2. Compound wall",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  // Row(
+                  //   children: [
+                  //     Flexible(
+                  //         child: _buildSpecificationField(
+                  //             _compoundWallGroundController, 'Ground Floor')),
+                  //     const SizedBox(width: 10),
+                  //     Flexible(
+                  //         child: _buildSpecificationField(
+                  //             _compoundWallOtherController, 'Other Floors')),
+                  //   ],
+                  // ),
+                  _buildSubLabel("Height"),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _cwHeightGroundController, 'Ground Floor')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _cwHeightOtherController, 'Other Floors')),
+                    ],
+                  ),
+                  _buildSubLabel("Length"),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _cwLengthGroundController, 'Ground Floor')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _cwLengthOtherController, 'Other Floors')),
+                    ],
+                  ),
+                  _buildSubLabel("Type of construction"),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _cwTypeGroundController, 'Ground Floor')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _cwTypeOtherController, 'Other Floors')),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+
+                  // 3. Electrical installation
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                    child: Text("3. Electrical installation",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  _buildSubLabel("Type of wiring"),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _elecWiringGroundController, 'Ground Floor')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _elecWiringOtherController, 'Other Floors')),
+                    ],
+                  ),
+                  _buildSubLabel("Class of fittings (superior/ordinary/poor)"),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _elecFittingsGroundController, 'Ground Floor')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _elecFittingsOtherController, 'Other Floors')),
+                    ],
+                  ),
+                  _buildSubLabel("Number of light points"),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _elecLightPointsGroundController,
+                              'Ground Floor')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _elecLightPointsOtherController, 'Other Floors')),
+                    ],
+                  ),
+                  _buildSubLabel("Fan points"),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _elecFanPointsGroundController, 'Ground Floor')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _elecFanPointsOtherController, 'Other Floors')),
+                    ],
+                  ),
+                  _buildSubLabel("Spare plug points"),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _elecPlugPointsGroundController, 'Ground Floor')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _elecPlugPointsOtherController, 'Other Floors')),
+                    ],
+                  ),
+                  _buildSubLabel("Any other item"),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _elecOtherGroundController, 'Ground Floor')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _elecOtherOtherController, 'Other Floors')),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+
+                  // 4. Plumbing installation
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                    child: Text("4. Plumbing installation",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  _buildSubLabel("a) No. of water closets and their type"),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _plumClosetsGroundController, 'Ground Floor')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _plumClosetsOtherController, 'Other Floors')),
+                    ],
+                  ),
+                  _buildSubLabel("b) No. of wash basins"),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _plumBasinsGroundController, 'Ground Floor')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _plumBasinsOtherController, 'Other Floors')),
+                    ],
+                  ),
+                  _buildSubLabel("c) No. of urinals"),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _plumUrinalsGroundController, 'Ground Floor')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _plumUrinalsOtherController, 'Other Floors')),
+                    ],
+                  ),
+                  _buildSubLabel("d) No. of bath tubs"),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _plumTubsGroundController, 'Ground Floor')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _plumTubsOtherController, 'Other Floors')),
+                    ],
+                  ),
+                  _buildSubLabel("e) Water meter, taps, etc."),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _plumMetersGroundController, 'Ground Floor')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _plumMetersOtherController, 'Other Floors')),
+                    ],
+                  ),
+                  _buildSubLabel("f) Any other fixtures"),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _plumFixturesGroundController, 'Ground Floor')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _plumFixturesOtherController, 'Other Floors')),
+                    ],
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  TextFormField(
+                    controller: _stageofcontruction,
+                    decoration: InputDecoration(
+                      labelText: 'Stage of Construction',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+                ],
+              ),
+              const SizedBox(height: 20),
+              //page 6 (new format)
+              ExpansionTile(
+                title: const Text(
+                  'Details of Valuation',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                initiallyExpanded: false,
+                children: <Widget>[
+                  const Divider(),
+
+                  // --- 1. Ground Floor (GF) ---
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                    child: Text("1. Ground Floor (GF)",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.blue)),
+                  ),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _valPlinthGFController, 'Plinth area (Sqft)')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _valRoofHeightGFController, 'Roof height')),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _valAgeGFController, 'Age of building')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _valRateGFController, 'Replacement rate/sqft')),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _valReplaceCostGFController,
+                              'Replacement cost Rs.')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _valDepreciationGFController,
+                              'Depreciation Rs.')),
+                    ],
+                  ),
+                  _buildSubLabel("Net value after depreciation"),
+                  _buildSpecificationField(
+                      _valNetValueGFController, 'Net Value (GF)'),
+
+                  const SizedBox(height: 15),
+                  const Divider(),
+
+                  // --- 2. First Floor (FF) ---
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                    child: Text("2. First Floor (FF)",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.blue)),
+                  ),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _valPlinthFFController, 'Plinth area (Sqft)')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _valRoofHeightFFController, 'Roof height')),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _valAgeFFController, 'Age of building')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _valRateFFController, 'Replacement rate/sqft')),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _valReplaceCostFFController,
+                              'Replacement cost Rs.')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _valDepreciationFFController,
+                              'Depreciation Rs.')),
+                    ],
+                  ),
+                  _buildSubLabel("Net value after depreciation"),
+                  _buildSpecificationField(
+                      _valNetValueFFController, 'Net Value (FF)'),
+
+                  const SizedBox(height: 15),
+                  const Divider(),
+
+                  // --- 3. Totals ---
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                    child: Text("Summary / Totals",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _valTotalPlinthController, 'Total Plinth Area')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _valTotalReplaceCostController,
+                              'Total Replace Cost')),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _valTotalDepreciationController,
+                              'Total Depreciation')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _valTotalNetValueController, 'Total Net Value')),
+                    ],
+                  ),
+
+                  const SizedBox(height: 20),
+                ],
+              ),
+
+              const SizedBox(height: 20),
+              ExpansionTile(
+                title: const Text(
+                  'Extra Items, Amenities & Services',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                initiallyExpanded: false,
+                children: <Widget>[
+                  const Divider(),
+
+                  // --- PART C: EXTRA ITEMS ---
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                    child: Text("Part C - Extra Items",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.blue)),
+                  ),
+                  _buildSpecificationField(
+                      _extraPorticoController, '1. Portico'),
+                  const SizedBox(height: 12),
+                  _buildSpecificationField(_extraOrnamentalDoorController,
+                      '2. Ornamental front door'),
+                  const SizedBox(height: 12),
+                  _buildSpecificationField(_extraSitoutController,
+                      '3. Sit out/ Verandah with steel grills'),
+                  const SizedBox(height: 12),
+                  _buildSpecificationField(
+                      _extraWaterTankController, '4. Overhead water tank'),
+                  const SizedBox(height: 12),
+                  _buildSpecificationField(_extraSteelGatesController,
+                      '5. Extra steel/ collapsible gates'),
+                  const SizedBox(height: 12),
+                  _buildSpecificationField(
+                      _extraTotalController, 'Total (Part C)'),
+
+                  const Divider(
+                      height:
+                          32), // Added height to the divider for extra separation
+
+                  // --- PART D: AMENITIES ---
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                    child: Text("Part D - Amenities",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.blue)),
+                  ),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _amenWardrobesController, '1. Wardrobes')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _amenGlazedTilesController, '2. Glazed tiles')),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _amenSinksTubsController,
+                              '3. Extra sinks/bath tub')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _amenFlooringController,
+                              '4. Marble/Ceramic flooring')),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  _buildSpecificationField(
+                      _amenDecorationsController, '5. Interior decorations'),
+                  const SizedBox(height: 12),
+                  _buildSpecificationField(_amenElevationController,
+                      '6. Architectural elevation works'),
+                  const SizedBox(height: 12),
+                  _buildSpecificationField(
+                      _amenPanellingController, '7. Panelling works'),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _amenAluminiumWorksController,
+                              '8. Aluminium works')),
+                      const SizedBox(width: 10),
+                      Flexible(
+                          child: _buildSpecificationField(
+                              _amenHandRailsController,
+                              '9. Aluminium hand rails')),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  _buildSpecificationField(
+                      _amenFalseCeilingController, '10. False ceiling'),
+                  const SizedBox(height: 12),
+                  _buildSpecificationField(
+                      _amenTotalController, 'Total (Part D)'),
+
+                  const Divider(height: 32),
+
+                  // --- PART E: MISCELLANEOUS ---
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                    child: Text("Part E - Miscellaneous",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.blue)),
+                  ),
+                  _buildSpecificationField(
+                      _miscToiletRoomController, '1. Separate toilet room'),
+                  const SizedBox(height: 12),
+                  _buildSpecificationField(
+                      _miscLumberRoomController, '2. Separate lumber room'),
+                  const SizedBox(height: 12),
+                  _buildSpecificationField(
+                      _miscSumpController, '3. Separate water tank/ sump'),
+                  const SizedBox(height: 12),
+                  _buildSpecificationField(
+                      _miscGardeningController, '4. Trees, gardening'),
+                  const SizedBox(height: 12),
+                  _buildSpecificationField(
+                      _miscTotalController, 'Total (Part E)'),
+
+                  const Divider(height: 32),
+
+                  // --- PART F: SERVICES ---
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                    child: Text("Part F - Services",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.blue)),
+                  ),
+                  _buildSpecificationField(_servWaterSupplyController,
+                      '1. Water supply arrangements'),
+                  const SizedBox(height: 12),
+                  _buildSpecificationField(
+                      _servDrainageController, '2. Drainage arrangements'),
+                  const SizedBox(height: 12),
+                  _buildSpecificationField(
+                      _servCompoundWallController, '3. Compound wall'),
+                  const SizedBox(height: 12),
+                  _buildSpecificationField(_servDepositsController,
+                      '4. C. B. deposits, fittings etc.'),
+                  const SizedBox(height: 12),
+                  _buildSpecificationField(
+                      _servPavementController, '5. Pavement'),
+                  const SizedBox(height: 12),
+                  _buildSpecificationField(
+                      _servTotalController, 'Total (Part F)'),
+
+                  const SizedBox(height: 20),
+                ],
+              ),
+
               // Collapsible Section: Total abstract of the entire property
               ExpansionTile(
                 title: const Text(
@@ -8003,6 +10583,36 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // Page 5 (New format)
+  Widget _buildSpecificationField(
+      TextEditingController controller, String label,
+      {int maxLines = 1}) {
+    return TextField(
+      controller: controller,
+      maxLines: maxLines,
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSubLabel(String label) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 12.0, top: 8.0, bottom: 4.0),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          label,
+          style: const TextStyle(
+              fontSize: 13, color: Colors.grey, fontWeight: FontWeight.w500),
+        ),
       ),
     );
   }
