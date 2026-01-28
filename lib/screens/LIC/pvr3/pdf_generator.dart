@@ -34,11 +34,6 @@ pw.Page _buildPage1(ValuationData data) {
           pw.SizedBox(height: 10),
           _buildSectionHeader('1. PROPERTY DETAILS:'),
           _buildPropertyDetails(data),
-          _buildSectionHeader('2. DRAWING'),
-          _buildDrawingDetails(data),
-          pw.SizedBox(height: 10),
-          _buildSectionHeader('3. Building Details'),
-          _buildBuildingDetails(data),
         ],
       );
     },
@@ -76,6 +71,11 @@ pw.Page _buildPage2(ValuationData data) {
       return pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
+          _buildSectionHeader('2. DRAWING'),
+          _buildDrawingDetails(data),
+          pw.SizedBox(height: 10),
+          _buildSectionHeader('3. Building Details'),
+          _buildBuildingDetails(data),
           _buildBuildingDetailsContinuation(data),
           _buildSectionHeader('4. VALUATION DETAILS:'),
           pw.Text(
@@ -87,6 +87,41 @@ pw.Page _buildPage2(ValuationData data) {
           else
             _buildFlatValuationPdf(data, currencyFormat),
           pw.SizedBox(height: 10),
+        ],
+      );
+    },
+  );
+}
+
+pw.Page _buildPage3(ValuationData data) {
+  final currencyFormat =
+      NumberFormat.currency(locale: 'en_IN', symbol: 'Rs. ', decimalDigits: 0);
+
+  // Calculate total property value to show in section 7
+  double totalMarketValue = 0;
+  if (data.valuationType == PropertyType.House) {
+    final landMarketVal = (double.tryParse(data.landArea) ?? 0) *
+        (double.tryParse(data.landUnitRate) ?? 0);
+    final amenitiesMarketVal = (double.tryParse(data.amenitiesArea) ?? 0) *
+        (double.tryParse(data.amenitiesUnitRate) ?? 0);
+    double floorsMarketValue = 0;
+    for (var floor in data.floors) {
+      floorsMarketValue += (double.tryParse(floor.area) ?? 0) *
+          (double.tryParse(floor.marketRate) ?? 0);
+    }
+    totalMarketValue = landMarketVal + amenitiesMarketVal + floorsMarketValue;
+  } else {
+    totalMarketValue = double.tryParse(data.flatValueMarket) ?? 0;
+  }
+  final improvementTotal = double.tryParse(data.improvementAmount) ?? 0;
+  final estimatedValueAfterImprovements = totalMarketValue + improvementTotal;
+  return pw.Page(
+    pageFormat: PdfPageFormat.a4,
+    margin: const pw.EdgeInsets.all(36),
+    build: (context) {
+      return pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
           _buildSectionHeader('5. ESTIMATE FOR IMPROVEMENT (If applicable)'),
           _buildImprovementDetails(data, currencyFormat),
           pw.SizedBox(height: 10),
@@ -101,36 +136,21 @@ pw.Page _buildPage2(ValuationData data) {
               child: pw.Text(
                 currencyFormat.format(estimatedValueAfterImprovements),
                 style:
-                    pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10),
+                    pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 11),
               )),
-          pw.SizedBox(height: 10),
-        ],
-      );
-    },
-  );
-}
-
-pw.Page _buildPage3(ValuationData data) {
-  return pw.Page(
-    pageFormat: PdfPageFormat.a4,
-    margin: const pw.EdgeInsets.all(36),
-    build: (context) {
-      return pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          _buildSectionHeader('8. Remarks If Any'),
+          pw.SizedBox(height: 10), _buildSectionHeader('8. Remarks If Any'),
           _buildRemarks(data),
           _buildSectionHeader('9. CERTIFICATE'),
           pw.SizedBox(height: 7),
           pw.Text(
               'I declare that I am not associated with the builder or with any of his associate companies or with the borrower directly or indirectly in the past or in the present and this report has been prepared by me with highest professional integrity.',
-              style: const pw.TextStyle(fontSize: 9)),
+              style: const pw.TextStyle(fontSize: 10.3)),
           pw.Spacer(),
           pw.Align(
               alignment: pw.Alignment.centerRight,
               child: pw.Text('SIGNATURE OF THE VALUER',
                   style: pw.TextStyle(
-                      fontWeight: pw.FontWeight.bold, fontSize: 10))),
+                      fontWeight: pw.FontWeight.bold, fontSize: 11))),
         ],
       );
     },
@@ -147,7 +167,7 @@ pw.MultiPage _buildImagePage(ValuationData data) {
     build: (context) => [
       pw.GridView(
         crossAxisCount: 2,
-        childAspectRatio: 0.65,
+        childAspectRatio: 0.9,
         children: data.images.map((valuationImage) {
           final image = pw.MemoryImage(valuationImage.imageFile);
           return pw.Padding(
@@ -180,13 +200,13 @@ pw.Widget _buildHeader() => pw.Column(children: [
             child: pw.Column(children: [
           pw.Text('LIC HOUSING FINANCE LIMITED',
               style:
-                  pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10)),
+                  pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 11)),
           pw.Text('AREA OFFICE: THIRUVANANTHAPURAM',
-              style: const pw.TextStyle(fontSize: 10)),
+              style: const pw.TextStyle(fontSize: 11)),
           pw.SizedBox(height: 5),
           pw.Text('VALUATION REPORT BY PANEL VALUER FOR HOME LOAN',
               style: const pw.TextStyle(
-                  decoration: pw.TextDecoration.underline, fontSize: 10)),
+                  decoration: pw.TextDecoration.underline, fontSize: 11)),
         ])),
         pw.Align(
             alignment: pw.Alignment.topRight,
@@ -203,31 +223,31 @@ pw.Table _buildInfoTable(ValuationData data, DateFormat dateFormat) => pw.Table(
       },
       children: [
         pw.TableRow(children: [
-          pw.Text(' * File no.', style: const pw.TextStyle(fontSize: 9)),
-          pw.Text(': ${data.fileNo}', style: const pw.TextStyle(fontSize: 9))
+          pw.Text(' * File no.', style: const pw.TextStyle(fontSize: 10.3)),
+          pw.Text(': ${data.fileNo}', style: const pw.TextStyle(fontSize: 10.3))
         ]),
         pw.TableRow(children: [
           pw.Text(' * Name of the Valuer',
-              style: const pw.TextStyle(fontSize: 9)),
+              style: const pw.TextStyle(fontSize: 10.3)),
           pw.Text(': ${data.valuerName} (${data.valuerCode})',
-              style: const pw.TextStyle(fontSize: 9))
+              style: const pw.TextStyle(fontSize: 10.3))
         ]),
         pw.TableRow(children: [
           pw.Text(' Appointing Authority',
-              style: const pw.TextStyle(fontSize: 9)),
+              style: const pw.TextStyle(fontSize: 10.3)),
           pw.Text(': ${data.appointingAuthority}',
-              style: const pw.TextStyle(fontSize: 9))
+              style: const pw.TextStyle(fontSize: 10.3))
         ]),
         pw.TableRow(children: [
           pw.Text(' Date of Inspection',
-              style: const pw.TextStyle(fontSize: 9)),
+              style: const pw.TextStyle(fontSize: 10.3)),
           pw.Text(': ${dateFormat.format(data.inspectionDate)}',
-              style: const pw.TextStyle(fontSize: 9))
+              style: const pw.TextStyle(fontSize: 10.3))
         ]),
         pw.TableRow(children: [
           pw.Text(' RERA NO. (For Flats)',
-              style: const pw.TextStyle(fontSize: 9)),
-          pw.Text(': ${data.reraNo}', style: const pw.TextStyle(fontSize: 9))
+              style: const pw.TextStyle(fontSize: 10.3)),
+          pw.Text(': ${data.reraNo}', style: const pw.TextStyle(fontSize: 10.3))
         ]),
       ],
     );
@@ -241,7 +261,7 @@ pw.Widget _buildPropertyDetails(ValuationData data) {
   final occupantKeyWidget = pw.Column(
     crossAxisAlignment: pw.CrossAxisAlignment.start,
     children: [
-      pw.Text('g. Occupant', style: const pw.TextStyle(fontSize: 9)),
+      pw.Text('g. Occupant', style: const pw.TextStyle(fontSize: 10.3)),
       pw.Padding(
           padding: const pw.EdgeInsets.only(left: 10, top: 2),
           child: pw.Column(
@@ -258,9 +278,9 @@ pw.Widget _buildPropertyDetails(ValuationData data) {
   final occupantValueWidget =
       pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
     pw.Text(data.occupantStatus.name,
-        style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9)),
+        style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10.3)),
     pw.Text(data.occupantName,
-        style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9)),
+        style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10.3)),
   ]);
   // --- End of Fix ---
 
@@ -278,12 +298,13 @@ pw.Widget _buildPropertyDetails(ValuationData data) {
       pw.SizedBox(height: 5),
       pw.Text('e. Boundaries and Dimensions',
           style: const pw.TextStyle(
-            fontSize: 10,
+            fontSize: 11,
           )),
       pw.TableHelper.fromTextArray(
         border: pw.TableBorder.all(width: 0.5),
-        headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9),
-        cellStyle: const pw.TextStyle(fontSize: 9),
+        headerStyle:
+            pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10.3),
+        cellStyle: const pw.TextStyle(fontSize: 10.3),
         headers: [' ', 'Boundaries', 'Dimensions'],
         data: [
           ['North/Front', data.northBoundary, data.northDim],
@@ -302,7 +323,7 @@ pw.Widget _buildPropertyDetails(ValuationData data) {
         child:
             pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
           pw.Expanded(flex: 2, child: occupantKeyWidget),
-          pw.Text(': ', style: const pw.TextStyle(fontSize: 9)),
+          pw.Text(': ', style: const pw.TextStyle(fontSize: 10.3)),
           pw.Expanded(flex: 3, child: occupantValueWidget),
         ]),
       ),
@@ -438,11 +459,11 @@ pw.Widget _buildHouseValuationPdf(
 
   return pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
     pw.Text('a. Value of the property (if it is a house) :',
-        style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10)),
+        style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 11)),
     pw.TableHelper.fromTextArray(
       border: pw.TableBorder.all(width: 0.5),
-      headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9),
-      cellStyle: const pw.TextStyle(fontSize: 9),
+      headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10.3),
+      cellStyle: const pw.TextStyle(fontSize: 10.3),
       headers: [
         'Description',
         'Area',
@@ -499,7 +520,7 @@ pw.Widget _buildFlatValuationPdf(
     ValuationData data, NumberFormat currencyFormat) {
   return pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
     pw.Text('b. Value of the property (if it is a flat) :',
-        style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10)),
+        style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 11)),
     _buildKeyValue('1. Undivided Share of Land(if applicable)',
         '= ${data.flatUndividedShare}'),
     _buildKeyValue('2. Built Up Area of the Flat', '= ${data.flatBuiltUpArea}'),
@@ -508,9 +529,9 @@ pw.Widget _buildFlatValuationPdf(
     pw.SizedBox(height: 5),
     pw.TableHelper.fromTextArray(
       border: pw.TableBorder.all(width: 0.5),
-      cellStyle: const pw.TextStyle(fontSize: 9),
+      cellStyle: const pw.TextStyle(fontSize: 10.3),
       cellAlignment: pw.Alignment.center,
-      headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9),
+      headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10.3),
       headers: [
         '4. Estimated Value of the Flat',
         'Unit Rate',
@@ -567,10 +588,11 @@ pw.Widget _buildImprovementDetails(
 
 pw.Widget _buildProgressOfWorkTable(
     ValuationData data, NumberFormat currencyFormat) {
-  final headerStyle = pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9);
+  final headerStyle =
+      pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10.3);
   final subHeaderStyle =
       pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 8);
-  const cellStyle = pw.TextStyle(fontSize: 9);
+  const cellStyle = pw.TextStyle(fontSize: 10.3);
   const cellPadding = pw.EdgeInsets.all(3);
 
   // Define column widths that will be used by both header and data tables to ensure alignment.
@@ -722,15 +744,15 @@ pw.Widget _buildKeyValue(String key, String value,
       child: pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
         pw.Expanded(
             flex: 2,
-            child: pw.Text(key, style: const pw.TextStyle(fontSize: 9))),
-        pw.Text(': ', style: const pw.TextStyle(fontSize: 9)),
+            child: pw.Text(key, style: const pw.TextStyle(fontSize: 10.3))),
+        pw.Text(': ', style: const pw.TextStyle(fontSize: 10.3)),
         pw.Expanded(
             flex: 3,
             child: pw.Text(value,
                 style: pw.TextStyle(
                     fontWeight:
                         boldValue ? pw.FontWeight.bold : pw.FontWeight.normal,
-                    fontSize: 9))),
+                    fontSize: 10.3))),
       ]),
     );
 

@@ -74,11 +74,11 @@ class SIBPdfGenerator {
         pw.SizedBox(height: 4),
         pw.Text(
           'Latitude: ${image.latitude}',
-          style: const pw.TextStyle(fontSize: 8),
+          style: const pw.TextStyle(fontSize: 9),
         ),
         pw.Text(
           'Longitude: ${image.longitude}',
-          style: const pw.TextStyle(fontSize: 8),
+          style: const pw.TextStyle(fontSize: 9),
         ),
       ],
     );

@@ -1,13 +1,14 @@
 import 'dart:typed_data';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:number_to_indian_words/number_to_indian_words.dart';
 import 'package:pdf/pdf.dart';
+import 'package:pdf/pdf.dart' as pdfLib;
 import 'package:pdf/widgets.dart' as pw;
 import 'valuation_data_model.dart';
 
 class PdfGenerator {
   final ValuationData data;
-
   final pw.Font font;
   final pw.Font boldFont;
 
@@ -17,13 +18,19 @@ class PdfGenerator {
 
   Future<Uint8List> generate() async {
     final pdf = pw.Document();
+    final Uint8List logoBytes =
+        (await rootBundle.load('assets/images/symbol.jpg'))
+            .buffer
+            .asUint8List();
 
+    // 2. Create the PDF image object
+    final pw.MemoryImage logoImage = pw.MemoryImage(logoBytes);
     pdf.addPage(
       pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
         margin: const pw.EdgeInsets.all(36),
         build: (context) => [
-          _buildHeader(),
+          _buildHeader(logoImage),
           pw.SizedBox(height: 20),
           _buildRecipient(),
           pw.SizedBox(height: 10),
@@ -65,13 +72,13 @@ class PdfGenerator {
   pw.MultiPage _buildImagePage(ValuationData data) {
     return pw.MultiPage(
       pageFormat: PdfPageFormat.a4,
-      margin: const pw.EdgeInsets.all(36),
+      margin: const pw.EdgeInsets.all(10),
       header: (context) => pw.Text('Uploaded Images',
           style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 16)),
       build: (context) => [
         pw.GridView(
           crossAxisCount: 2,
-          childAspectRatio: 0.65,
+          childAspectRatio: 1.1,
           children: data.images.map((valuationImage) {
             final image = pw.MemoryImage(valuationImage.imageFile);
             return pw.Padding(
@@ -96,42 +103,147 @@ class PdfGenerator {
     );
   }
 
-  // ============== HELPER WIDGETS ==============
+  // ============== HELPER WIDGETS =============
 
   // REPLACE THE EXISTING _buildHeader METHOD WITH THIS
-  pw.Widget _buildHeader() {
+  pw.Widget _buildHeader(pw.MemoryImage logoImage) {
     return pw.Column(
       children: [
         pw.Row(
           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
-            pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: [
-                pw.Text(data.valuerNameAndQuals,
-                    style: pw.TextStyle(font: boldFont)),
-                // The credentials string from the model might have newlines, so we handle it.
-                ...data.valuerCredentials.split('\n').map(
-                    (line) => pw.Text(line, style: pw.TextStyle(font: font))),
-              ],
+            pw.Container(
+              height: 80,
+              width: 80,
+              child: pw.Image(
+                logoImage,
+              ), // logoImage = pw.MemoryImage or pw.ImageProvider
             ),
+
+            // Right side text
             pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.end,
               children: [
-                pw.Text('Mob: ${data.valuerMob}',
-                    style: pw.TextStyle(font: font)),
-                pw.Text('Email: ${data.valuerEmail}',
-                    style: pw.TextStyle(font: font)),
+                pw.Text(
+                  'VIGNESH. S',
+                  style: pw.TextStyle(
+                    fontSize: 14,
+                    fontWeight: pw.FontWeight.bold,
+                    color: pdfLib.PdfColors.indigo,
+                  ),
+                ),
+                pw.SizedBox(height: 4),
+                pw.Text(
+                  'Chartered Engineer (AM1920793)',
+                  style: const pw.TextStyle(
+                    fontSize: 12,
+                    color: pdfLib.PdfColors.indigo,
+                  ),
+                ),
+                pw.Text(
+                  'Registered valuer under section 247 of Companies Act, 2013',
+                  style: const pw.TextStyle(
+                    fontSize: 12,
+                    color: pdfLib.PdfColors.indigo,
+                  ),
+                ),
+                pw.Text(
+                  '(IBBI/RV/01/2020/13411)',
+                  style: const pw.TextStyle(
+                    fontSize: 12,
+                    color: pdfLib.PdfColors.indigo,
+                  ),
+                ),
+                pw.Text(
+                  'Registered valuer under section 34AB of Wealth Tax Act, 1957',
+                  style: const pw.TextStyle(
+                    fontSize: 12,
+                    color: pdfLib.PdfColors.indigo,
+                  ),
+                ),
+                pw.Text(
+                  '(I-9AV/CC-TVM/2020-21)',
+                  style: const pw.TextStyle(
+                    fontSize: 12,
+                    color: pdfLib.PdfColors.indigo,
+                  ),
+                ),
+                pw.Text(
+                  'Registered valuer under section 77(1) of Black Money Act, 2015',
+                  style: const pw.TextStyle(
+                    fontSize: 12,
+                    color: pdfLib.PdfColors.indigo,
+                  ),
+                ),
+                pw.Text(
+                  '(I-3/AV-BM/PCIT-TVM/2023-24)',
+                  style: const pw.TextStyle(
+                    fontSize: 12,
+                    color: pdfLib.PdfColors.indigo,
+                  ),
+                ),
               ],
             ),
           ],
         ),
-        pw.Divider(thickness: 1, height: 10),
-        pw.Center(
-            child: pw.Text(data.valuerAddressLine1,
-                style: pw.TextStyle(font: font))),
-        pw.Divider(thickness: 1, height: 10),
+        pw.SizedBox(height: 10),
+        pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            // Top background strip with address
+            pw.Container(
+              color: pdfLib.PdfColor.fromHex(
+                '#8a9b8e',
+              ), // Approx background color
+              padding: const pw.EdgeInsets.all(6),
+              width: double.infinity,
+              child: pw.Text(
+                data.valuerAddressLine1,
+                style: pw.TextStyle(
+                  fontSize: 12,
+                  fontWeight: pw.FontWeight.bold,
+                  color: pdfLib.PdfColors.black,
+                ),
+                textAlign: pw.TextAlign.center,
+              ),
+            ),
+
+            pw.SizedBox(height: 4),
+
+            // Contact Row
+            pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                // Phone
+                pw.Row(
+                  children: [
+                    pw.Text(
+                      'Phone: ${data.valuerMob}',
+                      style: const pw.TextStyle(fontSize: 12),
+                    ),
+                  ],
+                ),
+
+                // Email
+                pw.Row(
+                  children: [
+                    pw.Text(
+                      'Email: ${data.valuerEmail}',
+                      style: const pw.TextStyle(fontSize: 12),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+        // pw.Divider(thickness: 1, height: 10),
+        // pw.Center(
+        //     child: pw.Text(data.valuerAddressLine1,
+        //         style: pw.TextStyle(font: font))),
+        // pw.Divider(thickness: 1, height: 10),
       ],
     );
   }
@@ -143,6 +255,7 @@ class PdfGenerator {
       children: [
         pw.Text('TO,', style: pw.TextStyle(font: font)),
         pw.SizedBox(height: 5),
+        pw.Text('\t\tBranch Head', style: pw.TextStyle(font: boldFont)),
         pw.Text('\t\t${data.bankName}', style: pw.TextStyle(font: boldFont)),
         pw.Text('\t\t${data.branchName}', style: pw.TextStyle(font: boldFont)),
         pw.Text('\t\tTRIVANDRUM', style: pw.TextStyle(font: boldFont)),
@@ -183,30 +296,12 @@ class PdfGenerator {
             _cell('3. List of documents verified'),
             pw.Table(
               border: pw.TableBorder.all(),
-              children: [
-                _buildSimpleRow(
-                  'a. Land tax receipt no.',
-                  data.landTaxReceiptNo,
-                ),
-                _buildSimpleRow(
-                  'b. Possession certificate no.',
-                  data.possessionCertNo,
-                ),
-                _buildSimpleRow(
-                    'c. Location sketch no.', data.locationSketchNo),
-                _buildSimpleRow(
-                  'd. Thandaper abstract no.',
-                  data.thandaperAbstractNo,
-                ),
-                _buildSimpleRow(
-                  'e. Approved Layout Plan no.',
-                  data.approvedLayoutPlanNo,
-                ),
-                _buildSimpleRow(
-                  'f. Approved Building Plan no.',
-                  data.approvedBuildingPlanNo,
-                ),
-              ],
+              children: data.docs.map((doc) {
+                return _buildSimpleRow(
+                  doc['label'] ?? '',
+                  doc['val'] ?? '', // Dynamic value from UI
+                );
+              }).toList(),
             ),
           ],
         ),

@@ -7,13 +7,20 @@ export const saveIDBIValuation = async (req, res) => {
     console.log("Received IDBI Valuation submission");
     
     const valuationData = req.body;
-    
     // Validate required fields
     if (!valuationData.applicationNo) {
         return res.status(400).json({
             success: false,
             message: "Application number is required"
         });
+    }
+
+    if (valuationData.verifiedDocuments && typeof valuationData.verifiedDocuments === 'string') {
+        try {
+            valuationData.verifiedDocuments = JSON.parse(valuationData.verifiedDocuments);
+        } catch (e) {
+            console.error("Failed to parse verifiedDocuments", e);
+        }
     }
 
     // Process images if present

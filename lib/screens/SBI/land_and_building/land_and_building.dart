@@ -167,49 +167,36 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
       TextEditingController();
 
   // Floor details controllers (for a fixed number of rows for simplicity)
-  final TextEditingController _groundFloorOccupancyController =
-      TextEditingController();
-  final TextEditingController _groundFloorNoOfRoomController =
-      TextEditingController();
-  final TextEditingController _groundFloorNoOfKitchenController =
-      TextEditingController();
-  final TextEditingController _groundFloorNoOfBathroomController =
-      TextEditingController();
-  final TextEditingController _groundFloorUsageRemarksController =
-      TextEditingController();
 
-  final TextEditingController _firstFloorOccupancyController =
-      TextEditingController();
-  final TextEditingController _firstFloorNoOfRoomController =
-      TextEditingController();
-  final TextEditingController _firstFloorNoOfKitchenController =
-      TextEditingController();
-  final TextEditingController _firstFloorNoOfBathroomController =
-      TextEditingController();
-  final TextEditingController _firstFloorUsageRemarksController =
-      TextEditingController();
+  // New controller for the "Land locked" field (Item 21)
+  final TextEditingController _locality = TextEditingController();
+  final TextEditingController _development = TextEditingController();
+  final TextEditingController _freqFlooding = TextEditingController();
+  final TextEditingController _feasibilityCivic = TextEditingController();
+  final TextEditingController _levelLand = TextEditingController();
+  final TextEditingController _shapeLand = TextEditingController();
+  final TextEditingController _typeOfUse = TextEditingController();
+  final TextEditingController _usageRestriction = TextEditingController();
+  final TextEditingController _townPlanning = TextEditingController();
+  final TextEditingController _cornerPLot = TextEditingController();
+  final TextEditingController _roadFacilites = TextEditingController();
 
   final TextEditingController _typeOfRoadController = TextEditingController();
   final TextEditingController _widthOfRoadController = TextEditingController();
 
-  // New controller for the "Land locked" field (Item 21)
   final TextEditingController _isLandLockedController = TextEditingController();
 
+  final TextEditingController _waterPotential = TextEditingController();
+  final TextEditingController _undergroundSewerage = TextEditingController();
+  final TextEditingController _powerSupply = TextEditingController();
+
+  final TextEditingController _sizeOfPlot = TextEditingController();
+  final TextEditingController _northSouth = TextEditingController();
+  final TextEditingController _eastWest = TextEditingController();
+  final TextEditingController _totalExtent = TextEditingController();
+  final TextEditingController _prevailingMarketRate = TextEditingController();
+
   // Controllers for the new Land Valuation Table
-  final TextEditingController _landAreaDetailsController =
-      TextEditingController();
-  final TextEditingController _landAreaGuidelineController =
-      TextEditingController();
-  final TextEditingController _landAreaPrevailingController =
-      TextEditingController();
-  final TextEditingController _ratePerSqFtGuidelineController =
-      TextEditingController();
-  final TextEditingController _ratePerSqFtPrevailingController =
-      TextEditingController();
-  final TextEditingController _valueInRsGuidelineController =
-      TextEditingController();
-  final TextEditingController _valueInRsPrevailingController =
-      TextEditingController();
 
   // Controllers for the new Building Valuation Table (Part B)
   final TextEditingController _typeOfBuildingController =
@@ -287,12 +274,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
       TextEditingController();
   final TextEditingController _totalAbstractServiceController =
       TextEditingController();
-
-  // NEW: Controllers for Consolidated Remarks/ Observations of the property
-  final TextEditingController _remark1Controller = TextEditingController();
-  final TextEditingController _remark2Controller = TextEditingController();
-  final TextEditingController _remark3Controller = TextEditingController();
-  final TextEditingController _remark4Controller = TextEditingController();
 
   // NEW: Controllers for the Final Valuation Table (Page 5)
   final TextEditingController _presentMarketValueController =
@@ -781,33 +762,31 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         "rentReceivedPerMonth": _rentReceivedPerMonthController.text,
         "occupiedByTenantSince": _occupiedByTenantSinceController.text,
 
-        // Floor details - Ground Floor
-        "groundFloorOccupancy": _groundFloorOccupancyController.text,
-        "groundFloorNoOfRoom": _groundFloorNoOfRoomController.text,
-        "groundFloorNoOfKitchen": _groundFloorNoOfKitchenController.text,
-        "groundFloorNoOfBathroom": _groundFloorNoOfBathroomController.text,
-        "groundFloorUsageRemarks": _groundFloorUsageRemarksController.text,
-
-        // Floor details - First Floor
-        "firstFloorOccupancy": _firstFloorOccupancyController.text,
-        "firstFloorNoOfRoom": _firstFloorNoOfRoomController.text,
-        "firstFloorNoOfKitchen": _firstFloorNoOfKitchenController.text,
-        "firstFloorNoOfBathroom": _firstFloorNoOfBathroomController.text,
-        "firstFloorUsageRemarks": _firstFloorUsageRemarksController.text,
-
         // Road details
+
+        "locality": _locality.text,
+        "development": _development.text,
+        "freqFlooding": _freqFlooding.text,
+        "feasibilityCivic": _feasibilityCivic.text,
+        "levelLand": _levelLand.text,
+        "shape": _shapeLand.text,
+        "typeOfUse": _typeOfUse.text,
+        "usageRestriction": _usageRestriction.text,
+        "townPlanning": _townPlanning.text,
+        "corner": _cornerPLot.text,
+        "roadFacilties": _roadFacilites.text,
         "typeOfRoad": _typeOfRoadController.text,
         "widthOfRoad": _widthOfRoadController.text,
         "isLandLocked": _isLandLockedController.text,
+        "waterPotential": _waterPotential.text,
+        "undergroundSewerage": _undergroundSewerage.text,
+        "powerSupply": _powerSupply.text,
 
-        // Land Valuation Table
-        "landAreaDetails": _landAreaDetailsController.text,
-        "landAreaGuideline": _landAreaGuidelineController.text,
-        "landAreaPrevailing": _landAreaPrevailingController.text,
-        "ratePerSqFtGuideline": _ratePerSqFtGuidelineController.text,
-        "ratePerSqFtPrevailing": _ratePerSqFtPrevailingController.text,
-        "valueInRsGuideline": _valueInRsGuidelineController.text,
-        "valueInRsPrevailing": _valueInRsPrevailingController.text,
+        "sizeOfPlot": _sizeOfPlot.text,
+        "northSouth": _northSouth.text,
+        "eastWest": _eastWest.text,
+        "totalExtent": _eastWest.text,
+        "prevalingMarket": _prevailingMarketRate.text,
 
         // Building Valuation Table
         "typeOfBuilding": _typeOfBuildingController.text,
@@ -858,12 +837,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         "totalAbstractAmenities": _totalAbstractAmenitiesController.text,
         "totalAbstractMisc": _totalAbstractMiscController.text,
         "totalAbstractService": _totalAbstractServiceController.text,
-
-        // Consolidated Remarks
-        "remark1": _remark1Controller.text,
-        "remark2": _remark2Controller.text,
-        "remark3": _remark3Controller.text,
-        "remark4": _remark4Controller.text,
 
         // Final Valuation
         "presentMarketValue": _presentMarketValueController.text,
@@ -1266,50 +1239,30 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
       _occupiedByTenantSinceController.text =
           data['occupiedByTenantSince']?.toString() ?? '';
 
-      // Floor details - Ground Floor
-      _groundFloorOccupancyController.text =
-          data['groundFloorOccupancy']?.toString() ?? '';
-      _groundFloorNoOfRoomController.text =
-          data['groundFloorNoOfRoom']?.toString() ?? '';
-      _groundFloorNoOfKitchenController.text =
-          data['groundFloorNoOfKitchen']?.toString() ?? '';
-      _groundFloorNoOfBathroomController.text =
-          data['groundFloorNoOfBathroom']?.toString() ?? '';
-      _groundFloorUsageRemarksController.text =
-          data['groundFloorUsageRemarks']?.toString() ?? '';
-
-      // Floor details - First Floor
-      _firstFloorOccupancyController.text =
-          data['firstFloorOccupancy']?.toString() ?? '';
-      _firstFloorNoOfRoomController.text =
-          data['firstFloorNoOfRoom']?.toString() ?? '';
-      _firstFloorNoOfKitchenController.text =
-          data['firstFloorNoOfKitchen']?.toString() ?? '';
-      _firstFloorNoOfBathroomController.text =
-          data['firstFloorNoOfBathroom']?.toString() ?? '';
-      _firstFloorUsageRemarksController.text =
-          data['firstFloorUsageRemarks']?.toString() ?? '';
-
       // Road details
+      _locality.text = data['locality']?.toString() ?? '';
+      _development.text = data['development']?.toString() ?? '';
+      _freqFlooding.text = data['freqFlooding']?.toString() ?? '';
+      _feasibilityCivic.text = data['feasibilityCivic']?.toString() ?? '';
+      _levelLand.text = data['levelLand']?.toString() ?? '';
+      _shapeLand.text = data['shape']?.toString() ?? '';
+      _typeOfUse.text = data['typeOfUse']?.toString() ?? '';
+      _usageRestriction.text = data['usageRestriction']?.toString() ?? '';
+      _townPlanning.text = data['townPlanning']?.toString() ?? '';
+      _cornerPLot.text = data['corner']?.toString() ?? '';
+      _roadFacilites.text = data['roadFacilties']?.toString() ?? '';
       _typeOfRoadController.text = data['typeOfRoad']?.toString() ?? '';
       _widthOfRoadController.text = data['widthOfRoad']?.toString() ?? '';
       _isLandLockedController.text = data['isLandLocked']?.toString() ?? '';
+      _waterPotential.text = data['waterPotential']?.toString() ?? '';
+      _undergroundSewerage.text = data['undergroundSewerage']?.toString() ?? '';
+      _powerSupply.text = data['powerSupply']?.toString() ?? '';
 
-      // Land Valuation Table
-      _landAreaDetailsController.text =
-          data['landAreaDetails']?.toString() ?? '';
-      _landAreaGuidelineController.text =
-          data['landAreaGuideline']?.toString() ?? '';
-      _landAreaPrevailingController.text =
-          data['landAreaPrevailing']?.toString() ?? '';
-      _ratePerSqFtGuidelineController.text =
-          data['ratePerSqFtGuideline']?.toString() ?? '';
-      _ratePerSqFtPrevailingController.text =
-          data['ratePerSqFtPrevailing']?.toString() ?? '';
-      _valueInRsGuidelineController.text =
-          data['valueInRsGuideline']?.toString() ?? '';
-      _valueInRsPrevailingController.text =
-          data['valueInRsPrevailing']?.toString() ?? '';
+      _sizeOfPlot.text = data['sizeOfPlot']?.toString() ?? '';
+      _northSouth.text = data['northSouth']?.toString() ?? '';
+      _eastWest.text = data['eastWest']?.toString() ?? '';
+      _totalExtent.text = data['totalExtent']?.toString() ?? '';
+      _prevailingMarketRate.text = data['prevalingMarket']?.toString() ?? '';
 
       // Building Valuation Table
       _typeOfBuildingController.text = data['typeOfBuilding']?.toString() ?? '';
@@ -1385,12 +1338,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           data['totalAbstractMisc']?.toString() ?? '';
       _totalAbstractServiceController.text =
           data['totalAbstractService']?.toString() ?? '';
-
-      // Consolidated Remarks
-      _remark1Controller.text = data['remark1']?.toString() ?? '';
-      _remark2Controller.text = data['remark2']?.toString() ?? '';
-      _remark3Controller.text = data['remark3']?.toString() ?? '';
-      _remark4Controller.text = data['remark4']?.toString() ?? '';
 
       // Final Valuation
       _presentMarketValueController.text =
@@ -3336,110 +3283,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
       ),
     );
 
-    // Ground Floor Row
-    rows.add(
-      pw.TableRow(
-        children: [
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(''),
-          ), // Empty for S.No.
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text('Ground', style: contentTextStyle),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _groundFloorOccupancyController.text,
-              style: contentTextStyle,
-            ),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _groundFloorNoOfRoomController.text,
-              style: contentTextStyle,
-            ),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _groundFloorNoOfKitchenController.text,
-              style: contentTextStyle,
-            ),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _groundFloorNoOfBathroomController.text,
-              style: contentTextStyle,
-            ),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _groundFloorUsageRemarksController.text,
-              style: contentTextStyle,
-            ),
-          ),
-        ],
-      ),
-    );
-
-    // First Floor Row
-    rows.add(
-      pw.TableRow(
-        children: [
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(''),
-          ), // Empty for S.No.
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text('First', style: contentTextStyle),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _firstFloorOccupancyController.text,
-              style: contentTextStyle,
-            ),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _firstFloorNoOfRoomController.text,
-              style: contentTextStyle,
-            ),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _firstFloorNoOfKitchenController.text,
-              style: contentTextStyle,
-            ),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _firstFloorNoOfBathroomController.text,
-              style: contentTextStyle,
-            ),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _firstFloorUsageRemarksController.text,
-              style: contentTextStyle,
-            ),
-          ),
-        ],
-      ),
-    );
-
     // Note: "Add Row" functionality implies dynamic addition which is not implemented here.
-    // You would typically manage a list of floor data models to dynamically generate rows.
 
     return rows;
   }
@@ -3452,57 +3296,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
     List<pw.TableRow> rows = [];
-
-    rows.add(
-      pw.TableRow(
-        children: [
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text('19.', style: contentTextStyle),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              'Type of road available at present :\n(Bitumen/Mud/CC/Private)',
-              style: contentTextStyle,
-            ),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(':', style: contentTextStyle),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(_typeOfRoadController.text, style: contentTextStyle),
-          ),
-        ],
-      ),
-    );
-    rows.add(
-      pw.TableRow(
-        children: [
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text('20.', style: contentTextStyle),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text('Width of road - in feet', style: contentTextStyle),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(':', style: contentTextStyle),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _widthOfRoadController.text,
-              style: contentTextStyle,
-            ),
-          ),
-        ],
-      ),
-    );
 
     return rows;
   }
@@ -3542,17 +3335,57 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
       ),
     );
 
+    return rows;
+  }
+
+  List<pw.TableRow> _page3() {
+    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 11);
+    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
+    final pw.TextStyle headerTextStyle = pw.TextStyle(
+      fontWeight: pw.FontWeight.bold,
+      fontSize: 11,
+    );
+
+    List<pw.TableRow> rows = [];
     rows.add(
       pw.TableRow(
         children: [
           pw.Container(
             padding: cellPadding,
-            child: pw.Text('21.', style: contentTextStyle),
+            child: pw.Text('II.', style: headerTextStyle),
           ),
           pw.Container(
             padding: cellPadding,
             child: pw.Text(
-              'Is it a land - locked land?',
+              'CHARACTERISTICS OF THE SITE',
+              style: headerTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              '',
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('1.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Classification of locality',
               style: contentTextStyle,
             ),
           ),
@@ -3563,7 +3396,672 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           pw.Container(
             padding: cellPadding,
             child: pw.Text(
-              _isLandLockedController.text,
+              '${_locality.text}',
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('2.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Development of surrounding areas',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _development.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('3.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Possibility of frequent flooding / sub',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _freqFlooding.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('4.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Feasibility to the Civic amenities like',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _feasibilityCivic.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('5.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Level of land with topographical conditions',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _levelLand.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('6.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Shape of land',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _shapeLand.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('7.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Type of use to which it can be put ',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _typeOfUse.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('8.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Any usage restriction',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _usageRestriction.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('9.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Is plot in town planning approved layout?',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _townPlanning.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('10.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Corner plot or intermittent plot?',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _cornerPLot.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('11.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Road facilities',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _roadFacilites.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('12.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Type of road available at present ',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(_typeOfRoadController.text, style: contentTextStyle),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('13.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+                'Width of road - is it below 20 ft. or more than 20 ft.',
+                style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _widthOfRoadController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('15.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Water potentiality',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _waterPotential.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('16.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Underground sewerage system',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _undergroundSewerage.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('17.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Is power supply available at the site? ',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _powerSupply.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('2.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Development of surrounding areas',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _development.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('2.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Development of surrounding areas',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _development.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    return rows;
+  }
+
+  List<pw.TableRow> _getPartA() {
+    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
+    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 11);
+    final pw.TextStyle headerTextStyle = pw.TextStyle(
+      fontWeight: pw.FontWeight.bold,
+      fontSize: 11,
+    );
+    List<pw.TableRow> rows = [];
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Part – A (Valuation of land)',
+              style: headerTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              '',
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('1.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Size of plot',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _sizeOfPlot.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'North & South',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _northSouth.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'East & West',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _eastWest.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('2.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Total extent of the plot',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _totalExtent.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('3.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Prevailing market rate (Along with details /reference of at least two latest deals/transactions with respect to adjacent properties in the areas) ',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _prevailingMarketRate.text,
               style: contentTextStyle,
             ),
           ),
@@ -3639,85 +4137,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
       ),
     );
 
-    // Row 2: Guideline rate
-    rows.add(
-      pw.TableRow(
-        children: [
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text('2.', style: contentTextStyle),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              'Guideline rate obtained from the Registrar\'s Office (an evidence thereof to be enclosed)',
-              style: contentTextStyle,
-            ),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _landAreaGuidelineController.text,
-              style: contentTextStyle,
-            ),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _ratePerSqFtGuidelineController.text,
-              style: contentTextStyle,
-            ),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _valueInRsGuidelineController.text,
-              style: contentTextStyle,
-            ),
-          ),
-        ],
-      ),
-    );
-
     // Row 3: Prevailing market value
-    rows.add(
-      pw.TableRow(
-        children: [
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text('3.', style: contentTextStyle),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              'Prevailing market value of the land',
-              style: contentTextStyle,
-            ),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _landAreaPrevailingController.text,
-              style: contentTextStyle,
-            ),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _ratePerSqFtPrevailingController.text,
-              style: contentTextStyle,
-            ),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _valueInRsPrevailingController.text,
-              style: contentTextStyle,
-            ),
-          ),
-        ],
-      ),
-    );
 
     return rows;
   }
@@ -5959,6 +6379,8 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
     final List<pw.TableRow> page2Table5Rows =
         _getPage2Table5Rows(); // Get rows for sections 19-20
     final List<pw.TableRow> page3Rows = _getPage3TableRows();
+    final List<pw.TableRow> page3 = _page3();
+    final List<pw.TableRow> page3PartA = _getPartA();
     final List<pw.TableRow> landValuationRowsHeading =
         _getLandValuationTableRowsHeading(); // Get rows for page 3
     final List<pw.TableRow> landValuationRows =
@@ -6437,19 +6859,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                 ...page3Rows, // Add rows for page 3 (Item 21)
               ],
             ),
-
-            pw.Table(
-              border: pw.TableBorder.all(
-                color: pdfLib.PdfColors.black,
-                width: 0.5,
-              ),
-              columnWidths: {
-                0: const pw.FlexColumnWidth(0.5), // Value in Rs.
-              },
-              children: [
-                ...landValuationRowsHeading, // Add rows for the new land valuation table
-              ],
-            ),
+            pw.SizedBox(height: 15),
             pw.Table(
               border: pw.TableBorder.all(
                 color: pdfLib.PdfColors.black,
@@ -6457,17 +6867,67 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
               ),
               columnWidths: {
                 0: const pw.FlexColumnWidth(0.5), // S.No
-                1: const pw.FlexColumnWidth(2.5), // Details
-                2: const pw.FlexColumnWidth(2.0), // Land area in Sq Ft
-                3: const pw.FlexColumnWidth(2.0), // Rate per Sq ft
-                4: const pw.FlexColumnWidth(2.0), // Value in Rs.
+                1: const pw.FlexColumnWidth(5.0), // Description
+                2: const pw.FlexColumnWidth(0.2), // Colon (very small width)
+                3: const pw.FlexColumnWidth(4.3), // Value
               },
               children: [
-                ...landValuationRows, // Add rows for the new land valuation table
+                ...page3, // Add rows for page 3 (Item 21)
+              ],
+            ),
+            pw.SizedBox(height: 15),
+            pw.Table(
+              border: pw.TableBorder.all(
+                color: pdfLib.PdfColors.black,
+                width: 0.5,
+              ),
+              columnWidths: {
+                0: const pw.FlexColumnWidth(0.5), // S.No
+                1: const pw.FlexColumnWidth(5.0), // Description
+                2: const pw.FlexColumnWidth(0.2), // Colon (very small width)
+                3: const pw.FlexColumnWidth(4.3), // Value
+              },
+              children: [
+                ...page3PartA, // Add rows for page 3 (Item 21)
               ],
             ),
 
-            // NEW: Building Valuation Table (Part B)
+            // Add some space between tables
+            // NEW: Build up Area Table
+            // pw.Table(
+            //   border: pw.TableBorder.all(
+            //     color: pdfLib.PdfColors.black,
+            //     width: 0.5,
+            //   ),
+            //   columnWidths: {
+            //     0: const pw.FlexColumnWidth(0.5), // S n
+            //     1: const pw.FlexColumnWidth(1.5), // Particular of item
+            //     2: const pw.FlexColumnWidth(1.5), // As per approved Plan/FSI
+            //     3: const pw.FlexColumnWidth(1.5), // As per Actual
+            //     4: const pw.FlexColumnWidth(
+            //       1.5,
+            //     ), // Area Considered for the Valuation
+            //     5: const pw.FlexColumnWidth(1.5), // Replacement Cost in Rs.
+            //     6: const pw.FlexColumnWidth(1.5), // Depreciation in Rs.
+            //     7: const pw.FlexColumnWidth(
+            //       1.5,
+            //     ), // Net value after Depreciations Rs.
+            //   },
+            //   children: [
+            //     ...buildUpAreaRows, // Add rows for the new build up area table
+            //   ],
+            // ),
+          ];
+        },
+      ),
+    );
+
+    // Page 4 - New page for Amenities, Total Abstract, and Remarks
+    pdf.addPage(
+      pw.MultiPage(
+        pageFormat: pdfLib.PdfPageFormat.a4,
+        build: (pw.Context context) {
+          return [
             pw.Table(
               border: pw.TableBorder.all(
                 color: pdfLib.PdfColors.black,
@@ -6480,7 +6940,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                 ...buildingValuationRowsHeading, // Add rows for the new land valuation table
               ],
             ),
-
             pw.Table(
               border: pw.TableBorder.all(
                 color: pdfLib.PdfColors.black,
@@ -6494,7 +6953,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                 ...buildingValuationTableRowsSubHeading, // Add rows for the new building valuation table
               ],
             ),
-
             pw.Table(
               border: pw.TableBorder.all(
                 color: pdfLib.PdfColors.black,
@@ -6510,42 +6968,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                 ...buildingValuationRows, // Add rows for the new building valuation table
               ],
             ),
-            pw.SizedBox(height: 15), // Add some space between tables
-            // NEW: Build up Area Table
-            pw.Table(
-              border: pw.TableBorder.all(
-                color: pdfLib.PdfColors.black,
-                width: 0.5,
-              ),
-              columnWidths: {
-                0: const pw.FlexColumnWidth(0.5), // S n
-                1: const pw.FlexColumnWidth(1.5), // Particular of item
-                2: const pw.FlexColumnWidth(1.5), // As per approved Plan/FSI
-                3: const pw.FlexColumnWidth(1.5), // As per Actual
-                4: const pw.FlexColumnWidth(
-                  1.5,
-                ), // Area Considered for the Valuation
-                5: const pw.FlexColumnWidth(1.5), // Replacement Cost in Rs.
-                6: const pw.FlexColumnWidth(1.5), // Depreciation in Rs.
-                7: const pw.FlexColumnWidth(
-                  1.5,
-                ), // Net value after Depreciations Rs.
-              },
-              children: [
-                ...buildUpAreaRows, // Add rows for the new build up area table
-              ],
-            ),
-          ];
-        },
-      ),
-    );
-
-    // Page 4 - New page for Amenities, Total Abstract, and Remarks
-    pdf.addPage(
-      pw.MultiPage(
-        pageFormat: pdfLib.PdfPageFormat.a4,
-        build: (pw.Context context) {
-          return [
             pw.Table(
               border: pw.TableBorder.all(
                 color: pdfLib.PdfColors.black,
@@ -6594,7 +7016,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
               ),
             ),
             pw.SizedBox(height: 30),
-
             pw.Center(
               child: pw.Text(
                 'Part C- Amenities                                            (Amount in Rs.)',
@@ -6605,7 +7026,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                 textAlign: pw.TextAlign.center,
               ),
             ),
-
             pw.SizedBox(height: 10),
             pw.Table(
               border: pw.TableBorder.all(
@@ -6623,30 +7043,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
               ],
             ),
             pw.SizedBox(height: 30),
-
-            pw.SizedBox(height: 30),
-            // NEW: Consolidated Remarks/ Observations of the property
-            pw.Text(
-              'Consolidated Remarks/ Observations of the property:',
-              style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12),
-            ),
-            pw.SizedBox(height: 30),
-            pw.Text(
-              '1. ${_remark1Controller.text}',
-              style: const pw.TextStyle(fontSize: 11),
-            ),
-            pw.Text(
-              '2. ${_remark2Controller.text}',
-              style: const pw.TextStyle(fontSize: 11),
-            ),
-            pw.Text(
-              '3. ${_remark3Controller.text}',
-              style: const pw.TextStyle(fontSize: 11),
-            ),
-            pw.Text(
-              '4. ${_remark4Controller.text}',
-              style: const pw.TextStyle(fontSize: 11),
-            ),
           ];
         },
       ),
@@ -8180,139 +8576,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 30),
-                  const Text(
-                    '18. Floor Details',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 13),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        '18. Floor Details',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 13),
-
-                      // Ground Floor Details
-                      const Text(
-                        'Ground Floor',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: _groundFloorOccupancyController,
-                        decoration: const InputDecoration(
-                          labelText: 'Occupancy (Self/Rented)',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      TextField(
-                        controller: _groundFloorNoOfRoomController,
-                        decoration: const InputDecoration(
-                          labelText: 'No. of Rooms',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      TextField(
-                        controller: _groundFloorNoOfKitchenController,
-                        decoration: const InputDecoration(
-                          labelText: 'No. of Kitchens',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      TextField(
-                        controller: _groundFloorNoOfBathroomController,
-                        decoration: const InputDecoration(
-                          labelText: 'No. of Bathrooms',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      TextField(
-                        controller: _groundFloorUsageRemarksController,
-                        decoration: const InputDecoration(
-                          labelText: 'Usage Remarks (Resi/Comm)',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-
-                      // First Floor Details
-                      const Text(
-                        'First Floor',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: _firstFloorOccupancyController,
-                        decoration: const InputDecoration(
-                          labelText: 'Occupancy (Self/Rented)',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      TextField(
-                        controller: _firstFloorNoOfRoomController,
-                        decoration: const InputDecoration(
-                          labelText: 'No. of Rooms',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      TextField(
-                        controller: _firstFloorNoOfKitchenController,
-                        decoration: const InputDecoration(
-                          labelText: 'No. of Kitchens',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      TextField(
-                        controller: _firstFloorNoOfBathroomController,
-                        decoration: const InputDecoration(
-                          labelText: 'No. of Bathrooms',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      TextField(
-                        controller: _firstFloorUsageRemarksController,
-                        decoration: const InputDecoration(
-                          labelText: 'Usage Remarks (Resi/Comm)',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-                    ],
-                  ),
 
                   // Column(
                   //   crossAxisAlignment: CrossAxisAlignment.start,
@@ -8387,64 +8650,219 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                 ],
               ),
               const SizedBox(height: 20),
-
-              // Collapsible Section: Road Details
               ExpansionTile(
                 title: const Text(
-                  'Road Details',
+                  'II CHARACTERISTICS OF THE SITE',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 initiallyExpanded: false,
                 children: <Widget>[
                   const Divider(),
+                  // 1. Locality
                   TextField(
-                    // Changed from _buildTextField
+                    controller: _locality,
+                    decoration: const InputDecoration(
+                      labelText: 'Classification of locality',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+// 2. Development
+                  TextField(
+                    controller: _development,
+                    decoration: const InputDecoration(
+                      labelText: 'Development of surrounding areas',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+// 3. Frequency of Flooding
+                  TextField(
+                    controller: _freqFlooding,
+                    decoration: const InputDecoration(
+                      labelText: 'Possibility of frequent flooding / sub',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+// 4. Feasibility to Civic Amenities
+                  TextField(
+                    controller: _feasibilityCivic,
+                    decoration: const InputDecoration(
+                      labelText: 'Feasibility to the Civic Amenities',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+// 5. Level of Land
+                  TextField(
+                    controller: _levelLand,
+                    decoration: const InputDecoration(
+                      labelText: 'Level of Land with topographical conditions',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+// 6. Shape of Land
+                  TextField(
+                    controller: _shapeLand,
+                    decoration: const InputDecoration(
+                      labelText: 'Shape of Land',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+// 7. Type of Use
+                  TextField(
+                    controller: _typeOfUse,
+                    decoration: const InputDecoration(
+                      labelText: 'Type of Use to which it can be put',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+// 8. Usage Restriction
+                  TextField(
+                    controller: _usageRestriction,
+                    decoration: const InputDecoration(
+                      labelText: 'Any Usage Restriction',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+// 9. Town Planning
+                  TextField(
+                    controller: _townPlanning,
+                    decoration: const InputDecoration(
+                      labelText: 'Is plot in town planning approved layout?',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+// 10. Corner Plot
+                  TextField(
+                    controller: _cornerPLot,
+                    decoration: const InputDecoration(
+                      labelText: 'Corner plot or intermittent plot?',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+// 11. Road Facilities
+                  TextField(
+                    controller: _roadFacilites,
+                    decoration: const InputDecoration(
+                      labelText: 'Road Facilities',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+// 12. Type of Road
+                  TextField(
                     controller: _typeOfRoadController,
                     decoration: const InputDecoration(
-                      labelText:
-                          '19. Type of road available at present (Bitumen/Mud/CC/Private)',
-                      hintText: 'e.g., Bitumen',
+                      labelText: 'Type of Road available at present',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 13),
+                  const SizedBox(height: 10),
+
+// 13. Width of Road
                   TextField(
-                    // Changed from _buildTextField
                     controller: _widthOfRoadController,
                     decoration: const InputDecoration(
-                      labelText: '20. Width of road - in feet',
-                      hintText: 'e.g., 20',
+                      labelText:
+                          'Width of Road - is it below 20 ft. or more than 20 ft.',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
                     ),
                   ),
-                ],
-              ),
-              const SizedBox(height: 20),
+                  const SizedBox(height: 10),
 
-              // Collapsible Section: Land Details
-              ExpansionTile(
-                title: const Text(
-                  'Land Details',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                initiallyExpanded: false,
-                children: <Widget>[
-                  const Divider(),
+// 14. Is Land Locked
                   TextField(
-                    // Changed from _buildTextField
                     controller: _isLandLockedController,
                     decoration: const InputDecoration(
-                      labelText: '21. Is it a land - locked land?',
+                      labelText: 'Is it a land - locked land?',
                       hintText: 'Yes/No',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
                     ),
                   ),
+                  const SizedBox(height: 10),
+
+// 15. Water Potential
+                  TextField(
+                    controller: _waterPotential,
+                    decoration: const InputDecoration(
+                      labelText: 'Water potentiality',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+// 16. Underground Sewerage
+                  TextField(
+                    controller: _undergroundSewerage,
+                    decoration: const InputDecoration(
+                      labelText: 'Underground sewerage system',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+// 17. Power Supply
+                  TextField(
+                    controller: _powerSupply,
+                    decoration: const InputDecoration(
+                      labelText: 'Is power supply available at the site?',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
                 ],
               ),
               const SizedBox(height: 20),
@@ -8458,90 +8876,150 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                 initiallyExpanded: false,
                 children: <Widget>[
                   const Divider(),
+                  // 1. Size of Plot
                   TextField(
-                    // Changed from _buildTextField
-                    controller: _landAreaDetailsController,
+                    controller: _sizeOfPlot,
                     decoration: const InputDecoration(
-                      labelText: '1. Land area in Sq Ft (Details)',
-                      hintText: 'e.g., 1500',
+                      labelText: 'Size of Plot',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 13),
+                  const SizedBox(height: 10),
+
+// 2. North-South Dimensions
                   TextField(
-                    // Changed from _buildTextField
-                    controller: _landAreaGuidelineController,
+                    controller: _northSouth,
                     decoration: const InputDecoration(
-                      labelText: '2. Guideline rate (Land area in Sq Ft)',
-                      hintText: 'e.g., 1400',
+                      labelText: 'North & South',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 13),
+                  const SizedBox(height: 10),
+
+// 3. East-West Dimensions
                   TextField(
-                    // Changed from _buildTextField
-                    controller: _ratePerSqFtGuidelineController,
+                    controller: _eastWest,
                     decoration: const InputDecoration(
-                      labelText: '   Guideline rate (Rate per Sq ft)',
-                      hintText: 'e.g., 2000',
+                      labelText: 'East & West',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 13),
+                  const SizedBox(height: 10),
+
+// 4. Total Extent
                   TextField(
-                    // Changed from _buildTextField
-                    controller: _valueInRsGuidelineController,
+                    controller: _totalExtent,
                     decoration: const InputDecoration(
-                      labelText: '   Guideline rate (Value in Rs.)',
-                      hintText: 'e.g., 2800000',
+                      labelText: 'Total Extent of the plot',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 13),
+                  const SizedBox(height: 10),
+
+// 5. Prevailing Market Rate
                   TextField(
-                    // Changed from _buildTextField
-                    controller: _landAreaPrevailingController,
+                    controller: _prevailingMarketRate,
                     decoration: const InputDecoration(
                       labelText:
-                          '3. Prevailing market value (Land area in Sq Ft)',
-                      hintText: 'e.g., 1500',
+                          'Prevailing Market Rate (Along with details /reference of at least two latest deals/transactions with respect to adjacent properties in the areas) ',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 13),
-                  TextField(
-                    // Changed from _buildTextField
-                    controller: _ratePerSqFtPrevailingController,
-                    decoration: const InputDecoration(
-                      labelText: '   Prevailing market value (Rate per Sq ft)',
-                      hintText: 'e.g., 2500',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 13),
-                  TextField(
-                    // Changed from _buildTextField
-                    controller: _valueInRsPrevailingController,
-                    decoration: const InputDecoration(
-                      labelText: '   Prevailing market value (Value in Rs.)',
-                      hintText: 'e.g., 3750000',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                    ),
-                  ),
+                  const SizedBox(height: 10),
+                  // TextField(
+                  //   // Changed from _buildTextField
+                  //   controller: _landAreaDetailsController,
+                  //   decoration: const InputDecoration(
+                  //     labelText: '1. Land area in Sq Ft (Details)',
+                  //     hintText: 'e.g., 1500',
+                  //     border: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.all(Radius.circular(20)),
+                  //     ),
+                  //   ),
+                  // ),
+                  // const SizedBox(height: 13),
+                  // TextField(
+                  //   // Changed from _buildTextField
+                  //   controller: _landAreaGuidelineController,
+                  //   decoration: const InputDecoration(
+                  //     labelText: '2. Guideline rate (Land area in Sq Ft)',
+                  //     hintText: 'e.g., 1400',
+                  //     border: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.all(Radius.circular(20)),
+                  //     ),
+                  //   ),
+                  // ),
+                  // const SizedBox(height: 13),
+                  // TextField(
+                  //   // Changed from _buildTextField
+                  //   controller: _ratePerSqFtGuidelineController,
+                  //   decoration: const InputDecoration(
+                  //     labelText: '   Guideline rate (Rate per Sq ft)',
+                  //     hintText: 'e.g., 2000',
+                  //     border: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.all(Radius.circular(20)),
+                  //     ),
+                  //   ),
+                  // ),
+                  // const SizedBox(height: 13),
+                  // TextField(
+                  //   // Changed from _buildTextField
+                  //   controller: _valueInRsGuidelineController,
+                  //   decoration: const InputDecoration(
+                  //     labelText: '   Guideline rate (Value in Rs.)',
+                  //     hintText: 'e.g., 2800000',
+                  //     border: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.all(Radius.circular(20)),
+                  //     ),
+                  //   ),
+                  // ),
+                  // const SizedBox(height: 13),
+                  // TextField(
+                  //   // Changed from _buildTextField
+                  //   controller: _landAreaPrevailingController,
+                  //   decoration: const InputDecoration(
+                  //     labelText:
+                  //         '3. Prevailing market value (Land area in Sq Ft)',
+                  //     hintText: 'e.g., 1500',
+                  //     border: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.all(Radius.circular(20)),
+                  //     ),
+                  //   ),
+                  // ),
+                  // const SizedBox(height: 13),
+                  // TextField(
+                  //   // Changed from _buildTextField
+                  //   controller: _ratePerSqFtPrevailingController,
+                  //   decoration: const InputDecoration(
+                  //     labelText: '   Prevailing market value (Rate per Sq ft)',
+                  //     hintText: 'e.g., 2500',
+                  //     border: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.all(Radius.circular(20)),
+                  //     ),
+                  //   ),
+                  // ),
+                  // const SizedBox(height: 13),
+                  // TextField(
+                  //   // Changed from _buildTextField
+                  //   controller: _valueInRsPrevailingController,
+                  //   decoration: const InputDecoration(
+                  //     labelText: '   Prevailing market value (Value in Rs.)',
+                  //     hintText: 'e.g., 3750000',
+                  //     border: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.all(Radius.circular(20)),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
               const SizedBox(height: 20),
@@ -8648,291 +9126,290 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
               const SizedBox(height: 20),
 
               // Collapsible Section: Build up Area Details
-              ExpansionTile(
-                title: const Text(
-                  'Build up Area Details',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                initiallyExpanded: false,
-                children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Divider(),
-                      const Text(
-                        'Build-Up Area Details',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 10),
+              // ExpansionTile(
+              //   title: const Text(
+              //     'Build up Area Details',
+              //     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              //   ),
+              //   initiallyExpanded: false,
+              //   children: <Widget>[
+              //     Column(
+              //       crossAxisAlignment: CrossAxisAlignment.start,
+              //       children: [
+              //         const Divider(),
+              //         const Text(
+              //           'Build-Up Area Details',
+              //           style: TextStyle(
+              //               fontSize: 16, fontWeight: FontWeight.bold),
+              //         ),
+              //         const SizedBox(height: 10),
 
-                      // Ground Floor Section
-                      const Text(
-                        'Ground Floor',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 6),
-                      TextField(
-                        controller: _groundFloorApprovedPlanController,
-                        decoration: const InputDecoration(
-                          labelText: 'As per approved Plan/FSI',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: _groundFloorActualController,
-                        decoration: const InputDecoration(
-                          labelText: 'As per Actual',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: _groundFloorConsideredValuationController,
-                        decoration: const InputDecoration(
-                          labelText: 'Area Considered for the Valuation',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: _groundFloorReplacementCostController,
-                        decoration: const InputDecoration(
-                          labelText: 'Replacement Cost in Rs.',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: _groundFloorDepreciationController,
-                        decoration: const InputDecoration(
-                          labelText: 'Depreciation in Rs.',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: _groundFloorNetValueController,
-                        decoration: const InputDecoration(
-                          labelText: 'Net value after Depreciation in Rs.',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
+              //         // Ground Floor Section
+              //         const Text(
+              //           'Ground Floor',
+              //           style: TextStyle(fontWeight: FontWeight.bold),
+              //         ),
+              //         const SizedBox(height: 6),
+              //         TextField(
+              //           controller: _groundFloorApprovedPlanController,
+              //           decoration: const InputDecoration(
+              //             labelText: 'As per approved Plan/FSI',
+              //             border: OutlineInputBorder(
+              //               borderRadius: BorderRadius.all(Radius.circular(20)),
+              //             ),
+              //           ),
+              //         ),
+              //         const SizedBox(height: 8),
+              //         TextField(
+              //           controller: _groundFloorActualController,
+              //           decoration: const InputDecoration(
+              //             labelText: 'As per Actual',
+              //             border: OutlineInputBorder(
+              //               borderRadius: BorderRadius.all(Radius.circular(20)),
+              //             ),
+              //           ),
+              //         ),
+              //         const SizedBox(height: 8),
+              //         TextField(
+              //           controller: _groundFloorConsideredValuationController,
+              //           decoration: const InputDecoration(
+              //             labelText: 'Area Considered for the Valuation',
+              //             border: OutlineInputBorder(
+              //               borderRadius: BorderRadius.all(Radius.circular(20)),
+              //             ),
+              //           ),
+              //         ),
+              //         const SizedBox(height: 8),
+              //         TextField(
+              //           controller: _groundFloorReplacementCostController,
+              //           decoration: const InputDecoration(
+              //             labelText: 'Replacement Cost in Rs.',
+              //             border: OutlineInputBorder(
+              //               borderRadius: BorderRadius.all(Radius.circular(20)),
+              //             ),
+              //           ),
+              //         ),
+              //         const SizedBox(height: 8),
+              //         TextField(
+              //           controller: _groundFloorDepreciationController,
+              //           decoration: const InputDecoration(
+              //             labelText: 'Depreciation in Rs.',
+              //             border: OutlineInputBorder(
+              //               borderRadius: BorderRadius.all(Radius.circular(20)),
+              //             ),
+              //           ),
+              //         ),
+              //         const SizedBox(height: 8),
+              //         TextField(
+              //           controller: _groundFloorNetValueController,
+              //           decoration: const InputDecoration(
+              //             labelText: 'Net value after Depreciation in Rs.',
+              //             border: OutlineInputBorder(
+              //               borderRadius: BorderRadius.all(Radius.circular(20)),
+              //             ),
+              //           ),
+              //         ),
 
-                      const SizedBox(height: 30),
+              //         const SizedBox(height: 30),
 
-                      // First Floor Section
-                      const Text(
-                        'First Floor',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 6),
-                      TextField(
-                        controller: _firstFloorApprovedPlanController,
-                        decoration: const InputDecoration(
-                          labelText: 'As per approved Plan/FSI',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: _firstFloorActualController,
-                        decoration: const InputDecoration(
-                          labelText: 'As per Actual',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: _firstFloorConsideredValuationController,
-                        decoration: const InputDecoration(
-                          labelText: 'Area Considered for the Valuation',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: _firstFloorReplacementCostController,
-                        decoration: const InputDecoration(
-                          labelText: 'Replacement Cost in Rs.',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: _firstFloorDepreciationController,
-                        decoration: const InputDecoration(
-                          labelText: 'Depreciation in Rs.',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: _firstFloorNetValueController,
-                        decoration: const InputDecoration(
-                          labelText: 'Net value after Depreciation in Rs.',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
+              //         // First Floor Section
+              //         const Text(
+              //           'First Floor',
+              //           style: TextStyle(fontWeight: FontWeight.bold),
+              //         ),
+              //         const SizedBox(height: 6),
+              //         TextField(
+              //           controller: _firstFloorApprovedPlanController,
+              //           decoration: const InputDecoration(
+              //             labelText: 'As per approved Plan/FSI',
+              //             border: OutlineInputBorder(
+              //               borderRadius: BorderRadius.all(Radius.circular(20)),
+              //             ),
+              //           ),
+              //         ),
+              //         const SizedBox(height: 8),
+              //         TextField(
+              //           controller: _firstFloorActualController,
+              //           decoration: const InputDecoration(
+              //             labelText: 'As per Actual',
+              //             border: OutlineInputBorder(
+              //               borderRadius: BorderRadius.all(Radius.circular(20)),
+              //             ),
+              //           ),
+              //         ),
+              //         const SizedBox(height: 8),
+              //         TextField(
+              //           controller: _firstFloorConsideredValuationController,
+              //           decoration: const InputDecoration(
+              //             labelText: 'Area Considered for the Valuation',
+              //             border: OutlineInputBorder(
+              //               borderRadius: BorderRadius.all(Radius.circular(20)),
+              //             ),
+              //           ),
+              //         ),
+              //         const SizedBox(height: 8),
+              //         TextField(
+              //           controller: _firstFloorReplacementCostController,
+              //           decoration: const InputDecoration(
+              //             labelText: 'Replacement Cost in Rs.',
+              //             border: OutlineInputBorder(
+              //               borderRadius: BorderRadius.all(Radius.circular(20)),
+              //             ),
+              //           ),
+              //         ),
+              //         const SizedBox(height: 8),
+              //         TextField(
+              //           controller: _firstFloorDepreciationController,
+              //           decoration: const InputDecoration(
+              //             labelText: 'Depreciation in Rs.',
+              //             border: OutlineInputBorder(
+              //               borderRadius: BorderRadius.all(Radius.circular(20)),
+              //             ),
+              //           ),
+              //         ),
+              //         const SizedBox(height: 8),
+              //         TextField(
+              //           controller: _firstFloorNetValueController,
+              //           decoration: const InputDecoration(
+              //             labelText: 'Net value after Depreciation in Rs.',
+              //             border: OutlineInputBorder(
+              //               borderRadius: BorderRadius.all(Radius.circular(20)),
+              //             ),
+              //           ),
+              //         ),
 
-                      const SizedBox(height: 30),
+              //         const SizedBox(height: 30),
 
-                      // Total Section
-                      const Text(
-                        'Total',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 6),
-                      TextField(
-                        controller: _totalApprovedPlanController,
-                        decoration: const InputDecoration(
-                          labelText: 'As per approved Plan/FSI',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: _totalActualController,
-                        decoration: const InputDecoration(
-                          labelText: 'As per Actual',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: _totalConsideredValuationController,
-                        decoration: const InputDecoration(
-                          labelText: 'Area Considered for the Valuation',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: _totalReplacementCostController,
-                        decoration: const InputDecoration(
-                          labelText: 'Replacement Cost in Rs.',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: _totalDepreciationController,
-                        decoration: const InputDecoration(
-                          labelText: 'Depreciation in Rs.',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: _totalNetValueController,
-                        decoration: const InputDecoration(
-                          labelText: 'Net value after Depreciation in Rs.',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
+              //         // Total Section
+              //         const Text(
+              //           'Total',
+              //           style: TextStyle(fontWeight: FontWeight.bold),
+              //         ),
+              //         const SizedBox(height: 6),
+              //         TextField(
+              //           controller: _totalApprovedPlanController,
+              //           decoration: const InputDecoration(
+              //             labelText: 'As per approved Plan/FSI',
+              //             border: OutlineInputBorder(
+              //               borderRadius: BorderRadius.all(Radius.circular(20)),
+              //             ),
+              //           ),
+              //         ),
+              //         const SizedBox(height: 8),
+              //         TextField(
+              //           controller: _totalActualController,
+              //           decoration: const InputDecoration(
+              //             labelText: 'As per Actual',
+              //             border: OutlineInputBorder(
+              //               borderRadius: BorderRadius.all(Radius.circular(20)),
+              //             ),
+              //           ),
+              //         ),
+              //         const SizedBox(height: 8),
+              //         TextField(
+              //           controller: _totalConsideredValuationController,
+              //           decoration: const InputDecoration(
+              //             labelText: 'Area Considered for the Valuation',
+              //             border: OutlineInputBorder(
+              //               borderRadius: BorderRadius.all(Radius.circular(20)),
+              //             ),
+              //           ),
+              //         ),
+              //         const SizedBox(height: 8),
+              //         TextField(
+              //           controller: _totalReplacementCostController,
+              //           decoration: const InputDecoration(
+              //             labelText: 'Replacement Cost in Rs.',
+              //             border: OutlineInputBorder(
+              //               borderRadius: BorderRadius.all(Radius.circular(20)),
+              //             ),
+              //           ),
+              //         ),
+              //         const SizedBox(height: 8),
+              //         TextField(
+              //           controller: _totalDepreciationController,
+              //           decoration: const InputDecoration(
+              //             labelText: 'Depreciation in Rs.',
+              //             border: OutlineInputBorder(
+              //               borderRadius: BorderRadius.all(Radius.circular(20)),
+              //             ),
+              //           ),
+              //         ),
+              //         const SizedBox(height: 8),
+              //         TextField(
+              //           controller: _totalNetValueController,
+              //           decoration: const InputDecoration(
+              //             labelText: 'Net value after Depreciation in Rs.',
+              //             border: OutlineInputBorder(
+              //               borderRadius: BorderRadius.all(Radius.circular(20)),
+              //             ),
+              //           ),
+              //         ),
+              //         const SizedBox(height: 20),
+              //       ],
+              //     ),
+              //   ],
+              // ),
 
               // Collapsible Section: Part C - Amenities
-              ExpansionTile(
-                title: const Text(
-                  'Part C - Amenities',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                initiallyExpanded: false,
-                children: <Widget>[
-                  const Divider(),
-                  TextField(
-                    // Changed from _buildTextField
-                    controller: _wardrobesController,
-                    decoration: const InputDecoration(
-                      labelText: '1. Wardrobes (Amount in Rs.)',
-                      hintText: 'e.g., 50000',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 13),
-                  TextField(
-                    // Changed from _buildTextField
-                    controller: _amenitiesController,
-                    decoration: const InputDecoration(
-                      labelText: '2. Amenities (Amount in Rs.)',
-                      hintText: 'e.g., 20000',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 13),
-                  TextField(
-                    // Changed from _buildTextField
-                    controller: _anyOtherAdditionalController,
-                    decoration: const InputDecoration(
-                      labelText: '3. Any other Additional (Amount in Rs.)',
-                      hintText: 'e.g., 10000',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 13),
-                  TextField(
-                    // Changed from _buildTextField
-                    controller: _amenitiesTotalController,
-                    decoration: const InputDecoration(
-                      labelText: 'Total Amenities (Amount in Rs.)',
-                      hintText: 'e.g., 80000',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
+              // ExpansionTile(
+              //   title: const Text(
+              //     'Part C - Amenities',
+              //     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              //   ),
+              //   initiallyExpanded: false,
+              //   children: <Widget>[
+              //     const Divider(),
+              //     TextField(
+              //       // Changed from _buildTextField
+              //       controller: _wardrobesController,
+              //       decoration: const InputDecoration(
+              //         labelText: '1. Wardrobes (Amount in Rs.)',
+              //         hintText: 'e.g., 50000',
+              //         border: OutlineInputBorder(
+              //           borderRadius: BorderRadius.all(Radius.circular(20)),
+              //         ),
+              //       ),
+              //     ),
+              //     const SizedBox(height: 13),
+              //     TextField(
+              //       // Changed from _buildTextField
+              //       controller: _amenitiesController,
+              //       decoration: const InputDecoration(
+              //         labelText: '2. Amenities (Amount in Rs.)',
+              //         hintText: 'e.g., 20000',
+              //         border: OutlineInputBorder(
+              //           borderRadius: BorderRadius.all(Radius.circular(20)),
+              //         ),
+              //       ),
+              //     ),
+              //     const SizedBox(height: 13),
+              //     TextField(
+              //       // Changed from _buildTextField
+              //       controller: _anyOtherAdditionalController,
+              //       decoration: const InputDecoration(
+              //         labelText: '3. Any other Additional (Amount in Rs.)',
+              //         hintText: 'e.g., 10000',
+              //         border: OutlineInputBorder(
+              //           borderRadius: BorderRadius.all(Radius.circular(20)),
+              //         ),
+              //       ),
+              //     ),
+              //     const SizedBox(height: 13),
+              //     TextField(
+              //       // Changed from _buildTextField
+              //       controller: _amenitiesTotalController,
+              //       decoration: const InputDecoration(
+              //         labelText: 'Total Amenities (Amount in Rs.)',
+              //         hintText: 'e.g., 80000',
+              //         border: OutlineInputBorder(
+              //           borderRadius: BorderRadius.all(Radius.circular(20)),
+              //         ),
+              //       ),
+              //     ),
+              //   ],
+              // ),
+              // const SizedBox(height: 20),
 
               //Page 5 (New format)
               ExpansionTile(
@@ -9793,66 +10270,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                     decoration: const InputDecoration(
                       labelText: 'Part- F Services (Amount in Rs.)',
                       hintText: 'e.g., 6330000',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-
-              // Collapsible Section: Consolidated Remarks/ Observations of the property
-              ExpansionTile(
-                title: const Text(
-                  'Consolidated Remarks/ Observations of the property:',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                initiallyExpanded: false,
-                children: <Widget>[
-                  const Divider(),
-                  TextField(
-                    // Changed from _buildTextField
-                    controller: _remark1Controller,
-                    maxLines: 2,
-                    decoration: const InputDecoration(
-                      labelText: '1.',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 13),
-                  TextField(
-                    // Changed from _buildTextField
-                    controller: _remark2Controller,
-                    maxLines: 2,
-                    decoration: const InputDecoration(
-                      labelText: '2.',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 13),
-                  TextField(
-                    // Changed from _buildTextField
-                    controller: _remark3Controller,
-                    maxLines: 2,
-                    decoration: const InputDecoration(
-                      labelText: '3.',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 13),
-                  TextField(
-                    // Changed from _buildTextField
-                    controller: _remark4Controller,
-                    maxLines: 2,
-                    decoration: const InputDecoration(
-                      labelText: '4.',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),

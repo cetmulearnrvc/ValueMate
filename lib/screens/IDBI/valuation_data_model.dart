@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
+
 class ValuationImage {
   final Uint8List imageFile;
   String latitude;
@@ -15,9 +17,6 @@ class ValuationData {
   String nearbyLatitude;
   String nearbyLongitude;
 
-  // Valuer Header Info
-  String valuerNameAndQuals;
-  String valuerCredentials;
   String valuerAddressLine1;
   String valuerMob;
   String valuerEmail;
@@ -32,14 +31,6 @@ class ValuationData {
   String applicationNo;
   String titleHolderName;
   String borrowerName;
-
-  // Documents Verified
-  String landTaxReceiptNo;
-  String possessionCertNo;
-  String locationSketchNo;
-  String thandaperAbstractNo;
-  String approvedLayoutPlanNo;
-  String approvedBuildingPlanNo;
 
   // Physical Details of Land
   String briefDescription;
@@ -127,17 +118,14 @@ class ValuationData {
   String valuerAddress;
   String remarks;
   late List<ValuationImage> images;
-
+  List<Map<String, String>> docs = [];
   ValuationData({
     this.nearbyLatitude = '',
     this.nearbyLongitude = '',
-    this.valuerNameAndQuals = 'Er. Belram S.U. B.Tech, AMIE, AIV',
-    this.valuerCredentials =
-        'Chartered Engineer (AM 190746-0)\nApproved Valuer Cat 1 (A-29296)\nPanel Valuer of IDBI Bank',
     this.valuerAddressLine1 =
-        'Ushas Nivas TC 7/1997-1 Pangode Thirumala PO Thiruvananthapuram Pin Code - 695006',
-    this.valuerMob = '+91-8089697914',
-    this.valuerEmail = 'belramsu@gmail.com',
+        'TC-37/777(1), Big Palla Street, Fort P.O. Thiruvananthapuram-695023',
+    this.valuerMob = '+91 89030 42635',
+    this.valuerEmail = 'subramonyvignesh@gmail.com',
     this.buildingPlinth = '',
     this.buildingRatePerSqft = '',
     this.buildingTotalValue = '',
@@ -151,12 +139,6 @@ class ValuationData {
     this.applicationNo = '',
     this.titleHolderName = '',
     this.borrowerName = '',
-    this.landTaxReceiptNo = '',
-    this.possessionCertNo = '',
-    this.locationSketchNo = '',
-    this.thandaperAbstractNo = '',
-    this.approvedLayoutPlanNo = '',
-    this.approvedBuildingPlanNo = '',
     this.briefDescription = '',
     this.locationAndLandmark = '',
     this.reSyNo = '',
@@ -192,6 +174,7 @@ class ValuationData {
     this.carpetArea = '',
     this.plinthArea = '',
     this.saleableArea = '',
+    this.docs = const [],
     this.landExtent = '',
     this.landRatePerCent = '',
     this.landTotalValue = '',

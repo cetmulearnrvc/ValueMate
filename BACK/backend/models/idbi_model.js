@@ -16,18 +16,14 @@ const valuationImageSchema = new mongoose.Schema({
   latitude: String,
   longitude: String
 });
-
+const verifiedDocumentSchema = new mongoose.Schema({
+  label: { type: String, required: true },
+  value: { type: String, default: "" }
+});
 const idbiValuationSchema = new mongoose.Schema({
 
   // Valuer Information
-  valuerNameAndQuals: {
-    type: String,
-    
-  },
-  valuerCredentials: {
-    type: String,
-    
-  },
+
   valuerAddressLine1: {
     type: String,
     
@@ -71,25 +67,7 @@ const idbiValuationSchema = new mongoose.Schema({
   },
 
   // Documents Verified
-  landTaxReceiptNo: {
-    type: String,
-    
-  },
-  possessionCertNo: {
-    type: String,
-  },
-  locationSketchNo: {
-    type: String,
-  },
-  thandaperAbstractNo: {
-    type: String,
-  },
-  approvedLayoutPlanNo: {
-    type: String,
-  },
-  approvedBuildingPlanNo: {
-    type: String,
-  },
+  verifiedDocuments: [verifiedDocumentSchema],
 
   // Property Description
   briefDescription: {

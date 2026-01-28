@@ -37,7 +37,7 @@ class PdfGeneratorPVR1 {
           _buildTopInfo(),
           pw.Divider(thickness: 1.5),
           _buildSectionA(),
-          pw.SizedBox(height: 50),
+          pw.SizedBox(height: 17),
           _buildSectionB(),
         ],
       ),
@@ -51,10 +51,10 @@ class PdfGeneratorPVR1 {
       build: (context) => pw.Column(
         children: [
           _buildSectionCPage1(),
-          pw.SizedBox(height: 50),
+          pw.SizedBox(height: 17),
           _buildSectionD(),
           // _buildSectionCPage2(),
-          pw.SizedBox(height: 50),
+          pw.SizedBox(height: 17),
         ],
       ),
     );
@@ -85,10 +85,10 @@ class PdfGeneratorPVR1 {
           _buildRecommendationTable(),
           pw.SizedBox(height: 15),
           _buildStageOfConstructionTable(),
-          pw.SizedBox(height: 50),
+          pw.SizedBox(height: 20),
           _sectionTitle('G. CERTIFICATE'),
           _buildCertificate(),
-          pw.SizedBox(height: 70),
+          pw.SizedBox(height: 20),
           _buildSignature(),
           pw.SizedBox(height: 50),
           _seal(),
@@ -123,8 +123,8 @@ class PdfGeneratorPVR1 {
                       data.annexBuildingAge),
                   pw.SizedBox(height: 20),
                   pw.Text('LOCAL MARKET ENQUIRY',
-                      style: const pw.TextStyle(fontSize: 9)),
-                  pw.Spacer(),
+                      style: const pw.TextStyle(fontSize: 10.3)),
+                  pw.SizedBox(height: 20),
                   pw.Row(
                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                       children: [
@@ -132,16 +132,17 @@ class PdfGeneratorPVR1 {
                             crossAxisAlignment: pw.CrossAxisAlignment.start,
                             children: [
                               pw.Text('Place: ${data.certificatePlace}',
-                                  style: const pw.TextStyle(fontSize: 9)),
+                                  style: const pw.TextStyle(fontSize: 10.3)),
                               pw.Text(
                                   'Date: ${dateFormat.format(data.certificateDate)}',
-                                  style: const pw.TextStyle(fontSize: 9)),
+                                  style: const pw.TextStyle(fontSize: 10.3)),
                               pw.Text('Time :',
-                                  style: const pw.TextStyle(fontSize: 9)),
+                                  style: const pw.TextStyle(fontSize: 10.3)),
                             ]),
                         pw.Text('PANEL VALUER',
                             style: pw.TextStyle(
-                                fontWeight: pw.FontWeight.bold, fontSize: 9)),
+                                fontWeight: pw.FontWeight.bold,
+                                fontSize: 10.3)),
                       ])
                 ]));
   }
@@ -149,13 +150,13 @@ class PdfGeneratorPVR1 {
   pw.MultiPage _buildImagePage() {
     return pw.MultiPage(
       pageFormat: PdfPageFormat.a4,
-      margin: const pw.EdgeInsets.all(36),
+      margin: const pw.EdgeInsets.all(10),
       header: (context) => pw.Text('Uploaded Images',
           style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 16)),
       build: (context) => [
         pw.GridView(
           crossAxisCount: 2,
-          childAspectRatio: 0.65,
+          childAspectRatio: 0.9,
           children: data.images.map((valuationImage) {
             final image = pw.MemoryImage(valuationImage.imageFile);
             return pw.Padding(
@@ -172,7 +173,7 @@ class PdfGeneratorPVR1 {
                   pw.SizedBox(height: 5),
                   pw.Text(
                     '(Latitude): ${valuationImage.latitude}\n(Longitude): ${valuationImage.longitude}',
-                    style: const pw.TextStyle(fontSize: 8),
+                    style: const pw.TextStyle(fontSize: 9),
                   ),
                 ],
               ),
@@ -225,7 +226,7 @@ class PdfGeneratorPVR1 {
       padding: const pw.EdgeInsets.all(2),
       margin: const pw.EdgeInsets.only(top: 8),
       child: pw.Text(title,
-          style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10)));
+          style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 11)));
 
   pw.Widget _buildKeyValueBordered(String no, String key, String value,
           {int flexKey = 3, int flexVal = 4}) =>
@@ -236,22 +237,20 @@ class PdfGeneratorPVR1 {
                   right: pw.BorderSide(width: 0.5),
                   bottom: pw.BorderSide(width: 0.5))),
           padding: const pw.EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-          child: pw.Row(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: [
-                pw.SizedBox(
-                    width: 20,
-                    child: pw.Text(no, style: const pw.TextStyle(fontSize: 9))),
-                pw.Expanded(
-                    flex: flexKey,
-                    child:
-                        pw.Text(key, style: const pw.TextStyle(fontSize: 9))),
-                pw.Expanded(
-                    flex: flexVal,
-                    child: pw.Text(value,
-                        style: pw.TextStyle(
-                            fontSize: 9, fontWeight: pw.FontWeight.bold))),
-              ]));
+          child: pw
+              .Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+            pw.SizedBox(
+                width: 20,
+                child: pw.Text(no, style: const pw.TextStyle(fontSize: 10.3))),
+            pw.Expanded(
+                flex: flexKey,
+                child: pw.Text(key, style: const pw.TextStyle(fontSize: 10.3))),
+            pw.Expanded(
+                flex: flexVal,
+                child: pw.Text(value,
+                    style: pw.TextStyle(
+                        fontSize: 10.3, fontWeight: pw.FontWeight.bold))),
+          ]));
   pw.Widget _buildKeyBoolBordered(String no, String key, bool val,
           {int flexKey = 3, int flexVal = 4}) =>
       _buildKeyValueBordered(no, key, val ? 'Yes' : 'No',
@@ -303,15 +302,15 @@ class PdfGeneratorPVR1 {
       pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
         pw.Expanded(
             flex: 2,
-            child: pw.Text(key, style: const pw.TextStyle(fontSize: 9))),
-        pw.Text(': ', style: const pw.TextStyle(fontSize: 9)),
+            child: pw.Text(key, style: const pw.TextStyle(fontSize: 10.3))),
+        pw.Text(': ', style: const pw.TextStyle(fontSize: 10.3)),
         pw.Expanded(
             flex: 3,
             child: pw.Row(children: [
               pw.SizedBox(width: 10),
               pw.Text(value,
-                  style:
-                      pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold))
+                  style: pw.TextStyle(
+                      fontSize: 10.3, fontWeight: pw.FontWeight.bold))
             ])),
       ]);
 
@@ -322,11 +321,12 @@ class PdfGeneratorPVR1 {
       pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
         _sectionTitle('B. LAND'),
         pw.Text('1. Boundaries & dimensions of the plot',
-            style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold)),
+            style:
+                pw.TextStyle(fontSize: 10.3, fontWeight: pw.FontWeight.bold)),
         pw.TableHelper.fromTextArray(
-          cellStyle: const pw.TextStyle(fontSize: 9),
+          cellStyle: const pw.TextStyle(fontSize: 10.3),
           headerStyle:
-              pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold),
+              pw.TextStyle(fontSize: 10.3, fontWeight: pw.FontWeight.bold),
           border: pw.TableBorder.all(width: 0.5),
           columnWidths: {
             0: const pw.FlexColumnWidth(2),
@@ -347,6 +347,10 @@ class PdfGeneratorPVR1 {
             '2. Do these boundaries & dimensions tally with the approved drawing? If not furnish details',
             data.boundariesTally),
         pw.SizedBox(height: 5),
+      ]);
+
+  pw.Widget _buildSectionCPage1() =>
+      pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
         _buildAlignedKeyValue('3. Nature of land use', data.natureOfLandUse),
         _buildAlignedKeyValue('    a. Existing', data.existingLandUse),
         _buildAlignedKeyValue('    b. Proposed', data.proposedLandUse),
@@ -354,13 +358,10 @@ class PdfGeneratorPVR1 {
         _buildKeyBoolValue(
             '4. Whether N.A. Permission Required (If required, whether obtained)',
             data.naPermissionRequired),
-      ]);
-
-  pw.Widget _buildSectionCPage1() =>
-      pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
         _sectionTitle('C. BUILDINGS'),
         pw.Text('1. Building Plan Approval',
-            style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold)),
+            style:
+                pw.TextStyle(fontSize: 10.3, fontWeight: pw.FontWeight.bold)),
         _buildKeyValue(
             'i) Layout planning approval No./ Planning permit No./ Building permission No.',
             data.approvalNo),
@@ -371,14 +372,16 @@ class PdfGeneratorPVR1 {
             'iv) Approval was given by (authority)', data.approvalAuthority),
         pw.SizedBox(height: 5),
         pw.Text('2. Plinth/Built Up Area:',
-            style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold)),
+            style:
+                pw.TextStyle(fontSize: 10.3, fontWeight: pw.FontWeight.bold)),
         pw.Row(children: [
           pw.Expanded(
               child: _buildKeyValue('i) As per approved drawing',
                   'G.F.: ${data.approvedGf}  F.F.: ${data.approvedFf}  S.F.: ${data.approvedSf}')),
           pw.Text(
               'Total: ${(double.tryParse(data.approvedGf) ?? 0) + (double.tryParse(data.approvedFf) ?? 0) + (double.tryParse(data.approvedSf) ?? 0)}',
-              style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold)),
+              style:
+                  pw.TextStyle(fontSize: 10.3, fontWeight: pw.FontWeight.bold)),
         ]),
         pw.Row(children: [
           pw.Expanded(
@@ -386,11 +389,13 @@ class PdfGeneratorPVR1 {
                   'G.F.: ${data.actualGf}  F.F.: ${data.actualFf}  S.F.: ${data.actualSf}')),
           pw.Text(
               'Total: ${(double.tryParse(data.actualGf) ?? 0) + (double.tryParse(data.actualFf) ?? 0) + (double.tryParse(data.actualSf) ?? 0)}',
-              style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold)),
+              style:
+                  pw.TextStyle(fontSize: 10.3, fontWeight: pw.FontWeight.bold)),
         ]),
         pw.SizedBox(height: 5),
         pw.Text('3. Estimate',
-            style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold)),
+            style:
+                pw.TextStyle(fontSize: 10.3, fontWeight: pw.FontWeight.bold)),
         _buildKeyValue(
             'i) Cost as per Estimate provided by the Applicant (Rs.)',
             data.estimateCost),
@@ -408,12 +413,12 @@ class PdfGeneratorPVR1 {
         _sectionTitle('D. INSPECTION'),
         pw.SizedBox(height: 10),
         pw.Text('1.Construction Details',
-            style: const pw.TextStyle(fontSize: 10)),
+            style: const pw.TextStyle(fontSize: 11)),
         pw.TableHelper.fromTextArray(
             border: pw.TableBorder.all(width: 0.5),
-            cellStyle: const pw.TextStyle(fontSize: 9),
+            cellStyle: const pw.TextStyle(fontSize: 10.3),
             headerStyle:
-                pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9),
+                pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10.3),
             headers: [
               'Directions',
               'As per approved plan',
@@ -442,10 +447,10 @@ class PdfGeneratorPVR1 {
             '2. Whether the construction is as per approved plan(Yes/No)',
             data.isConstructionAsPerPlan ? 'YES' : 'NO'),
         pw.Text('3.Deviations (Please mention in detail)',
-            style: const pw.TextStyle(fontSize: 10)),
+            style: const pw.TextStyle(fontSize: 11)),
         pw.TableHelper.fromTextArray(
             border: pw.TableBorder.all(width: 0.5),
-            cellStyle: const pw.TextStyle(fontSize: 9),
+            cellStyle: const pw.TextStyle(fontSize: 10.3),
             headers: [],
             data: [
               [
@@ -480,9 +485,9 @@ class PdfGeneratorPVR1 {
 
   // A special widget just for the "Total works" row
   pw.Widget _buildWorksCompletedRow() {
-    const keyStyle = pw.TextStyle(fontSize: 9);
+    const keyStyle = pw.TextStyle(fontSize: 10.3);
     final valueStyle =
-        pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold);
+        pw.TextStyle(fontSize: 10.3, fontWeight: pw.FontWeight.bold);
 
     return pw.Row(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -527,9 +532,9 @@ class PdfGeneratorPVR1 {
 
   pw.Widget _buildTotalValueTable() => pw.TableHelper.fromTextArray(
           border: pw.TableBorder.all(width: 0.5),
-          cellStyle: const pw.TextStyle(fontSize: 9),
+          cellStyle: const pw.TextStyle(fontSize: 10.3),
           headerStyle:
-              pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9),
+              pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10.3),
           headers: [
             '',
             'as per Application',
@@ -589,18 +594,18 @@ class PdfGeneratorPVR1 {
         pw.SizedBox(
           width:
               keyWidth, // Adjust this width as needed to fit your longest key
-          child: pw.Text(key, style: const pw.TextStyle(fontSize: 9)),
+          child: pw.Text(key, style: const pw.TextStyle(fontSize: 10.3)),
         ),
         // The colon separator
         pw.Padding(
           padding: const pw.EdgeInsets.symmetric(horizontal: 9),
-          child: pw.Text(':', style: const pw.TextStyle(fontSize: 9)),
+          child: pw.Text(':', style: const pw.TextStyle(fontSize: 10.3)),
         ),
         // The "Value" part, which expands and wraps
         pw.Expanded(
           child: pw.Text(
             value,
-            style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold),
+            style: pw.TextStyle(fontSize: 10.3, fontWeight: pw.FontWeight.bold),
           ),
         ),
       ],
@@ -640,14 +645,14 @@ class PdfGeneratorPVR1 {
             // Cell for the question
             pw.Padding(
               padding: const pw.EdgeInsets.all(4), // Add some padding
-              child: pw.Text(row[0], style: const pw.TextStyle(fontSize: 9)),
+              child: pw.Text(row[0], style: const pw.TextStyle(fontSize: 10.3)),
             ),
             // Cell for the answer (THE ONE WE ARE DEBUGGING)
             pw.Container(
               padding: const pw.EdgeInsets.all(4),
               child: pw.Text(
                 row[1].trim(), // Use trim here just in case
-                style: const pw.TextStyle(fontSize: 9),
+                style: const pw.TextStyle(fontSize: 10.3),
               ),
             ),
           ],
@@ -658,9 +663,9 @@ class PdfGeneratorPVR1 {
 
   pw.Widget _buildStageOfConstructionTable() => pw.TableHelper.fromTextArray(
           border: pw.TableBorder.all(width: 0.5),
-          cellStyle: const pw.TextStyle(fontSize: 9),
+          cellStyle: const pw.TextStyle(fontSize: 10.3),
           headerStyle:
-              pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9),
+              pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10.3),
           headers: [
             'Sr.No',
             'Stage of Construction',
@@ -673,11 +678,11 @@ class PdfGeneratorPVR1 {
   pw.Widget _buildCertificate() => pw.Column(children: [
         pw.Text(
             'I declare that I am not associated with the builder or with any of his associate companies or with the borrower directly or indirectly in the past or in the present and this report has been prepared by me with highest professional integrity.',
-            style: const pw.TextStyle(fontSize: 9)),
+            style: const pw.TextStyle(fontSize: 10.3)),
         pw.SizedBox(height: 5),
         pw.Text(
             'I further declare that I have personally inspected the site and building on ${dateFormat.format(data.inspectionDate)}. I further declare that all the above particulars and information given in this report are true to the best of my knowledge and belief.',
-            style: const pw.TextStyle(fontSize: 9)),
+            style: const pw.TextStyle(fontSize: 10.3)),
       ]);
 
   pw.Widget _buildSignature() => pw.Padding(
@@ -686,13 +691,14 @@ class PdfGeneratorPVR1 {
           .Row(mainAxisAlignment: pw.MainAxisAlignment.spaceBetween, children: [
         pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
           pw.Text('Date : ${dateFormat.format(data.certificateDate)}',
-              style: const pw.TextStyle(fontSize: 9)),
-          pw.Text('Time :', style: const pw.TextStyle(fontSize: 9)),
+              style: const pw.TextStyle(fontSize: 10.3)),
+          pw.Text('Time :', style: const pw.TextStyle(fontSize: 10.3)),
           pw.Text('Station: ${data.certificatePlace}',
-              style: const pw.TextStyle(fontSize: 9)),
+              style: const pw.TextStyle(fontSize: 10.3)),
         ]),
         pw.Text('SIGNATURE OF THE VALUER',
-            style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold)),
+            style:
+                pw.TextStyle(fontSize: 10.3, fontWeight: pw.FontWeight.bold)),
       ]));
 
   pw.Widget _seal() => pw.Align(
@@ -703,7 +709,7 @@ class PdfGeneratorPVR1 {
           padding: const pw.EdgeInsets.all(8.0),
           child: pw.Text(
               'Seal Containing Name, Code Number etc. allotted by LICHFL',
-              style: const pw.TextStyle(fontSize: 7),
+              style: const pw.TextStyle(fontSize: 9),
               textAlign: pw.TextAlign.end)));
 
   pw.Widget _buildAnnexureTable() {
@@ -720,8 +726,8 @@ class PdfGeneratorPVR1 {
 
     return pw.TableHelper.fromTextArray(
       border: pw.TableBorder.all(width: 0.5),
-      headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9),
-      cellStyle: const pw.TextStyle(fontSize: 9),
+      headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10.3),
+      cellStyle: const pw.TextStyle(fontSize: 10.3),
       headers: [
         'Description',
         'Area',

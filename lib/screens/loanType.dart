@@ -424,8 +424,8 @@ class LoanType extends StatelessWidget {
     final List<String> loanTypes = [
       '---SELECT---',
       'VALUATION REPORT (IN RESPECT OF LAND / SITE AND BUILDING)',
-      'VALUATION REPORT (IN RESPECT OF FLATS)',
-      'VALUATION REPORT (IN RESPECT OF VACANT LAND / SITE)',
+      // 'VALUATION REPORT (IN RESPECT OF FLATS)',
+      // 'VALUATION REPORT (IN RESPECT OF VACANT LAND / SITE)',
     ];
     String? selectedValue = loanTypes[0];
 
@@ -451,18 +451,20 @@ class LoanType extends StatelessWidget {
                   setState(() {
                     selectedValue = value;
                   });
-                  if (value == 'VALUATION REPORT (IN RESPECT OF FLATS)') {
-                    Navigator.of(ctx).push(MaterialPageRoute(
-                        builder: (_) => const SBIValuationFormScreen()));
-                  } else if (value ==
+                  // if (value == 'VALUATION REPORT (IN RESPECT OF FLATS)') {
+                  //   Navigator.of(ctx).push(MaterialPageRoute(
+                  //       builder: (_) => const SBIValuationFormScreen()));
+                  // }
+                  if (value ==
                       'VALUATION REPORT (IN RESPECT OF LAND / SITE AND BUILDING)') {
                     Navigator.of(ctx).push(MaterialPageRoute(
                         builder: (_) => const SBIValuationFormPage()));
-                  } else if (value ==
-                      'VALUATION REPORT (IN RESPECT OF VACANT LAND / SITE)') {
-                    Navigator.of(ctx).push(MaterialPageRoute(
-                        builder: (_) => const SBIVacantLandFormPage()));
                   }
+                  //else if (value ==
+                  //     'VALUATION REPORT (IN RESPECT OF VACANT LAND / SITE)') {
+                  //   Navigator.of(ctx).push(MaterialPageRoute(
+                  //       builder: (_) => const SBIVacantLandFormPage()));
+                  // }
                 },
               );
             },

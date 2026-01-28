@@ -84,33 +84,33 @@ placetype:String,
     rentReceivedPerMonth: String,
     occupiedByTenantSince: String,
 
-    // Floor details - Ground Floor
-    groundFloorOccupancy: String,
-    groundFloorNoOfRoom: String,
-    groundFloorNoOfKitchen: String,
-    groundFloorNoOfBathroom: String,
-    groundFloorUsageRemarks: String,
-
-    // Floor details - First Floor
-    firstFloorOccupancy: String,
-    firstFloorNoOfRoom: String,
-    firstFloorNoOfKitchen: String,
-    firstFloorNoOfBathroom: String,
-    firstFloorUsageRemarks: String,
 
     // Road details
-    typeOfRoad: String,
-    widthOfRoad: String,
-    isLandLocked: String,
+   locality: String,
+development: String,
+freqFlooding: String,
+feasibilityCivic: String,
+levelLand: String,
+shape: String,
+typeOfUse: String,
+usageRestriction: String,
+townPlanning: String,
+corner: String,
+roadFacilties: String,
+typeOfRoad: String,
+widthOfRoad: String,
+isLandLocked: String,
+waterPotential: String,
+undergroundSewerage: String,
+powerSupply: String,
 
-    // Land Valuation Table
-    landAreaDetails: String,
-    landAreaGuideline: String,
-    landAreaPrevailing: String,
-    ratePerSqFtGuideline: String,
-    ratePerSqFtPrevailing: String,
-    valueInRsGuideline: String,
-    valueInRsPrevailing: String,
+sizeOfPlot: String,
+northSouth: String,
+eastWest: String,
+totalExtent: String,
+prevalingMarket: String,
+
+    
 
     // Building Valuation Table
     typeOfBuilding: String,
@@ -159,11 +159,7 @@ placetype:String,
     totalAbstractMisc: String,
     totalAbstractService: String,
 
-    // Consolidated Remarks
-    remark1: String,
-    remark2: String,
-    remark3: String,
-    remark4: String,
+    
 
     // Final Valuation
     presentMarketValue: String,

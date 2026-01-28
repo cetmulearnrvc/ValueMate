@@ -33,10 +33,12 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
   late final Map<String, TextEditingController> _controllers;
 
   late final List<ValuationImage> _valuationImages = [];
+  List<Map<String, TextEditingController>> dynamicDocs = [];
   @override
   void initState() {
     super.initState();
-
+    _addDocumentRow('a. Land tax receipt no.');
+    _addDocumentRow('b. Possession certificate no.');
     if (widget.propertyData != null) {
       // Use the passed data to initialize your form only if it exists
       // debugPrint('Received property data: ${widget.propertyData}');
@@ -50,16 +52,21 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
     _initializeFormWithPropertyData();
   }
 
+  void _addDocumentRow([String? label]) {
+    setState(() {
+      dynamicDocs.add({
+        'label': TextEditingController(text: label ?? 'New Document'),
+        'val': TextEditingController(),
+      });
+    });
+  }
+
   void _initializeControllers() {
     _controllers = {
       'nearbyLatitude': TextEditingController(),
 
       'nearbyLongitude': TextEditingController(),
 
-      'valuerNameAndQuals': TextEditingController(
-        text: _data.valuerNameAndQuals,
-      ),
-      'valuerCredentials': TextEditingController(text: _data.valuerCredentials),
       'valuerAddressLine1': TextEditingController(
         text: _data.valuerAddressLine1,
       ),
@@ -72,18 +79,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
       'applicationNo': TextEditingController(text: _data.applicationNo),
       'titleHolderName': TextEditingController(text: _data.titleHolderName),
       'borrowerName': TextEditingController(text: _data.borrowerName),
-      'landTaxReceiptNo': TextEditingController(text: _data.landTaxReceiptNo),
-      'possessionCertNo': TextEditingController(text: _data.possessionCertNo),
-      'locationSketchNo': TextEditingController(text: _data.locationSketchNo),
-      'thandaperAbstractNo': TextEditingController(
-        text: _data.thandaperAbstractNo,
-      ),
-      'approvedLayoutPlanNo': TextEditingController(
-        text: _data.approvedLayoutPlanNo,
-      ),
-      'approvedBuildingPlanNo': TextEditingController(
-        text: _data.approvedBuildingPlanNo,
-      ),
+
       'briefDescription': TextEditingController(text: _data.briefDescription),
       'locationAndLandmark': TextEditingController(
         text: _data.locationAndLandmark,
@@ -348,12 +344,16 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
       );
 
       var request = http.MultipartRequest('POST', Uri.parse(url1));
-
+      List<Map<String, String>> docsList = dynamicDocs
+          .map((doc) => {
+                "label": doc['label']!.text,
+                "value": doc['val']!.text,
+              })
+          .toList();
       // Add text fields
       request.fields.addAll({
         // Valuer Information
-        "valuerNameAndQuals": _controllers['valuerNameAndQuals']!.text,
-        "valuerCredentials": _controllers['valuerCredentials']!.text,
+
         "valuerAddressLine1": _controllers['valuerAddressLine1']!.text,
         "valuerMob": _controllers['valuerMob']!.text,
         "valuerEmail": _controllers['valuerEmail']!.text,
@@ -370,12 +370,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
         "borrowerName": _controllers['borrowerName']!.text,
 
         // Documents Verified
-        "landTaxReceiptNo": _controllers['landTaxReceiptNo']!.text,
-        "possessionCertNo": _controllers['possessionCertNo']!.text,
-        "locationSketchNo": _controllers['locationSketchNo']!.text,
-        "thandaperAbstractNo": _controllers['thandaperAbstractNo']!.text,
-        "approvedLayoutPlanNo": _controllers['approvedLayoutPlanNo']!.text,
-        "approvedBuildingPlanNo": _controllers['approvedBuildingPlanNo']!.text,
+        "verifiedDocuments": jsonEncode(docsList),
 
         // Property Description
         "briefDescription": _controllers['briefDescription']!.text,
@@ -609,11 +604,21 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
     if (widget.propertyData != null) {
       final data = widget.propertyData!;
 
+      if (data['verifiedDocuments'] != null) {
+        final List fetchedDocs = data['verifiedDocuments'];
+        setState(() {
+          dynamicDocs = fetchedDocs
+              .map((doc) => {
+                    'label': TextEditingController(
+                        text: doc['label']?.toString() ?? ''),
+                    'val': TextEditingController(
+                        text: doc['value']?.toString() ?? ''),
+                  })
+              .toList();
+        });
+      }
       // Valuer Information
-      _controllers['valuerNameAndQuals']!.text =
-          data['valuerNameAndQuals']?.toString() ?? '';
-      _controllers['valuerCredentials']!.text =
-          data['valuerCredentials']?.toString() ?? '';
+
       _controllers['valuerAddressLine1']!.text =
           data['valuerAddressLine1']?.toString() ?? '';
       _controllers['valuerMob']!.text = data['valuerMob']?.toString() ?? '';
@@ -634,20 +639,6 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
           data['titleHolderName']?.toString() ?? '';
       _controllers['borrowerName']!.text =
           data['borrowerName']?.toString() ?? '';
-
-      // Documents Verified
-      _controllers['landTaxReceiptNo']!.text =
-          data['landTaxReceiptNo']?.toString() ?? '';
-      _controllers['possessionCertNo']!.text =
-          data['possessionCertNo']?.toString() ?? '';
-      _controllers['locationSketchNo']!.text =
-          data['locationSketchNo']?.toString() ?? '';
-      _controllers['thandaperAbstractNo']!.text =
-          data['thandaperAbstractNo']?.toString() ?? '';
-      _controllers['approvedLayoutPlanNo']!.text =
-          data['approvedLayoutPlanNo']?.toString() ?? '';
-      _controllers['approvedBuildingPlanNo']!.text =
-          data['approvedBuildingPlanNo']?.toString() ?? '';
 
       // Property Description
       _controllers['briefDescription']!.text =
@@ -992,9 +983,12 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
       _controllers.forEach((key, controller) {
         controller.text = _sanitizeString(controller.text);
       });
-
-      _data.valuerNameAndQuals = _controllers['valuerNameAndQuals']!.text;
-      _data.valuerCredentials = _controllers['valuerCredentials']!.text;
+      _data.docs = dynamicDocs
+          .map((doc) => {
+                'label': doc['label']!.text,
+                'val': doc['val']!.text,
+              })
+          .toList();
       _data.valuerAddressLine1 = _controllers['valuerAddressLine1']!.text;
       _data.valuerMob = _controllers['valuerMob']!.text;
       _data.valuerEmail = _controllers['valuerEmail']!.text;
@@ -1007,13 +1001,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
       _data.applicationNo = _controllers['applicationNo']!.text;
       _data.titleHolderName = _controllers['titleHolderName']!.text;
       _data.borrowerName = _controllers['borrowerName']!.text;
-      _data.landTaxReceiptNo = _controllers['landTaxReceiptNo']!.text;
-      _data.possessionCertNo = _controllers['possessionCertNo']!.text;
-      _data.locationSketchNo = _controllers['locationSketchNo']!.text;
-      _data.thandaperAbstractNo = _controllers['thandaperAbstractNo']!.text;
-      _data.approvedLayoutPlanNo = _controllers['approvedLayoutPlanNo']!.text;
-      _data.approvedBuildingPlanNo =
-          _controllers['approvedBuildingPlanNo']!.text;
+
       _data.briefDescription = _controllers['briefDescription']!.text;
       _data.locationAndLandmark = _controllers['locationAndLandmark']!.text;
       _data.reSyNo = _controllers['reSyNo']!.text;
@@ -1175,16 +1163,7 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
               initiallyExpanded: true,
               children: [
                 _buildTextField(
-                  'Valuer Name & Qualifications',
-                  _controllers['valuerNameAndQuals']!,
-                ),
-                _buildTextField(
-                  'Valuer Credentials (multiline)',
-                  _controllers['valuerCredentials']!,
-                  maxLines: 3,
-                ),
-                _buildTextField(
-                  'Valuer Address (Ushas Nivas...)',
+                  'Valuer Address',
                   _controllers['valuerAddressLine1']!,
                   maxLines: 2,
                 ),
@@ -1267,30 +1246,37 @@ class _ValuationFormScreenState extends State<ValuationFormScreenIDBI> {
                   "List of documents verified",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                _buildTextField(
-                  'a) Land tax receipt no.',
-                  _controllers['landTaxReceiptNo']!,
-                ),
-                _buildTextField(
-                  'b) Possession certificate no.',
-                  _controllers['possessionCertNo']!,
-                ),
-                _buildTextField(
-                  'c) Location sketch no.',
-                  _controllers['locationSketchNo']!,
-                ),
-                _buildTextField(
-                  'd) Thandaper abstract no.',
-                  _controllers['thandaperAbstractNo']!,
-                ),
-                _buildTextField(
-                  'e) Approved Layout Plan no.',
-                  _controllers['approvedLayoutPlanNo']!,
-                ),
-                _buildTextField(
-                  'f) Approved Building Plan no.',
-                  _controllers['approvedBuildingPlanNo']!,
-                ),
+                // Define this in your State class
+
+// In your UI Build method
+                Column(
+                  children: [
+                    ...dynamicDocs
+                        .map((doc) => Row(
+                              children: [
+                                Expanded(
+                                    flex: 2,
+                                    child: TextField(controller: doc['label'])),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                    flex: 3,
+                                    child: TextField(controller: doc['val'])),
+                                IconButton(
+                                  icon: const Icon(Icons.remove_circle,
+                                      color: Colors.red),
+                                  onPressed: () =>
+                                      setState(() => dynamicDocs.remove(doc)),
+                                ),
+                              ],
+                            ))
+                        .toList(),
+                    TextButton.icon(
+                      onPressed: () => _addDocumentRow(),
+                      icon: const Icon(Icons.add),
+                      label: const Text("Add Row"),
+                    ),
+                  ],
+                )
               ],
             ),
             _buildSection(
