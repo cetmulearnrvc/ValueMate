@@ -4399,22 +4399,17 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
     // --- PAGE 7 onwards: ATTACHED PHOTOS ---
     if (_images.isNotEmpty) {
       final double pageWidth =
-          pdfLib.PdfPageFormat.a4.availableWidth - (2 * 22); // Subtract margins
-      final double pageHeight = pdfLib.PdfPageFormat.a4.availableHeight -
-          (2 * 22); // Subtract margins
+          pdfLib.PdfPageFormat.a4.width - (2 * 22); // A4 Width - Margins
+      // Standard photo aspect ratio (4:3) is better than splitting page height by 2
+      const double imageAspectRatio = 4 / 3;
+      const int crossAxisCount = 2; // Standard: 2 photos per row
+      const double spacing = 15; // Space between photos
 
-      // Calculate desired image dimensions for 3 images per row, 2 rows (6 images total)
-      // Allow for some padding between images
-      const double imageHorizontalPadding = 10;
-      const double imageVerticalPadding = 10;
-      // Width for 3 images: (pageWidth - 2 * padding) / 3
+      // 2. Calculate Exact Width for each photo
       final double targetImageWidth =
-          (pageWidth - 2 * imageHorizontalPadding) / 3;
-      // Height for 2 rows: (pageHeight - padding for title - 2 * vertical padding) / 2
-      // Assuming 30 for title and its padding, and 20 for row spacing
-      final double targetImageHeight =
-          (pageHeight - 30 - 2 * imageVerticalPadding) / 2;
-
+          (pageWidth - (spacing * (crossAxisCount - 1))) / crossAxisCount;
+      // Calculate Height based on aspect ratio (keeps photos uniform)
+      final double targetImageHeight = targetImageWidth / imageAspectRatio;
       for (int i = 0; i < _images.length; i += 6) {
         final List<pw.Widget> pageImages = [];
         for (int j = 0; j < 6 && (i + j) < _images.length; j++) {
@@ -4467,29 +4462,37 @@ class _PdfGeneratorScreenState extends State<PdfGeneratorScreen> {
           }
         }
 
-        // Arrange images in a grid-like structure (2 rows of 3 images)
         List<pw.Widget> rows = [];
-        for (int k = 0; k < pageImages.length; k += 3) {
+
+// 1. Change increment to 2
+        for (int k = 0; k < pageImages.length; k += 2) {
           List<pw.Widget> rowChildren = [];
-          for (int l = 0; l < 3 && (k + l) < pageImages.length; l++) {
-            rowChildren.add(
-              pw.Expanded(
-                child: pageImages[k + l],
-              ),
-            );
+
+          // 2. Change limit to 2
+          for (int l = 0; l < 2 && (k + l) < pageImages.length; l++) {
+            rowChildren.add(pw.Expanded(child: pageImages[k + l]));
           }
+
+          // OPTIONAL FIX: Prevent the last image from stretching
+          // if you have an odd number of images (e.g., 5 images).
+          if (rowChildren.length == 1) {
+            rowChildren.add(pw.Spacer());
+          }
+
           rows.add(
             pw.Row(
               mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
               children: rowChildren,
             ),
           );
-          if (k + 3 < pageImages.length) {
-            rows.add(pw.SizedBox(
-                height: imageVerticalPadding)); // Space between rows
+
+          // 3. Change check to 2
+          if (k + 2 < pageImages.length) {
+            rows.add(
+              pw.SizedBox(height: 4),
+            );
           }
         }
-
         pdf.addPage(
           pw.MultiPage(
             pageFormat: pdfLib.PdfPageFormat.a4,

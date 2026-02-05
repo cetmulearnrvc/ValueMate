@@ -53,6 +53,10 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
   @override
   void initState() {
     super.initState();
+    _addDocumentRow('1.');
+    _addDocumentRow('2.');
+    _addDocumentRowRemarks();
+    _addDocumentRowRemarks();
     if (widget.propertyData != null) {
       // Use the passed data to initialize your form only if it exists
       //debugPrint('Received property data: ${widget.propertyData}');
@@ -63,6 +67,23 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
       // Initialize with empty/default values
     }
     _initializeFormWithPropertyData();
+  }
+
+  void _addDocumentRow([String? label]) {
+    setState(() {
+      advantageList.add({
+        'label': TextEditingController(text: label ?? 'Sl No'),
+        'val': TextEditingController(),
+      });
+    });
+  }
+
+  void _addDocumentRowRemarks([String? label]) {
+    setState(() {
+      remarksList.add(
+        TextEditingController(text: label ?? 'remark'),
+      );
+    });
   }
 
   final TextEditingController _latController = TextEditingController();
@@ -180,7 +201,8 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
   final TextEditingController _townPlanning = TextEditingController();
   final TextEditingController _cornerPLot = TextEditingController();
   final TextEditingController _roadFacilites = TextEditingController();
-
+  List<Map<String, TextEditingController>> advantageList = [];
+  List<TextEditingController> remarksList = [];
   final TextEditingController _typeOfRoadController = TextEditingController();
   final TextEditingController _widthOfRoadController = TextEditingController();
 
@@ -281,11 +303,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
   final TextEditingController _realizableValueController =
       TextEditingController();
   final TextEditingController _distressValueController =
-      TextEditingController();
-  // NEW: Controllers for editable dates in FORMAT E declaration
-  final TextEditingController _declarationDateAController =
-      TextEditingController();
-  final TextEditingController _declarationDateCController =
       TextEditingController();
 
   // NEW: Controllers for the Valuer Comments table
@@ -684,6 +701,13 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
 
       var request = http.MultipartRequest('POST', Uri.parse(url1));
 
+      List<Map<String, String>> docsList = advantageList
+          .map(
+              (doc) => {"lebel": doc['label']!.text, "value": doc['val']!.text})
+          .toList();
+
+      List<String> remarks = remarksList.map((c) => c.text).toList();
+
       // Add all text fields from controllers
       request.fields.addAll({
         // Document checks
@@ -781,6 +805,8 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         "waterPotential": _waterPotential.text,
         "undergroundSewerage": _undergroundSewerage.text,
         "powerSupply": _powerSupply.text,
+        "advantages": jsonEncode(docsList),
+        "remarks": jsonEncode(remarks),
 
         "sizeOfPlot": _sizeOfPlot.text,
         "northSouth": _northSouth.text,
@@ -842,10 +868,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         "presentMarketValue": _presentMarketValueController.text,
         "realizableValue": _realizableValueController.text,
         "distressValue": _distressValueController.text,
-
-        // Declaration dates
-        "declarationDateA": _declarationDateAController.text,
-        "declarationDateC": _declarationDateCController.text,
 
         // Valuer Comments
         "vcBackgroundInfo": _vcBackgroundInfoController.text,
@@ -1136,7 +1158,29 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
   void _initializeFormWithPropertyData() async {
     if (widget.propertyData != null) {
       final data = widget.propertyData!;
+      if (data['advantages'] != null) {
+        List fetchedDocs = data['advantages'];
+        setState(() {
+          advantageList = fetchedDocs
+              .map((doc) => {
+                    'label': TextEditingController(
+                        text: doc['label']?.toString() ?? ''),
+                    'val': TextEditingController(
+                        text: doc['value']?.toString() ?? ''),
+                  })
+              .toList();
+        });
+      }
+      if (data['remarks'] != null) {
+        List fetchedDocs = data['remarks'];
 
+        setState(() {
+          remarksList = fetchedDocs
+              .map((c) =>
+                  TextEditingController(text: c.toString())) // CHANGED HERE
+              .toList();
+        });
+      }
       // Set coordinates and refId
       _refId.text = data['refId']?.toString() ?? '';
 
@@ -1345,12 +1389,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
       _realizableValueController.text =
           data['realizableValue']?.toString() ?? '';
       _distressValueController.text = data['distressValue']?.toString() ?? '';
-
-      // Declaration dates
-      _declarationDateAController.text =
-          data['declarationDateA']?.toString() ?? '';
-      _declarationDateCController.text =
-          data['declarationDateC']?.toString() ?? '';
 
       // Valuer Comments
       _vcBackgroundInfoController.text =
@@ -2019,6 +2057,14 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
             child: pw.Text('i) Land Tax Receipt (${_LandTaxReceipt.text})',
                 style: contentTextStyle),
           ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('${_LandTaxReceipt.text}', style: contentTextStyle),
+          ),
         ],
       ),
     );
@@ -2035,6 +2081,14 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
             child: pw.Text('ii) Location Plan (${_TitleDeed.text})',
                 style: contentTextStyle),
           ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('${_TitleDeed.text}', style: contentTextStyle),
+          ),
         ],
       ),
     );
@@ -2050,6 +2104,15 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
             padding: cellPadding,
             child: pw.Text(
                 'iii) Legal Scrutiny Report dated (${_BuildingCertificate.text})',
+                style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('${_BuildingCertificate.text}',
                 style: contentTextStyle),
           ),
         ],
@@ -2221,7 +2284,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         children: [
           pw.Container(
               padding: cellPadding,
-              child: pw.Text('        a', style: contentTextStyle)),
+              child: pw.Text('       a', style: contentTextStyle)),
           pw.Container(
             padding: cellPadding,
             child:
@@ -2238,12 +2301,23 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         ],
       ),
     );
+
+    return rows;
+  }
+
+  List<pw.TableRow> _getPage2Table1Rows() {
+    const pw.TextStyle contentTextStyle = pw.TextStyle(
+      fontSize: 11,
+    ); // Increased font size to 10
+    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
+
+    List<pw.TableRow> rows = [];
     rows.add(
       pw.TableRow(
         children: [
           pw.Container(
               padding: cellPadding,
-              child: pw.Text('        b', style: contentTextStyle)),
+              child: pw.Text('     b', style: contentTextStyle)),
           pw.Container(
             padding: cellPadding,
             child: pw.Text(' Door No. ', style: contentTextStyle),
@@ -2264,7 +2338,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         children: [
           pw.Container(
               padding: cellPadding,
-              child: pw.Text('        c', style: contentTextStyle)),
+              child: pw.Text('     c', style: contentTextStyle)),
           pw.Container(
             padding: cellPadding,
             child: pw.Text(' T. S. No. / Village ', style: contentTextStyle),
@@ -2285,7 +2359,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         children: [
           pw.Container(
               padding: cellPadding,
-              child: pw.Text('        d', style: contentTextStyle)),
+              child: pw.Text('     d', style: contentTextStyle)),
           pw.Container(
             padding: cellPadding,
             child: pw.Text('  Ward / Taluk ', style: contentTextStyle),
@@ -2309,7 +2383,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         children: [
           pw.Container(
               padding: cellPadding,
-              child: pw.Text('        e', style: contentTextStyle)),
+              child: pw.Text('     e', style: contentTextStyle)),
           pw.Container(
             padding: cellPadding,
             child: pw.Text('  Mandal / District  ', style: contentTextStyle),
@@ -2328,17 +2402,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         ],
       ),
     );
-
-    return rows;
-  }
-
-  List<pw.TableRow> _getPage2Table1Rows() {
-    const pw.TextStyle contentTextStyle = pw.TextStyle(
-      fontSize: 11,
-    ); // Increased font size to 10
-    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
-
-    List<pw.TableRow> rows = [];
     rows.add(
       pw.TableRow(
         children: [
@@ -3836,41 +3899,80 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         children: [
           pw.Container(
             padding: cellPadding,
-            child: pw.Text('2.', style: contentTextStyle),
+            child: pw.Text('18.', style: contentTextStyle),
           ),
           pw.Container(
             padding: cellPadding,
             child: pw.Text(
-              'Development of surrounding areas',
+              'Advantage of the site',
               style: contentTextStyle,
             ),
           ),
           pw.Container(
             padding: cellPadding,
-            child: pw.Text(':', style: contentTextStyle),
+            child: pw.Text('', style: contentTextStyle),
           ),
           pw.Container(
             padding: cellPadding,
             child: pw.Text(
-              _development.text,
+              '',
               style: contentTextStyle,
             ),
           ),
         ],
       ),
     );
+    // Iterate through your list
+    for (int i = 0; i < advantageList.length; i++) {
+      var doc = advantageList[i]; // Get the data for this row
 
+      rows.add(
+        pw.TableRow(
+          children: [
+            // Column 1: Dynamic Number (i + 1)
+            pw.Container(
+              padding: cellPadding,
+              child: pw.Text('', style: contentTextStyle),
+            ),
+
+            // Column 2: Dynamic Label (Assuming 'doc' has a label field)
+            pw.Container(
+              padding: cellPadding,
+              child: pw.Text(
+                '${i + 1}.', // Replace with doc.title or similar
+                style: contentTextStyle,
+              ),
+            ),
+
+            // Column 3: Separator
+            pw.Container(
+              padding: cellPadding,
+              child: pw.Text(':', style: contentTextStyle),
+            ),
+
+            // Column 4: Dynamic Value (Assuming 'doc' has a value field)
+            pw.Container(
+              padding: cellPadding,
+              child: pw.Text(
+                doc['val']?.text ?? '', // Replace with doc.data or similar
+                style: contentTextStyle,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
     rows.add(
       pw.TableRow(
         children: [
           pw.Container(
             padding: cellPadding,
-            child: pw.Text('2.', style: contentTextStyle),
+            child: pw.Text('19.', style: contentTextStyle),
           ),
           pw.Container(
             padding: cellPadding,
             child: pw.Text(
-              'Development of surrounding areas',
+              'Special remarks, if any, like threat of acquisition of land for public service purposes, road widening or applicability of CRZ provisions etc. (Distance from seacoast / tidal level must be incorporated)',
               style: contentTextStyle,
             ),
           ),
@@ -3888,6 +3990,45 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         ],
       ),
     );
+    for (int i = 0; i < remarksList.length; i++) {
+      var doc = remarksList[i]; // Get the data for this row
+
+      rows.add(
+        pw.TableRow(
+          children: [
+            // Column 1: Dynamic Number (i + 1)
+            pw.Container(
+              padding: cellPadding,
+              child: pw.Text('', style: contentTextStyle),
+            ),
+
+            // Column 2: Dynamic Label (Assuming 'doc' has a label field)
+            pw.Container(
+              padding: cellPadding,
+              child: pw.Text(
+                '${i + 1}.', // Replace with doc.title or similar
+                style: contentTextStyle,
+              ),
+            ),
+
+            // Column 3: Separator
+            pw.Container(
+              padding: cellPadding,
+              child: pw.Text(':', style: contentTextStyle),
+            ),
+
+            // Column 4: Dynamic Value (Assuming 'doc' has a value field)
+            pw.Container(
+              padding: cellPadding,
+              child: pw.Text(
+                doc.text ?? '', // Replace with doc.data or similar
+                style: contentTextStyle,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
 
     return rows;
   }
@@ -3910,7 +4051,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           pw.Container(
             padding: cellPadding,
             child: pw.Text(
-              'Part – A (Valuation of land)',
+              'Part - A (Valuation of land)',
               style: headerTextStyle,
             ),
           ),
@@ -5659,8 +5800,8 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
 
   List<pw.TableRow> _getExtraItemsTableRows() {
     final pw.TextStyle headerTextStyle =
-        pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9);
-    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 9);
+        pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10);
+    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 10);
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
     return [
@@ -5753,8 +5894,8 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
 
   List<pw.TableRow> _getAmenitiesTableRows2() {
     final pw.TextStyle headerTextStyle =
-        pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9);
-    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 9);
+        pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10);
+    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 10);
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
     final List<List<String>> items = [
@@ -5802,8 +5943,8 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
 
   List<pw.TableRow> _getMiscTableRows() {
     final pw.TextStyle headerTextStyle =
-        pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9);
-    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 9);
+        pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10);
+    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 10);
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
     return [
@@ -5880,8 +6021,8 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
 
   List<pw.TableRow> _getServicesTableRows() {
     final pw.TextStyle headerTextStyle =
-        pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9);
-    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 9);
+        pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10);
+    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 10);
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
     return [
@@ -6644,10 +6785,10 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                       alignment: pw.Alignment.center,
                       padding: const pw.EdgeInsets.all(6),
                       child: pw.Text(
-                        'S.No',
+                        'I',
                         style: pw.TextStyle(
                           fontWeight: pw.FontWeight.bold,
-                          fontSize: 7,
+                          fontSize: 9.5,
                         ),
                       ), // Reduced font size
                       // decoration: pw.BoxDecoration(
@@ -6658,13 +6799,12 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                       // ),
                     ),
                     pw.Container(
-                      alignment: pw.Alignment.center,
                       padding: const pw.EdgeInsets.all(6),
                       child: pw.Text(
                         'GENERAL',
                         style: pw.TextStyle(
                           fontWeight: pw.FontWeight.bold,
-                          fontSize: 9,
+                          fontSize: 9.5,
                         ),
                       ), // Reduced font size
                       // decoration: pw.BoxDecoration(
@@ -7034,7 +7174,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
               ),
               columnWidths: {
                 0: const pw.FlexColumnWidth(0.5), // S.No
-                1: const pw.FlexColumnWidth(3.0), // Item
+                1: const pw.FlexColumnWidth(2.0), // Item
                 2: const pw.FlexColumnWidth(0.2), // Colon
                 3: const pw.FlexColumnWidth(2.0), // Amount
               },
@@ -7120,9 +7260,9 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           // Standard Column Widths for Parts C, D, E, F
           final partColumnWidths = {
             0: const pw.FixedColumnWidth(25), // S.No
-            1: const pw.FlexColumnWidth(4), // Description
+            1: const pw.FlexColumnWidth(3.5), // Description
             2: const pw.FixedColumnWidth(20), // Colon
-            3: const pw.FlexColumnWidth(2), // Amount
+            3: const pw.FlexColumnWidth(3), // Amount
           };
 
           return [
@@ -8662,7 +8802,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                   TextField(
                     controller: _locality,
                     decoration: const InputDecoration(
-                      labelText: 'Classification of locality',
+                      labelText: '1. Classification of locality',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
@@ -8674,7 +8814,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                   TextField(
                     controller: _development,
                     decoration: const InputDecoration(
-                      labelText: 'Development of surrounding areas',
+                      labelText: '2. Development of surrounding areas',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
@@ -8686,7 +8826,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                   TextField(
                     controller: _freqFlooding,
                     decoration: const InputDecoration(
-                      labelText: 'Possibility of frequent flooding / sub',
+                      labelText: '3. Possibility of frequent flooding / sub',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
@@ -8698,7 +8838,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                   TextField(
                     controller: _feasibilityCivic,
                     decoration: const InputDecoration(
-                      labelText: 'Feasibility to the Civic Amenities',
+                      labelText: '4. Feasibility to the Civic Amenities',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
@@ -8710,7 +8850,8 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                   TextField(
                     controller: _levelLand,
                     decoration: const InputDecoration(
-                      labelText: 'Level of Land with topographical conditions',
+                      labelText:
+                          '5. Level of Land with topographical conditions',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
@@ -8722,7 +8863,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                   TextField(
                     controller: _shapeLand,
                     decoration: const InputDecoration(
-                      labelText: 'Shape of Land',
+                      labelText: '6. Shape of Land',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
@@ -8734,7 +8875,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                   TextField(
                     controller: _typeOfUse,
                     decoration: const InputDecoration(
-                      labelText: 'Type of Use to which it can be put',
+                      labelText: '7. Type of Use to which it can be put',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
@@ -8746,7 +8887,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                   TextField(
                     controller: _usageRestriction,
                     decoration: const InputDecoration(
-                      labelText: 'Any Usage Restriction',
+                      labelText: '8. Any Usage Restriction',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
@@ -8758,7 +8899,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                   TextField(
                     controller: _townPlanning,
                     decoration: const InputDecoration(
-                      labelText: 'Is plot in town planning approved layout?',
+                      labelText: '9. Is plot in town planning approved layout?',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
@@ -8770,7 +8911,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                   TextField(
                     controller: _cornerPLot,
                     decoration: const InputDecoration(
-                      labelText: 'Corner plot or intermittent plot?',
+                      labelText: '10. Corner plot or intermittent plot?',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
@@ -8782,7 +8923,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                   TextField(
                     controller: _roadFacilites,
                     decoration: const InputDecoration(
-                      labelText: 'Road Facilities',
+                      labelText: '11. Road Facilities',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
@@ -8794,7 +8935,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                   TextField(
                     controller: _typeOfRoadController,
                     decoration: const InputDecoration(
-                      labelText: 'Type of Road available at present',
+                      labelText: '12. Type of Road available at present',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
@@ -8807,7 +8948,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                     controller: _widthOfRoadController,
                     decoration: const InputDecoration(
                       labelText:
-                          'Width of Road - is it below 20 ft. or more than 20 ft.',
+                          '13. Width of Road - is it below 20 ft. or more than 20 ft.',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
@@ -8819,7 +8960,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                   TextField(
                     controller: _isLandLockedController,
                     decoration: const InputDecoration(
-                      labelText: 'Is it a land - locked land?',
+                      labelText: '14. Is it a land - locked land?',
                       hintText: 'Yes/No',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -8832,7 +8973,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                   TextField(
                     controller: _waterPotential,
                     decoration: const InputDecoration(
-                      labelText: 'Water potentiality',
+                      labelText: '15. Water potentiality',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
@@ -8844,7 +8985,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                   TextField(
                     controller: _undergroundSewerage,
                     decoration: const InputDecoration(
-                      labelText: 'Underground sewerage system',
+                      labelText: '16. Underground sewerage system',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
@@ -8856,13 +8997,86 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                   TextField(
                     controller: _powerSupply,
                     decoration: const InputDecoration(
-                      labelText: 'Is power supply available at the site?',
+                      labelText: '17. Is power supply available at the site?',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
                     ),
                   ),
                   const SizedBox(height: 10),
+                  Text('18. Advantages of the site',
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        ...advantageList
+                            .map((doc) => Row(
+                                  children: [
+                                    Expanded(
+                                      child: TextField(
+                                        controller: doc['label'],
+                                      ),
+                                      flex: 1,
+                                    ),
+                                    SizedBox(width: 10),
+                                    Expanded(
+                                        child: TextField(
+                                          controller: doc['val'],
+                                        ),
+                                        flex: 6),
+                                    IconButton(
+                                        onPressed: () => setState(() {
+                                              advantageList.remove(doc);
+                                            }),
+                                        icon: Icon(Icons.remove_circle))
+                                  ],
+                                ))
+                            .toList(),
+                        TextButton.icon(
+                          onPressed: _addDocumentRow,
+                          label: Text('Add Row'),
+                          icon: Icon(Icons.add),
+                        )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                      '19. Special remarks, if any, like threat of acquisition of land for public service purposes, road widening or applicability of CRZ provisions etc. (Distance from seacoast / tidal level must be incorporated)',
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        ...remarksList
+                            .map((c) => Row(
+                                  children: [
+                                    Expanded(
+                                      child: TextField(
+                                        controller: c,
+                                      ),
+                                    ),
+                                    IconButton(
+                                        onPressed: () => setState(() {
+                                              remarksList.remove(c);
+                                            }),
+                                        icon: Icon(Icons.remove_circle))
+                                  ],
+                                ))
+                            .toList(),
+                        TextButton.icon(
+                          onPressed: _addDocumentRowRemarks,
+                          label: Text('Add Row'),
+                          icon: Icon(Icons.add),
+                        )
+                      ],
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 20),
@@ -10192,7 +10406,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                   const SizedBox(height: 20),
                 ],
               ),
-
+              const SizedBox(height: 10),
               // Collapsible Section: Total abstract of the entire property
               ExpansionTile(
                 title: const Text(
@@ -10329,48 +10543,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                     controller: _place,
                     decoration: const InputDecoration(
                       labelText: 'Place',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-
-              // NEW: Collapsible Section: Declaration Details (for FORMAT E dates)
-              ExpansionTile(
-                title: const Text(
-                  'Declaration Details (FORMAT E)',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                initiallyExpanded: false,
-                children: <Widget>[
-                  const Divider(),
-                  TextField(
-                    // Changed from _buildTextField
-                    controller: _declarationDateAController,
-                    readOnly: true,
-                    onTap: () =>
-                        _selectDate(context, _declarationDateAController),
-                    decoration: const InputDecoration(
-                      labelText:
-                          'Valuation report date in Declaration (FORMAT E)',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 13),
-                  TextField(
-                    // Changed from _buildTextField
-                    controller: _declarationDateCController,
-                    readOnly: true,
-                    onTap: () =>
-                        _selectDate(context, _declarationDateCController),
-                    decoration: const InputDecoration(
-                      labelText:
-                          'Property inspection date in Declaration (FORMAT E)',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
@@ -10629,8 +10801,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
               // Changed from _buildTextField
               controller: titleController,
               decoration: const InputDecoration(
-                labelText: '', // No label for internal table fields
-                hintText: 'As per Title Deed',
+                labelText: '',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20)),
                 ), // Applied new styling
@@ -10644,8 +10815,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
               // Changed from _buildTextField
               controller: sketchController,
               decoration: const InputDecoration(
-                labelText: '', // No label for internal table fields
-                hintText: 'As per Location Sketch',
+                labelText: '',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20)),
                 ), // Applied new styling
@@ -10676,7 +10846,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
               controller: actualsController,
               decoration: const InputDecoration(
                 labelText: '',
-                hintText: 'As per Actuals',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20)),
                 ), // Applied new styling
@@ -10691,7 +10860,6 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
               controller: documentsController,
               decoration: const InputDecoration(
                 labelText: '',
-                hintText: 'As per Documents',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20)),
                 ), // Applied new styling

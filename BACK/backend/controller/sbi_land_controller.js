@@ -19,7 +19,22 @@ export const savelandData = async(req,res)=>{
 
     
 
+if (landData.advantages && typeof landData.advantages === 'string') {
+        try {
+            landData.advantages = JSON.parse(landData.advantages);
+        } catch (e) {
+            console.error("Failed to parse advantages", e);
+        }
+    }
+    if (landData.remarks && typeof landData.remarks === 'string') {
+        try {
+            landData.remarks = JSON.parse(landData.remarks);
+        } catch (e) {
+            console.error("Failed to parse advantages", e);
+        }
+    }
 
+    // console.log(landData);
      landData.images = [];
     if (req.results && req.results.length > 0) {
       for (let i = 0; i < req.results.length; i++) {

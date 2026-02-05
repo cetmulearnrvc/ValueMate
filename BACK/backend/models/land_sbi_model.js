@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
 
+const advantagesSchema = new mongoose.Schema({
+  label: { type: String },
+  value: { type: String, default: "" }
+});
 const SBIValuationLandSchema = new mongoose.Schema({
     // Location coordinates
     refId: {
@@ -103,6 +107,8 @@ isLandLocked: String,
 waterPotential: String,
 undergroundSewerage: String,
 powerSupply: String,
+advantages : [advantagesSchema],
+remarks : [String],
 
 sizeOfPlot: String,
 northSouth: String,
@@ -167,9 +173,6 @@ prevalingMarket: String,
     distressValue: String,
     place: String,
 
-    // Declaration dates
-    declarationDateA: String,
-    declarationDateC: String,
 
     // Valuer Comments
     vcBackgroundInfo: String,
