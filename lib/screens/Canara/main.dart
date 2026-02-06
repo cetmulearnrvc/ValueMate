@@ -42,6 +42,22 @@ class ImageWithLocation {
     }
     return 'Location not available';
   }
+
+  ImageWithLocation copyWith({
+    Uint8List? imageBytes,
+    double? latitude,
+    double? longitude,
+    DateTime? timestamp,
+    String? description,
+  }) {
+    return ImageWithLocation(
+      imageBytes: imageBytes ?? this.imageBytes,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      timestamp: timestamp ?? this.timestamp,
+      description: description ?? this.description,
+    );
+  }
 }
 
 class PropertyValuationReportPage extends StatefulWidget {
@@ -130,7 +146,7 @@ class _PropertyValuationReportPageState
     setState(() => _isLoadingImages = true);
     try {
       // Get current location ONCE before picking images (you can move this inside the loop for per-image locations)
-      await _getCurrentLocation();
+      // await _getCurrentLocation();
 
       List<XFile> pickedFiles = [];
       if (source == ImageSource.gallery) {
@@ -180,7 +196,7 @@ class _PropertyValuationReportPageState
       }
 
       // This now correctly fetches and SETS the location state
-      await _getCurrentLocation();
+      // await _getCurrentLocation();
 
       final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
       if (photo != null) {
@@ -1636,6 +1652,11 @@ class _PropertyValuationReportPageState
           child: pw.Text(desc),
         ),
         pw.Container(
+          alignment: pw.Alignment.topCenter,
+          padding: const pw.EdgeInsets.all(5),
+          child: pw.Text(":"),
+        ),
+        pw.Container(
           alignment: pw.Alignment.topLeft,
           padding: const pw.EdgeInsets.all(5),
           child: pw.Text(value),
@@ -1657,6 +1678,11 @@ class _PropertyValuationReportPageState
           alignment: pw.Alignment.topLeft,
           padding: const pw.EdgeInsets.all(5),
           child: pw.Text(desc),
+        ),
+        pw.Container(
+          alignment: pw.Alignment.topCenter,
+          padding: const pw.EdgeInsets.all(5),
+          child: pw.Text(":"),
         ),
         pw.Container(
           alignment: pw.Alignment.topLeft,
@@ -3951,6 +3977,22 @@ class _PropertyValuationReportPageState
                             },
                           ),
                         ),
+                        // Add Button to update location for this specific image
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: ElevatedButton.icon(
+                            onPressed: _isLoadingImages 
+                                ? null 
+                                : () => _updateImageLocation(imageData),
+                            icon: const Icon(Icons.location_on),
+                            label: const Text('Update Location'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue.shade50,
+                              foregroundColor: Colors.blue.shade700,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
                       ],
                     ),
                   );
@@ -4096,6 +4138,56 @@ class _PropertyValuationReportPageState
     }
   }
 
+  // Helper method to fetch location and update a specific image
+  Future<void> _updateImageLocation(ImageWithLocation imageToUpdate) async {
+    setState(() => _isLoadingImages = true);
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) throw Exception('Location services are disabled.');
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) throw Exception('Location permissions denied');
+      }
+      if (permission == LocationPermission.deniedForever) throw Exception('Location permissions permanently denied');
+
+      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+
+      setState(() {
+        // Find the index of the image to update
+        final index = _imagesWithLocation.indexOf(imageToUpdate);
+        if (index != -1) {
+          // Replace with a new instance containing the updated location
+          _imagesWithLocation[index] = imageToUpdate.copyWith(
+            latitude: position.latitude,
+            longitude: position.longitude,
+          );
+        }
+      });
+      
+      if (mounted) {
+         ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Image location updated successfully!')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error updating image location: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoadingImages = false);
+    }
+  }
+
+  Future<pw.MemoryImage> loadLogoImage() async {
+    final ByteData data = await rootBundle.load('assets/images/logo.png');
+    final Uint8List bytes = data.buffer.asUint8List();
+    return pw.MemoryImage(bytes);
+  }
+
   /// Fetches the current device's location and updates the state.
   Future<void> _getCurrentLocation() async {
     // Set loading state at the beginning
@@ -4175,100 +4267,224 @@ class _PropertyValuationReportPageState
     final defaultTextStyle = pw.TextStyle(font: ttf, fontSize: 9);
     final boldTextStyle = pw.TextStyle(font: boldTtf, fontSize: 9);
 
+    final logoImage = await loadLogoImage(); // Load logo
+
     final widgets = <pw.Widget>[
-      // Header with valuer details
-      // ---- PDF HEADER SECTION (before PART A - BASIC DATA) ----
-
-// Top right: Valuer details in blue, bold, small font
-      pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.end,
-        children: [
-          pw.Text('VIGNESH. S',
-              style: pw.TextStyle(
-                  font: boldTtf, color: PdfColors.blue, fontSize: 12)),
-          pw.Text('Chartered Engineer (AM1920793)',
-              style:
-                  pw.TextStyle(font: ttf, color: PdfColors.blue, fontSize: 10)),
-          pw.Text('Registered valuer under section 247 of Companies Act, 2013',
-              style:
-                  pw.TextStyle(font: ttf, color: PdfColors.blue, fontSize: 9)),
-          pw.Text('        (IBBI/RV/01/2020/13411)',
-              style:
-                  pw.TextStyle(font: ttf, color: PdfColors.blue, fontSize: 9)),
-          pw.Text(
-              'Registered valuer under section 34AB of Wealth Tax Act, 1957',
-              style:
-                  pw.TextStyle(font: ttf, color: PdfColors.blue, fontSize: 9)),
-          pw.Text('        (I-9AV/CC-TVM/2020-21)',
-              style:
-                  pw.TextStyle(font: ttf, color: PdfColors.blue, fontSize: 9)),
-          pw.Text(
-              'Registered valuer under section 77(1) of Black Money Act, 2015',
-              style:
-                  pw.TextStyle(font: ttf, color: PdfColors.blue, fontSize: 9)),
-          pw.Text('        (I-3/AV-BM/PCIT-TVM/2023-24)',
-              style:
-                  pw.TextStyle(font: ttf, color: PdfColors.blue, fontSize: 9)),
-          pw.SizedBox(height: 4),
-          pw.Text(
-            'TC-37/777(1), Big Palla Street, Fort P.O., Thiruvananthapuram-695023',
-            style: pw.TextStyle(
-                font: boldTtf, fontSize: 9, color: PdfColors.black),
-          ),
-          pw.Row(
-            children: [
-              pw.Text('☎ ', style: pw.TextStyle(font: ttf, fontSize: 10)),
-              pw.Text('+91 89030 42635',
-                  style: pw.TextStyle(font: ttf, fontSize: 10)),
-              pw.SizedBox(width: 10),
-              pw.Text('✉ ', style: pw.TextStyle(font: ttf, fontSize: 10)),
-              pw.Text('subramonyvignesh@gmail.com',
-                  style: pw.TextStyle(font: ttf, fontSize: 10)),
-            ],
-          ),
-          pw.SizedBox(height: 6),
-        ],
-      ),
-
-// Centered Title block
-      pw.Center(
-        child: pw.Column(
-          children: [
-            pw.Text('ANNEXURE - 8', style: pw.TextStyle(font: boldTtf)),
-            pw.Text('VALUATION OF PROPERTY (LAND & BUILDING)',
-                style: pw.TextStyle(font: boldTtf)),
-            pw.Text('REPORT ON VALUATION', style: pw.TextStyle(font: boldTtf)),
-            pw.Text('PART A - BASIC DATA', style: pw.TextStyle(font: boldTtf)),
-          ],
-        ),
-      ),
-      pw.SizedBox(height: 8),
-
-// Ref. No. and Date row
+      // SBI-Style Header
       pw.Row(
         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          pw.Text(
-            'Ref. No. ${_referenceNoController.text.isNotEmpty ? _referenceNoController.text : "______"}',
-            style: pw.TextStyle(font: boldTtf, fontSize: 10),
+          pw.Container(
+            height: 80,
+            width: 80,
+            child: pw.Image(logoImage),
           ),
-          pw.Text(
-            'Date: ${_reportDateController.text.isNotEmpty ? _reportDateController.text : "_____"}', // Or dynamically use _inspectionDateController.text or similar
-            style: pw.TextStyle(font: boldTtf, fontSize: 10),
+          // Right side text (Valuer Details)
+          pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.end,
+            children: [
+              pw.Text(
+                'VIGNESH. S',
+                style: pw.TextStyle(
+                  fontSize: 14,
+                  fontWeight: pw.FontWeight.bold,
+                  color: PdfColors.indigo,
+                  font: boldTtf,
+                ),
+              ),
+              pw.SizedBox(height: 4),
+              pw.Text(
+                'Chartered Engineer (AM1920793)',
+                style: pw.TextStyle(
+                  fontSize: 12,
+                  color: PdfColors.indigo,
+                  font: ttf,
+                ),
+              ),
+              pw.Text(
+                'Registered valuer under section 247 of Companies Act, 2013',
+                style: pw.TextStyle(
+                  fontSize: 12,
+                  color: PdfColors.indigo,
+                  font: ttf,
+                ),
+              ),
+              pw.Text(
+                '(IBBI/RV/01/2020/13411)',
+                style: pw.TextStyle(
+                  fontSize: 12,
+                  color: PdfColors.indigo,
+                  font: ttf,
+                ),
+              ),
+              pw.Text(
+                'Registered valuer under section 34AB of Wealth Tax Act, 1957',
+                style: pw.TextStyle(
+                  fontSize: 12,
+                  color: PdfColors.indigo,
+                  font: ttf,
+                ),
+              ),
+              pw.Text(
+                '(I-9AV/CC-TVM/2020-21)',
+                style: pw.TextStyle(
+                  fontSize: 12,
+                  color: PdfColors.indigo,
+                  font: ttf,
+                ),
+              ),
+              pw.Text(
+                'Registered valuer under section 77(1) of Black Money Act, 2015',
+                style: pw.TextStyle(
+                  fontSize: 12,
+                  color: PdfColors.indigo,
+                  font: ttf,
+                ),
+              ),
+              pw.Text(
+                '(I-3/AV-BM/PCIT-TVM/2023-24)',
+                style: pw.TextStyle(
+                  fontSize: 12,
+                  color: PdfColors.indigo,
+                  font: ttf,
+                ),
+              ),
+            ],
           ),
         ],
       ),
 
-      pw.SizedBox(height: 5),
+      pw.SizedBox(height: 10),
 
-// (continue with PART A - BASIC DATA table...)
+      pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          // Top background strip with address
+          pw.Container(
+            color: PdfColor.fromHex('#8a9b8e'), // Approx background color
+            padding: const pw.EdgeInsets.all(6),
+            width: double.infinity,
+            child: pw.Text(
+              'TC-37/777(1), Big Palla Street, Fort P.O. Thiruvananthapuram-695023',
+              style: pw.TextStyle(
+                fontSize: 12,
+                fontWeight: pw.FontWeight.bold,
+                color: PdfColors.black,
+                font: boldTtf,
+              ),
+              textAlign: pw.TextAlign.center,
+            ),
+          ),
+
+          pw.SizedBox(height: 4),
+
+          // Contact Row
+          pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+               // Empty space or placeholder as per SBI design
+               pw.Text('`', style: pw.TextStyle(fontSize: 14, font: ttf)),
+
+              // Phone
+              pw.Row(
+                children: [
+                  pw.Text(
+                    'Phone: +91 89030 42635',
+                    style: pw.TextStyle(fontSize: 12, font: ttf),
+                  ),
+                ],
+              ),
+
+              // Email
+              pw.Row(
+                children: [
+                  pw.Text(
+                    'Email: subramonyvignesh@gmail.com',
+                    style: pw.TextStyle(fontSize: 12, font: ttf),
+                  ),
+                ],
+              ),
+            ],
+          ),
+
+          pw.SizedBox(height: 20),
+
+          // Addressed To & Ref No.
+          pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Text(
+                    'To,',
+                    style: pw.TextStyle(
+                      fontSize: 12,
+                      fontWeight: pw.FontWeight.bold,
+                      font: boldTtf,
+                    ),
+                  ),
+                  pw.Text(
+                    'The Canara Bank', // Adapted to Canara Bank
+                    style: pw.TextStyle(fontSize: 12, font: ttf),
+                  ),
+                   // You might want to add specific Branch details if available in controllers
+                ],
+              ),
+              pw.Text(
+                'Ref No.: ${_referenceNoController.text.isNotEmpty ? _referenceNoController.text : "______"}',
+                style: pw.TextStyle(
+                  fontSize: 12,
+                  fontWeight: pw.FontWeight.bold,
+                  font: boldTtf,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+
+      pw.SizedBox(height: 30),
+      
+      // Titles
+      pw.Center(
+        child: pw.Text(
+          'FORMAT', // Adjusted to match SBI style roughly but specific title might differ
+          style: pw.TextStyle(
+            fontSize: 14,
+            fontWeight: pw.FontWeight.bold,
+            font: boldTtf,
+          ), 
+        ),
+      ),
+      pw.SizedBox(height: 8), 
+      pw.Center(
+        child: pw.Text(
+          'VALUATION REPORT (IN RESPECT OF LAND / SITE AND BUILDING)',
+          style: pw.TextStyle(
+            fontSize: 12,
+            fontWeight: pw.FontWeight.bold,
+             font: boldTtf,
+          ), 
+          textAlign: pw.TextAlign.center,
+        ),
+      ),
+      pw.SizedBox(height: 15),
+      
+
+      pw.SizedBox(height: 8),
+
       // Part A - Basic Data
       pw.Table(
-        border: pw.TableBorder.all(),
+        border: pw.TableBorder.all(width: 0.5, color: PdfColors.black),
         columnWidths: {
-          0: const pw.FixedColumnWidth(35), // S.No.
-          1: const pw.FixedColumnWidth(180), // Description
-          2: const pw.FixedColumnWidth(320), // Value/Content
+          0: const pw.FlexColumnWidth(0.5), // S.No
+          1: const pw.FlexColumnWidth(3), // Description
+          2: const pw.FlexColumnWidth(0.2), // Colon
+          3: const pw.FlexColumnWidth(3.8), // Value
         },
         defaultVerticalAlignment: pw.TableCellVerticalAlignment.middle,
         children: [
@@ -4284,6 +4500,11 @@ class _PropertyValuationReportPageState
                 alignment: pw.Alignment.centerLeft,
                 padding: const pw.EdgeInsets.all(6),
                 child: pw.Text('GENERAL', style: pw.TextStyle(font: boldTtf)),
+              ),
+               pw.Container(
+                alignment: pw.Alignment.center,
+                padding: const pw.EdgeInsets.all(6),
+                child: pw.Text('', style: pw.TextStyle(font: boldTtf)),
               ),
               pw.Container(),
             ],
