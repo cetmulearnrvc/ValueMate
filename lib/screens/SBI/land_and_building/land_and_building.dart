@@ -96,6 +96,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
   final TextEditingController _BriefDescription = TextEditingController();
 
   // Controllers for text input fields (Page 1)
+  final TextEditingController _loanApplicant = TextEditingController();
   final TextEditingController _purposeController = TextEditingController();
   final TextEditingController _dateOfInspectionController =
       TextEditingController();
@@ -217,6 +218,10 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
   final TextEditingController _eastWest = TextEditingController();
   final TextEditingController _totalExtent = TextEditingController();
   final TextEditingController _prevailingMarketRate = TextEditingController();
+  final TextEditingController _guidelineRate = TextEditingController();
+  final TextEditingController _assessed = TextEditingController();
+  final TextEditingController _estimationValue = TextEditingController();
+  final TextEditingController _percentValue = TextEditingController();
 
   // Controllers for the new Land Valuation Table
 
@@ -229,6 +234,11 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
       TextEditingController();
   final TextEditingController _residualAgeOfTheBuildingController =
       TextEditingController();
+  final TextEditingController _noOfFloors = TextEditingController();
+  final TextEditingController _plinthAreaFloorWise = TextEditingController();
+  final TextEditingController _condtionOfTheBuilding1 = TextEditingController();
+  final TextEditingController _condtionOfTheBuilding2 = TextEditingController();
+  final TextEditingController _dateOfissue = TextEditingController();
   final TextEditingController _approvedMapAuthorityController =
       TextEditingController();
   final TextEditingController _genuinenessVerifiedController =
@@ -338,11 +348,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
   final TextEditingController _LandTaxReceipt = TextEditingController();
   final TextEditingController _TitleDeed = TextEditingController();
   final TextEditingController _BuildingCertificate = TextEditingController();
-  final TextEditingController _LocationSketch = TextEditingController();
-  final TextEditingController _PossessionCertificate = TextEditingController();
-  final TextEditingController _BuildingCompletionPlan = TextEditingController();
-  final TextEditingController _ThandapperDocument = TextEditingController();
-  final TextEditingController _BuildingTaxReceipt = TextEditingController();
+
   final TextEditingController _place = TextEditingController();
 
   // new textediting controllers for page - 5(There were no previously initialized controllers present in this page)
@@ -714,11 +720,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         "landTaxReceipt": _LandTaxReceipt.text,
         "titleDeed": _TitleDeed.text,
         "buildingCertificate": _BuildingCertificate.text,
-        "locationSketch": _LocationSketch.text,
-        "possessionCertificate": _PossessionCertificate.text,
-        "buildingCompletionPlan": _BuildingCompletionPlan.text,
-        "thandapperDocument": _ThandapperDocument.text,
-        "buildingTaxReceipt": _BuildingTaxReceipt.text,
+
         "place": _place.text,
         "plotNo": _PlotNo.text,
         "doorNo": _DoorNo.text,
@@ -727,6 +729,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         "Mandal": _Mandal.text,
         // Page 1 fields
         "refId": _refId.text,
+        "loanApplicant": _loanApplicant.text,
         "purpose": _purposeController.text,
         "dateOfInspection": _dateOfInspectionController.text,
         "dateOfValuation": _dateOfValuationController.text,
@@ -811,14 +814,23 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         "sizeOfPlot": _sizeOfPlot.text,
         "northSouth": _northSouth.text,
         "eastWest": _eastWest.text,
-        "totalExtent": _eastWest.text,
+        "totalExtent": _totalExtent.text,
         "prevalingMarket": _prevailingMarketRate.text,
+        "guidelineRate": _guidelineRate.text,
+        "assessed": _assessed.text,
+        "estimationValue": _estimationValue.text,
+        "percentValue": _percentValue.text,
 
         // Building Valuation Table
         "typeOfBuilding": _typeOfBuildingController.text,
         "typeOfConstruction": _typeOfConstructionController.text,
         "ageOfTheBuilding": _ageOfTheBuildingController.text,
         "residualAgeOfTheBuilding": _residualAgeOfTheBuildingController.text,
+        "noOfFloors": _noOfFloors.text,
+        "plinthAreaFloorWise": _plinthAreaFloorWise.text,
+        "condtionOfTheBuilding1": _condtionOfTheBuilding1.text,
+        "condtionOfTheBuilding2": _condtionOfTheBuilding2.text,
+        "dateOfissue": _dateOfissue.text,
         "approvedMapAuthority": _approvedMapAuthorityController.text,
         "genuinenessVerified": _genuinenessVerifiedController.text,
         "otherComments": _otherCommentsController.text,
@@ -1188,13 +1200,10 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
       _LandTaxReceipt.text = data['landTaxReceipt'];
       _TitleDeed.text = data['titleDeed'];
       _BuildingCertificate.text = data['buildingCertificate'];
-      _LocationSketch.text = data['locationSketch'];
-      _PossessionCertificate.text = data['possessionCertificate'];
-      _BuildingCompletionPlan.text = data['buildingCompletionPlan'];
-      _ThandapperDocument.text = data['thandapperDocument'];
-      _BuildingTaxReceipt.text = data['buildingTaxReceipt'];
+
       _place.text = data['place'];
       // Page 1 fields
+      _loanApplicant.text = data['loanApplicant']?.toString() ?? '';
       _purposeController.text = data['purpose']?.toString() ?? '';
       _dateOfInspectionController.text =
           data['dateOfInspection']?.toString() ?? '';
@@ -1307,6 +1316,10 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
       _eastWest.text = data['eastWest']?.toString() ?? '';
       _totalExtent.text = data['totalExtent']?.toString() ?? '';
       _prevailingMarketRate.text = data['prevalingMarket']?.toString() ?? '';
+      _guidelineRate.text = data['guidelineRate']?.toString() ?? '';
+      _assessed.text = data['assessed']?.toString() ?? '';
+      _estimationValue.text = data['estimationValue']?.toString() ?? '';
+      _percentValue.text = data['percentValue']?.toString() ?? '';
 
       // Building Valuation Table
       _typeOfBuildingController.text = data['typeOfBuilding']?.toString() ?? '';
@@ -1316,6 +1329,13 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           data['ageOfTheBuilding']?.toString() ?? '';
       _residualAgeOfTheBuildingController.text =
           data['residualAgeOfTheBuilding']?.toString() ?? '';
+      _noOfFloors.text = data['noOfFloors']?.toString() ?? '';
+      _plinthAreaFloorWise.text = data['plinthAreaFloorWise']?.toString() ?? '';
+      _condtionOfTheBuilding1.text =
+          data['condtionOfTheBuilding1']?.toString() ?? '';
+      _condtionOfTheBuilding2.text =
+          data['condtionOfTheBuilding2']?.toString() ?? '';
+      _dateOfissue.text = data['dateOfissue']?.toString() ?? '';
       _approvedMapAuthorityController.text =
           data['approvedMapAuthority']?.toString() ?? '';
       _genuinenessVerifiedController.text =
@@ -1374,7 +1394,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           data['totalAbstractLand']?.toString() ?? '';
       _totalAbstractBuildingController.text =
           data['totalAbstractBuilding']?.toString() ?? '';
-      _totalAbstractAmenitiesController.text =
+      _totalAbstractExtraItemsController.text =
           data['totalAbstractExtraItems']?.toString() ?? '';
       _totalAbstractAmenitiesController.text =
           data['totalAbstractAmenities']?.toString() ?? '';
@@ -2054,8 +2074,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           ),
           pw.Container(
             padding: cellPadding,
-            child: pw.Text('i) Land Tax Receipt (${_LandTaxReceipt.text})',
-                style: contentTextStyle),
+            child: pw.Text('i) Land Tax Receipt ()', style: contentTextStyle),
           ),
           pw.Container(
             padding: cellPadding,
@@ -2078,8 +2097,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           ),
           pw.Container(
             padding: cellPadding,
-            child: pw.Text('ii) Location Plan (${_TitleDeed.text})',
-                style: contentTextStyle),
+            child: pw.Text('ii) Location Plan ()', style: contentTextStyle),
           ),
           pw.Container(
             padding: cellPadding,
@@ -2102,8 +2120,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           ),
           pw.Container(
             padding: cellPadding,
-            child: pw.Text(
-                'iii) Legal Scrutiny Report dated (${_BuildingCertificate.text})',
+            child: pw.Text('iii) Legal Scrutiny Report dated ()',
                 style: contentTextStyle),
           ),
           pw.Container(
@@ -3268,34 +3285,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         ],
       ),
     );
-    rows.add(
-      pw.TableRow(
-        children: [
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text('16', style: contentTextStyle),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              'Extent of the site considered for valuation (least of 14 A & 14 B) ',
-              style: contentTextStyle,
-            ),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(':', style: contentTextStyle),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            child: pw.Text(
-              _extentConsidered.text,
-              style: contentTextStyle,
-            ),
-          ),
-        ],
-      ),
-    );
+
     return rows;
   }
 
@@ -3369,6 +3359,34 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
 
     List<pw.TableRow> rows = [];
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('16', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Extent of the site considered for valuation (least of 14 A & 14 B) ',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _extentConsidered.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
     rows.add(
       pw.TableRow(
         children: [
@@ -4034,12 +4052,42 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
   }
 
   List<pw.TableRow> _getPartA() {
+    List<pw.TableRow> rows = [];
+
+    return rows;
+  }
+
+  List<pw.TableRow> _getLandValuationTableRowsHeading() {
     const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
+    List<pw.TableRow> rows = [];
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            alignment: pw.Alignment.centerLeft,
+            child: pw.Text(
+              'Part - A (Valuation of land)',
+              style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    return rows;
+  }
+
+  // NEW: Helper function to get table rows for "Part - A (Valuation of land)"
+  List<pw.TableRow> _getLandValuationTableRows() {
     const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 11);
+    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
     final pw.TextStyle headerTextStyle = pw.TextStyle(
       fontWeight: pw.FontWeight.bold,
       fontSize: 11,
     );
+
     List<pw.TableRow> rows = [];
     rows.add(
       pw.TableRow(
@@ -4153,6 +4201,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         ],
       ),
     );
+
     rows.add(
       pw.TableRow(
         children: [
@@ -4209,76 +4258,118 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         ],
       ),
     );
-
-    return rows;
-  }
-
-  List<pw.TableRow> _getLandValuationTableRowsHeading() {
-    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
-    List<pw.TableRow> rows = [];
-
     rows.add(
       pw.TableRow(
         children: [
           pw.Container(
             padding: cellPadding,
-            alignment: pw.Alignment.centerLeft,
+            child: pw.Text('4.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
             child: pw.Text(
-              'Part - A (Valuation of land)',
-              style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12),
+              'Guideline rate obtained from the Registrar\'s Office (an evidence thereof to be enclosed)',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _guidelineRate.text,
+              style: contentTextStyle,
             ),
           ),
         ],
       ),
     );
-
-    return rows;
-  }
-
-  // NEW: Helper function to get table rows for "Part - A (Valuation of land)"
-  List<pw.TableRow> _getLandValuationTableRows() {
-    final pw.TextStyle headerTextStyle = pw.TextStyle(
-      fontWeight: pw.FontWeight.bold,
-      fontSize: 11,
-    );
-    const pw.TextStyle contentTextStyle = pw.TextStyle(fontSize: 11);
-    const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(3);
-
-    List<pw.TableRow> rows = [];
-
-    // Headers Row
     rows.add(
       pw.TableRow(
         children: [
           pw.Container(
             padding: cellPadding,
-            child: pw.Text('1', style: contentTextStyle),
+            child: pw.Text('5.', style: contentTextStyle),
           ),
           pw.Container(
             padding: cellPadding,
-            alignment: pw.Alignment.center,
-            child: pw.Text('Details', style: headerTextStyle),
+            child: pw.Text(
+              'Assessed / adopted rate of valuation',
+              style: contentTextStyle,
+            ),
           ),
           pw.Container(
             padding: cellPadding,
-            alignment: pw.Alignment.center,
-            child: pw.Text('Land area in\nSq Ft', style: headerTextStyle),
+            child: pw.Text(':', style: contentTextStyle),
           ),
           pw.Container(
             padding: cellPadding,
-            alignment: pw.Alignment.center,
-            child: pw.Text('Rate per Sq ft', style: headerTextStyle),
-          ),
-          pw.Container(
-            padding: cellPadding,
-            alignment: pw.Alignment.center,
-            child: pw.Text('Value in Rs.', style: headerTextStyle),
+            child: pw.Text(
+              _assessed.text,
+              style: contentTextStyle,
+            ),
           ),
         ],
       ),
     );
-
-    // Row 3: Prevailing market value
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('6.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Estimated value of land',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _estimationValue.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('7.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'If the percent value arrived at is higher by 20% or more of the value notified by he revenue authorities, Please indicate your reasons for higher Value.',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(':', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _percentValue.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
 
     return rows;
   }
@@ -4407,7 +4498,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           ),
           pw.Container(
             padding: cellPadding,
-            child: pw.Text('Age of the building', style: contentTextStyle),
+            child: pw.Text('Year of construction', style: contentTextStyle),
           ),
           pw.Container(
             padding: cellPadding,
@@ -4455,6 +4546,157 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           pw.Container(
             padding: cellPadding,
             child: pw.Text(
+              'Number of floors and height of each floor including basement, if any ',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _noOfFloors.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('f', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Plinth area floor-wise',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _plinthAreaFloorWise.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('g', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Condition of the building',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              '',
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('  1.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Exterior - Excellent, Good, Normal, Poor',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _condtionOfTheBuilding1.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('  2.', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Interior - Excellent, Good, Normal, Poor ',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _condtionOfTheBuilding2.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('h', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              'Date of issue and validity of layout of approved map / plan',
+              style: contentTextStyle,
+            ),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
+              _approvedMapAuthorityController.text,
+              style: contentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+    rows.add(
+      pw.TableRow(
+        children: [
+          pw.Container(padding: cellPadding, child: pw.Text('')),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text('i', style: contentTextStyle),
+          ),
+          pw.Container(
+            padding: cellPadding,
+            child: pw.Text(
               'Approved map / plan issuing authority',
               style: contentTextStyle,
             ),
@@ -4475,7 +4717,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           pw.Container(padding: cellPadding, child: pw.Text('')),
           pw.Container(
             padding: cellPadding,
-            child: pw.Text('f', style: contentTextStyle),
+            child: pw.Text('j', style: contentTextStyle),
           ),
           pw.Container(
             padding: cellPadding,
@@ -4500,7 +4742,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
           pw.Container(padding: cellPadding, child: pw.Text('')),
           pw.Container(
             padding: cellPadding,
-            child: pw.Text('g', style: contentTextStyle),
+            child: pw.Text('k', style: contentTextStyle),
           ),
           pw.Container(
             padding: cellPadding,
@@ -6715,15 +6957,15 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                           ),
                         ),
                         pw.Text(
-                          'The State Bank of India',
+                          'Asst. General Manager\nState Bank of India',
                           style: const pw.TextStyle(fontSize: 12),
                         ),
                         pw.Text(
-                          'Chakai Branch',
+                          'HLC-2, Stadium Compound',
                           style: const pw.TextStyle(fontSize: 12),
                         ),
                         pw.Text(
-                          'Thiruvananthapuram',
+                          'Palayam, Thiruvananthapuram',
                           style: const pw.TextStyle(fontSize: 12),
                         ),
                       ],
@@ -6740,18 +6982,9 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
               ],
             ),
 
-            pw.SizedBox(height: 30),
             // Keep original page 1 headings
-            pw.Center(
-              child: pw.Text(
-                'FORMAT - A',
-                style: pw.TextStyle(
-                  fontSize: 14,
-                  fontWeight: pw.FontWeight.bold,
-                ), // Slightly reduced font size
-              ),
-            ),
-            pw.SizedBox(height: 8), // Reduced SizedBox height
+
+            pw.SizedBox(height: 10), // Reduced SizedBox height
             pw.Center(
               child: pw.Text(
                 'VALUATION REPORT (IN RESPECT OF LAND / SITE AND BUILDING)',
@@ -6762,7 +6995,17 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                 textAlign: pw.TextAlign.center,
               ),
             ),
-            pw.SizedBox(height: 15), // Reduced SizedBox height
+            pw.SizedBox(height: 8),
+            pw.Center(
+              child: pw.Text(
+                'Loan Applicant - ${_loanApplicant.text}',
+                style: pw.TextStyle(
+                  fontSize: 11,
+                  fontWeight: pw.FontWeight.bold,
+                ), // Slightly reduced font size
+              ),
+            ),
+            pw.SizedBox(height: 5), // Reduced SizedBox height
 
             pw.Table(
               border: pw.TableBorder.all(
@@ -7028,7 +7271,8 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                 3: const pw.FlexColumnWidth(4.3), // Value
               },
               children: [
-                ...page3PartA, // Add rows for page 3 (Item 21)
+                ...page3PartA,
+                // Add rows for page 3 (Item 21)
               ],
             ),
 
@@ -7074,6 +7318,23 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                 width: 0.5,
               ),
               columnWidths: {
+                0: const pw.FlexColumnWidth(0.5), // S.No
+                1: const pw.FlexColumnWidth(5.0), // Description
+                2: const pw.FlexColumnWidth(0.2), // Colon (very small width)
+                3: const pw.FlexColumnWidth(4.3), // Value
+              },
+              children: [
+                ...landValuationRows,
+                // Add rows for page 3 (Item 21)
+              ],
+            ),
+            pw.SizedBox(height: 10),
+            pw.Table(
+              border: pw.TableBorder.all(
+                color: pdfLib.PdfColors.black,
+                width: 0.5,
+              ),
+              columnWidths: {
                 0: const pw.FlexColumnWidth(0.5), // Value in Rs.
               },
               children: [
@@ -7108,81 +7369,81 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                 ...buildingValuationRows, // Add rows for the new building valuation table
               ],
             ),
-            pw.Table(
-              border: pw.TableBorder.all(
-                color: pdfLib.PdfColors.black,
-                width: 0.5,
-              ),
-              columnWidths: {
-                0: const pw.FlexColumnWidth(0.5), // S.No.
-                1: const pw.FlexColumnWidth(
-                  1.5,
-                ), // Details /Floors / Description
-                2: const pw.FlexColumnWidth(
-                  1.5,
-                ), // Occupancy (Self/Rented) / Colon
-                3: const pw.FlexColumnWidth(1.0), // No. Of Room / Value
-                4: const pw.FlexColumnWidth(1.0), // No. Of Kitchen
-                5: const pw.FlexColumnWidth(1.0), // No. of Bathroom
-                6: const pw.FlexColumnWidth(2.0), // Usage Remarks (Resi/Comm)
-              },
-              children: [
-                ...page2Table4Rows, // Add rows for the floor details
-              ],
-            ),
-            pw.Table(
-              border: pw.TableBorder.all(
-                color: pdfLib.PdfColors.black,
-                width: 0.5,
-              ),
-              columnWidths: {
-                0: const pw.FlexColumnWidth(0.5), // S.No
-                1: const pw.FlexColumnWidth(5.0), // Description
-                2: const pw.FlexColumnWidth(0.2), // Colon (very small width)
-                3: const pw.FlexColumnWidth(4.3), // Value
-              },
-              children: [
-                ...page2Table5Rows, // Add rows for the second table on page 2
-              ],
-            ),
-            pw.Center(
-              child: pw.Text(
-                'Details of Valuation',
-                style: pw.TextStyle(
-                  fontWeight: pw.FontWeight.bold,
-                  fontSize: 12,
-                ),
-                textAlign: pw.TextAlign.center,
-              ),
-            ),
-            pw.SizedBox(height: 30),
-            pw.Center(
-              child: pw.Text(
-                'Part C- Amenities                                            (Amount in Rs.)',
-                style: pw.TextStyle(
-                  fontWeight: pw.FontWeight.bold,
-                  fontSize: 12,
-                ),
-                textAlign: pw.TextAlign.center,
-              ),
-            ),
-            pw.SizedBox(height: 10),
-            pw.Table(
-              border: pw.TableBorder.all(
-                color: pdfLib.PdfColors.black,
-                width: 0.5,
-              ),
-              columnWidths: {
-                0: const pw.FlexColumnWidth(0.5), // S.No
-                1: const pw.FlexColumnWidth(2.0), // Item
-                2: const pw.FlexColumnWidth(0.2), // Colon
-                3: const pw.FlexColumnWidth(2.0), // Amount
-              },
-              children: [
-                ...amenitiesTableRows, // Add rows for amenities table
-              ],
-            ),
-            pw.SizedBox(height: 30),
+            // pw.Table(
+            //   border: pw.TableBorder.all(
+            //     color: pdfLib.PdfColors.black,
+            //     width: 0.5,
+            //   ),
+            //   columnWidths: {
+            //     0: const pw.FlexColumnWidth(0.5), // S.No.
+            //     1: const pw.FlexColumnWidth(
+            //       1.5,
+            //     ), // Details /Floors / Description
+            //     2: const pw.FlexColumnWidth(
+            //       1.5,
+            //     ), // Occupancy (Self/Rented) / Colon
+            //     3: const pw.FlexColumnWidth(1.0), // No. Of Room / Value
+            //     4: const pw.FlexColumnWidth(1.0), // No. Of Kitchen
+            //     5: const pw.FlexColumnWidth(1.0), // No. of Bathroom
+            //     6: const pw.FlexColumnWidth(2.0), // Usage Remarks (Resi/Comm)
+            //   },
+            //   children: [
+            //     ...page2Table4Rows, // Add rows for the floor details
+            //   ],
+            // ),
+            // pw.Table(
+            //   border: pw.TableBorder.all(
+            //     color: pdfLib.PdfColors.black,
+            //     width: 0.5,
+            //   ),
+            //   columnWidths: {
+            //     0: const pw.FlexColumnWidth(0.5), // S.No
+            //     1: const pw.FlexColumnWidth(5.0), // Description
+            //     2: const pw.FlexColumnWidth(0.2), // Colon (very small width)
+            //     3: const pw.FlexColumnWidth(4.3), // Value
+            //   },
+            //   children: [
+            //     ...page2Table5Rows, // Add rows for the second table on page 2
+            //   ],
+            // ),
+            // pw.Center(
+            //   child: pw.Text(
+            //     'Details of Valuation',
+            //     style: pw.TextStyle(
+            //       fontWeight: pw.FontWeight.bold,
+            //       fontSize: 12,
+            //     ),
+            //     textAlign: pw.TextAlign.center,
+            //   ),
+            // ),
+            // pw.SizedBox(height: 30),
+            // pw.Center(
+            //   child: pw.Text(
+            //     'Part C- Amenities                                            (Amount in Rs.)',
+            //     style: pw.TextStyle(
+            //       fontWeight: pw.FontWeight.bold,
+            //       fontSize: 12,
+            //     ),
+            //     textAlign: pw.TextAlign.center,
+            //   ),
+            // ),
+            // pw.SizedBox(height: 10),
+            // pw.Table(
+            //   border: pw.TableBorder.all(
+            //     color: pdfLib.PdfColors.black,
+            //     width: 0.5,
+            //   ),
+            //   columnWidths: {
+            //     0: const pw.FlexColumnWidth(0.5), // S.No
+            //     1: const pw.FlexColumnWidth(2.0), // Item
+            //     2: const pw.FlexColumnWidth(0.2), // Colon
+            //     3: const pw.FlexColumnWidth(2.0), // Amount
+            //   },
+            //   children: [
+            //     ...amenitiesTableRows, // Add rows for amenities table
+            //   ],
+            // ),
+            // pw.SizedBox(height: 30),
           ];
         },
       ),
@@ -7452,7 +7713,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
               ),
             ),
             pw.SizedBox(height: 10),
-            pw.Text('Date : ${_dateOfValuationController.text}',
+            pw.Text('Date : ',
                 style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
             pw.SizedBox(height: 10),
             pw.Text(
@@ -8053,6 +8314,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                     bottom: 10,
                   ),
                   child: FloatingActionButton.extended(
+                    heroTag: "f2",
                     icon: const Icon(Icons.search),
                     label: const Text('Search Saved Drafts'),
                     onPressed: () {
@@ -8141,6 +8403,17 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                     false, // You can set this to false to start collapsed
                 children: <Widget>[
                   const Divider(),
+                  const SizedBox(height: 13),
+                  TextField(
+                    // Changed from _buildTextField
+                    controller: _loanApplicant,
+                    decoration: const InputDecoration(
+                      labelText: 'Loan Applicant name',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
@@ -8875,7 +9148,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                   TextField(
                     controller: _typeOfUse,
                     decoration: const InputDecoration(
-                      labelText: '7. Type of Use to which it can be put',
+                      labelText: '7. Type of use to which it can be put',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
@@ -9150,90 +9423,48 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  // TextField(
-                  //   // Changed from _buildTextField
-                  //   controller: _landAreaDetailsController,
-                  //   decoration: const InputDecoration(
-                  //     labelText: '1. Land area in Sq Ft (Details)',
-                  //     hintText: 'e.g., 1500',
-                  //     border: OutlineInputBorder(
-                  //       borderRadius: BorderRadius.all(Radius.circular(20)),
-                  //     ),
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 13),
-                  // TextField(
-                  //   // Changed from _buildTextField
-                  //   controller: _landAreaGuidelineController,
-                  //   decoration: const InputDecoration(
-                  //     labelText: '2. Guideline rate (Land area in Sq Ft)',
-                  //     hintText: 'e.g., 1400',
-                  //     border: OutlineInputBorder(
-                  //       borderRadius: BorderRadius.all(Radius.circular(20)),
-                  //     ),
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 13),
-                  // TextField(
-                  //   // Changed from _buildTextField
-                  //   controller: _ratePerSqFtGuidelineController,
-                  //   decoration: const InputDecoration(
-                  //     labelText: '   Guideline rate (Rate per Sq ft)',
-                  //     hintText: 'e.g., 2000',
-                  //     border: OutlineInputBorder(
-                  //       borderRadius: BorderRadius.all(Radius.circular(20)),
-                  //     ),
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 13),
-                  // TextField(
-                  //   // Changed from _buildTextField
-                  //   controller: _valueInRsGuidelineController,
-                  //   decoration: const InputDecoration(
-                  //     labelText: '   Guideline rate (Value in Rs.)',
-                  //     hintText: 'e.g., 2800000',
-                  //     border: OutlineInputBorder(
-                  //       borderRadius: BorderRadius.all(Radius.circular(20)),
-                  //     ),
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 13),
-                  // TextField(
-                  //   // Changed from _buildTextField
-                  //   controller: _landAreaPrevailingController,
-                  //   decoration: const InputDecoration(
-                  //     labelText:
-                  //         '3. Prevailing market value (Land area in Sq Ft)',
-                  //     hintText: 'e.g., 1500',
-                  //     border: OutlineInputBorder(
-                  //       borderRadius: BorderRadius.all(Radius.circular(20)),
-                  //     ),
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 13),
-                  // TextField(
-                  //   // Changed from _buildTextField
-                  //   controller: _ratePerSqFtPrevailingController,
-                  //   decoration: const InputDecoration(
-                  //     labelText: '   Prevailing market value (Rate per Sq ft)',
-                  //     hintText: 'e.g., 2500',
-                  //     border: OutlineInputBorder(
-                  //       borderRadius: BorderRadius.all(Radius.circular(20)),
-                  //     ),
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 13),
-                  // TextField(
-                  //   // Changed from _buildTextField
-                  //   controller: _valueInRsPrevailingController,
-                  //   decoration: const InputDecoration(
-                  //     labelText: '   Prevailing market value (Value in Rs.)',
-                  //     hintText: 'e.g., 3750000',
-                  //     border: OutlineInputBorder(
-                  //       borderRadius: BorderRadius.all(Radius.circular(20)),
-                  //     ),
-                  //   ),
-                  // ),
+                  TextField(
+                    controller: _guidelineRate,
+                    decoration: const InputDecoration(
+                      labelText:
+                          'Guideline rate obtained from the Registrar\'s Office (an evidence thereof to be enclosed)',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: _assessed,
+                    decoration: const InputDecoration(
+                      labelText: 'Assessed / adopted rate of valuation',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: _estimationValue,
+                    decoration: const InputDecoration(
+                      labelText: 'Estimated value of land',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: _percentValue,
+                    decoration: const InputDecoration(
+                      labelText:
+                          'If the percent value arrived at is higher by 20% or more of the value notified by he revenue authorities, Please indicate your reasons for higher Value.',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
                 ],
               ),
               const SizedBox(height: 20),
@@ -9277,7 +9508,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                     // Changed from _buildTextField
                     controller: _ageOfTheBuildingController,
                     decoration: const InputDecoration(
-                      labelText: '   c) Age of the building',
+                      labelText: '   c) Year of construction',
                       hintText: 'e.g., 10 years',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -9299,9 +9530,75 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                   const SizedBox(height: 13),
                   TextField(
                     // Changed from _buildTextField
+                    controller: _noOfFloors,
+                    decoration: const InputDecoration(
+                      labelText:
+                          '   e) Number of floors and height of each floor including basement, if any',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 13),
+                  TextField(
+                    // Changed from _buildTextField
+                    controller: _plinthAreaFloorWise,
+                    decoration: const InputDecoration(
+                      labelText: '   f) Plinth area floor-wise ',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 13),
+                  Center(
+                    child: Text(
+                      'g. Condition of the building ',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  TextField(
+                    // Changed from _buildTextField
+                    controller: _condtionOfTheBuilding1,
+                    decoration: const InputDecoration(
+                      labelText:
+                          '   1) Exterior - Excellent, Good, Normal, Poor',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 13),
+                  TextField(
+                    // Changed from _buildTextField
+                    controller: _condtionOfTheBuilding2,
+                    decoration: const InputDecoration(
+                      labelText:
+                          '   2) Interior - Excellent, Good, Normal, Poor ',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 13),
+                  TextField(
+                    // Changed from _buildTextField
+                    controller: _dateOfissue,
+                    decoration: const InputDecoration(
+                      labelText:
+                          '   h) Date of issue and validity of layout of approved map / plan  ',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 13),
+                  TextField(
+                    // Changed from _buildTextField
                     controller: _approvedMapAuthorityController,
                     decoration: const InputDecoration(
-                      labelText: '   e) Approved map / plan issuing authority',
+                      labelText: '   i) Approved map / plan issuing authority',
                       hintText: 'e.g., Local Municipality',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -9314,7 +9611,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                     controller: _genuinenessVerifiedController,
                     decoration: const InputDecoration(
                       labelText:
-                          '   f) Whether genuineness or authenticity of approved map / plan is verified',
+                          '   j) Whether genuineness or authenticity of approved map / plan is verified',
                       hintText: 'YES / NO',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -9328,7 +9625,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
                     maxLines: 2,
                     decoration: const InputDecoration(
                       labelText:
-                          '   g) Any other comments by our empanelled valuers on authentic of approved plan',
+                          '   k) Any other comments by our empanelled valuers on authentic of approved plan',
                       hintText: 'e.g., None',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -10774,6 +11071,7 @@ class _ValuationFormPageState extends State<SBIValuationFormPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: "f1",
         onPressed: () {
           _saveData();
         },

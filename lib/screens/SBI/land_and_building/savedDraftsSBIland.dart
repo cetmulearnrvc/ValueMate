@@ -343,7 +343,7 @@ class _SavedDraftsSBILandState extends State<SavedDraftsSBILand> {
                                                   const SizedBox(height: 4),
                                                   _buildInfoRow(
                                                       Icons.location_on,
-                                                      'Location: ${property['docLocationSketch'] ?? property['address'] ?? 'N/A'}'),
+                                                      'Location: ${property['docLocationSketch'] ?? property['locationOfProperty'] ?? 'N/A'}'),
                                                 ],
                                               ),
                                             ),

@@ -158,67 +158,110 @@ class _PropertyValuationReportPageState
     double gfArea = p(_gfAreaController.text);
     double gfCant = p(_gfCantileverController.text);
     double gfTotal = gfArea + gfCant;
-    if (_gfTotalController.text != (gfTotal > 0 ? gfTotal.toStringAsFixed(2) : '')) {
+    if (_gfTotalController.text !=
+        (gfTotal > 0 ? gfTotal.toStringAsFixed(2) : '')) {
       _gfTotalController.text = gfTotal > 0 ? gfTotal.toStringAsFixed(2) : '';
     }
 
     double ffArea = p(_ffAreaController.text);
     double ffCant = p(_ffCantileverController.text);
     double ffTotal = ffArea + ffCant;
-    if (_ffTotalController.text != (ffTotal > 0 ? ffTotal.toStringAsFixed(2) : '')) {
+    if (_ffTotalController.text !=
+        (ffTotal > 0 ? ffTotal.toStringAsFixed(2) : '')) {
       _ffTotalController.text = ffTotal > 0 ? ffTotal.toStringAsFixed(2) : '';
     }
 
     double terraceArea = p(_terraceAreaController.text);
-    if (_terraceTotalController.text != (terraceArea > 0 ? terraceArea.toStringAsFixed(2) : '')) {
-      _terraceTotalController.text = terraceArea > 0 ? terraceArea.toStringAsFixed(2) : '';
+    if (_terraceTotalController.text !=
+        (terraceArea > 0 ? terraceArea.toStringAsFixed(2) : '')) {
+      _terraceTotalController.text =
+          terraceArea > 0 ? terraceArea.toStringAsFixed(2) : '';
     }
 
     double totalArea = gfTotal + ffTotal + terraceArea;
-    if (_totalAreaController.text != (totalArea > 0 ? totalArea.toStringAsFixed(2) : '')) {
-      _totalAreaController.text = totalArea > 0 ? totalArea.toStringAsFixed(2) : '';
+    if (_totalAreaController.text !=
+        (totalArea > 0 ? totalArea.toStringAsFixed(2) : '')) {
+      _totalAreaController.text =
+          totalArea > 0 ? totalArea.toStringAsFixed(2) : '';
     }
 
     // 2. Amenities Total
     double amenTotal = 0;
     final amCtrls = [
-      _amenityPorticoController, _amenityOrnamentalDoorController, _amenitySitoutGrillsController,
-      _amenitySteelGatesController, _amenityOpenStaircaseController, _amenityWardrobesController,
-      _amenityGlazedTilesController, _amenityExtraSinksController, _amenityMarbleTilesController,
-      _amenityInteriorDecorController, _amenityElevationWorksController, _amenityFalseCeilingController,
-      _amenityPanelingWorksController, _amenityAluminumWorksController, _amenityAluminumHandrailsController,
-      _amenityLumberRoomController, _amenityToiletRoomController, _amenityWaterTankSumpController,
-      _amenityGardeningController, _amenityAnyOtherController, _amenityOpenWellController,
-      _amenityDeepBoreController, _amenityHandPumpController, _amenityCorporationTapController,
-      _amenityUndergroundSumpController, _amenityOverheadWaterTankController, _amenitySepticTankController,
-      _amenityUndergroundSewerageController, _amenityCompoundWallController, _amenityPavementsController,
-      _amenitySteelGateRmController, _amenityEBDepositsController, _amenityWaterDepositsController,
-      _amenityDrainageDepositsController, _amenityAnyOtherItemController,
+      _amenityPorticoController,
+      _amenityOrnamentalDoorController,
+      _amenitySitoutGrillsController,
+      _amenitySteelGatesController,
+      _amenityOpenStaircaseController,
+      _amenityWardrobesController,
+      _amenityGlazedTilesController,
+      _amenityExtraSinksController,
+      _amenityMarbleTilesController,
+      _amenityInteriorDecorController,
+      _amenityElevationWorksController,
+      _amenityFalseCeilingController,
+      _amenityPanelingWorksController,
+      _amenityAluminumWorksController,
+      _amenityAluminumHandrailsController,
+      _amenityLumberRoomController,
+      _amenityToiletRoomController,
+      _amenityWaterTankSumpController,
+      _amenityGardeningController,
+      _amenityAnyOtherController,
+      _amenityOpenWellController,
+      _amenityDeepBoreController,
+      _amenityHandPumpController,
+      _amenityCorporationTapController,
+      _amenityUndergroundSumpController,
+      _amenityOverheadWaterTankController,
+      _amenitySepticTankController,
+      _amenityUndergroundSewerageController,
+      _amenityCompoundWallController,
+      _amenityPavementsController,
+      _amenitySteelGateRmController,
+      _amenityEBDepositsController,
+      _amenityWaterDepositsController,
+      _amenityDrainageDepositsController,
+      _amenityAnyOtherItemController,
     ];
     for (var c in amCtrls) {
       amenTotal += p(c.text);
     }
-    if (_amenityTotalController.text != (amenTotal > 0 ? amenTotal.toStringAsFixed(2) : '')) {
-      _amenityTotalController.text = amenTotal > 0 ? amenTotal.toStringAsFixed(2) : '';
+    if (_amenityTotalController.text !=
+        (amenTotal > 0 ? amenTotal.toStringAsFixed(2) : '')) {
+      _amenityTotalController.text =
+          amenTotal > 0 ? amenTotal.toStringAsFixed(2) : '';
     }
 
     // 3. Abstract Total
-    double totalGlr = p(absLandGlrController.text) + p(absBuildingGlrController.text) +
-                      p(absExtraGlrController.text) + p(absAmenitiesGlrController.text);
-    if (absTotalGlrController.text != (totalGlr > 0 ? totalGlr.toStringAsFixed(2) : '')) {
-      absTotalGlrController.text = totalGlr > 0 ? totalGlr.toStringAsFixed(2) : '';
+    double totalGlr = p(absLandGlrController.text) +
+        p(absBuildingGlrController.text) +
+        p(absExtraGlrController.text) +
+        p(absAmenitiesGlrController.text);
+    if (absTotalGlrController.text !=
+        (totalGlr > 0 ? totalGlr.toStringAsFixed(2) : '')) {
+      absTotalGlrController.text =
+          totalGlr > 0 ? totalGlr.toStringAsFixed(2) : '';
     }
-    if (absSayGlrController.text != (totalGlr > 0 ? totalGlr.round().toString() : '')) {
-      absSayGlrController.text = totalGlr > 0 ? totalGlr.round().toString() : '';
+    if (absSayGlrController.text !=
+        (totalGlr > 0 ? totalGlr.round().toString() : '')) {
+      absSayGlrController.text =
+          totalGlr > 0 ? totalGlr.round().toString() : '';
     }
 
-    double totalPmr = p(absLandPmrController.text) + p(absBuildingPmrController.text) +
-                      p(absExtraPmrController.text) + p(absAmenitiesPmrController.text);
-    if (absTotalPmrController.text != (totalPmr > 0 ? totalPmr.toStringAsFixed(2) : '')) {
-      absTotalPmrController.text = totalPmr > 0 ? totalPmr.toStringAsFixed(2) : '';
+    double totalPmr = p(absLandPmrController.text) +
+        p(absBuildingPmrController.text) +
+        p(absExtraPmrController.text) +
+        p(absAmenitiesPmrController.text);
+    if (absTotalPmrController.text !=
+        (totalPmr > 0 ? totalPmr.toStringAsFixed(2) : '')) {
+      absTotalPmrController.text =
+          totalPmr > 0 ? totalPmr.toStringAsFixed(2) : '';
     }
-    if (absSayPmrController.text != (totalPmr > 0 ? totalPmr.round().toString() : '')) {
-      absSayPmrController.text = totalPmr > 0 ? totalPmr.round().toString() : '';
+    if (absSayPmrController.text !=
+        (totalPmr > 0 ? totalPmr.round().toString() : '')) {
+      absSayPmrController.text =
+          totalPmr > 0 ? totalPmr.round().toString() : '';
     }
   }
 
@@ -1818,12 +1861,19 @@ class _PropertyValuationReportPageState
         pw.Container(
           alignment: pw.Alignment.topLeft,
           padding: const pw.EdgeInsets.all(5),
-          child: pw.Row(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
+          child: pw.RichText(
+            text: pw.TextSpan(
               children: [
-                pw.Text(": "),
-                pw.Expanded(child: pw.Text(value)),
-              ]),
+                const pw.TextSpan(text: ": ", style: pw.TextStyle(fontSize: 9)),
+                pw.TextSpan(
+                  // Use value if present, otherwise a dash to keep the row height stable
+                  text: value.isNotEmpty ? value : "-",
+                  style:
+                      pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
         ),
       ],
     );
@@ -4117,8 +4167,8 @@ class _PropertyValuationReportPageState
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: ElevatedButton.icon(
-                            onPressed: _isLoadingImages 
-                                ? null 
+                            onPressed: _isLoadingImages
+                                ? null
                                 : () => _updateImageLocation(imageData),
                             icon: const Icon(Icons.location_on),
                             label: const Text('Update Location'),
@@ -4284,11 +4334,14 @@ class _PropertyValuationReportPageState
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) throw Exception('Location permissions denied');
+        if (permission == LocationPermission.denied)
+          throw Exception('Location permissions denied');
       }
-      if (permission == LocationPermission.deniedForever) throw Exception('Location permissions permanently denied');
+      if (permission == LocationPermission.deniedForever)
+        throw Exception('Location permissions permanently denied');
 
-      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
 
       setState(() {
         // Find the index of the image to update
@@ -4301,9 +4354,9 @@ class _PropertyValuationReportPageState
           );
         }
       });
-      
+
       if (mounted) {
-         ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Image location updated successfully!')),
         );
       }
@@ -4407,12 +4460,12 @@ class _PropertyValuationReportPageState
 
     // Building calculation helpers
     double pRow(String s) => double.tryParse(s.replaceAll(',', '')) ?? 0.0;
-    
+
     double gfAreaVal = pRow(_gfAreaController.text);
     double gfRateVal = pRow(_gfReplacementRateController.text);
     double gfReplCostVal = gfAreaVal * gfRateVal;
     double gfDepPercentVal = pRow(_gfDepreciationController.text);
-    if (gfDepPercentVal == 0 && gfRateVal > 0) gfDepPercentVal = 11.11; 
+    if (gfDepPercentVal == 0 && gfRateVal > 0) gfDepPercentVal = 11.11;
     double gfDepValVal = gfReplCostVal * (gfDepPercentVal / 100);
     double gfNetVal = gfReplCostVal - gfDepValVal;
 
@@ -4431,7 +4484,8 @@ class _PropertyValuationReportPageState
     double terraceNetVal = terraceReplCostVal;
 
     double totalPlinthValPdf = gfAreaVal + ffAreaVal + terraceAreaValRow;
-    double totalReplCostValPdf = gfReplCostVal + ffReplCostVal + terraceReplCostVal;
+    double totalReplCostValPdf =
+        gfReplCostVal + ffReplCostVal + terraceReplCostVal;
     double totalDepValPdf = gfDepValVal + ffDepValVal;
     double totalNetValPdf = gfNetVal + ffNetVal + terraceNetVal;
 
@@ -4550,8 +4604,8 @@ class _PropertyValuationReportPageState
             mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-               // Empty space or placeholder as per SBI design
-               pw.Text('`', style: pw.TextStyle(fontSize: 14, font: ttf)),
+              // Empty space or placeholder as per SBI design
+              pw.Text('`', style: pw.TextStyle(fontSize: 14, font: ttf)),
 
               // Phone
               pw.Row(
@@ -4597,7 +4651,7 @@ class _PropertyValuationReportPageState
                     'The Canara Bank', // Adapted to Canara Bank
                     style: pw.TextStyle(fontSize: 12, font: ttf),
                   ),
-                   // You might want to add specific Branch details if available in controllers
+                  // You might want to add specific Branch details if available in controllers
                 ],
               ),
               pw.Text(
@@ -4614,7 +4668,7 @@ class _PropertyValuationReportPageState
       ),
 
       pw.SizedBox(height: 30),
-      
+
       // Titles
       pw.Center(
         child: pw.Text(
@@ -4623,23 +4677,22 @@ class _PropertyValuationReportPageState
             fontSize: 14,
             fontWeight: pw.FontWeight.bold,
             font: boldTtf,
-          ), 
+          ),
         ),
       ),
-      pw.SizedBox(height: 8), 
+      pw.SizedBox(height: 8),
       pw.Center(
         child: pw.Text(
           'VALUATION REPORT (IN RESPECT OF LAND / SITE AND BUILDING)',
           style: pw.TextStyle(
             fontSize: 12,
             fontWeight: pw.FontWeight.bold,
-             font: boldTtf,
-          ), 
+            font: boldTtf,
+          ),
           textAlign: pw.TextAlign.center,
         ),
       ),
       pw.SizedBox(height: 15),
-      
 
       pw.SizedBox(height: 8),
 
@@ -4667,7 +4720,7 @@ class _PropertyValuationReportPageState
                 padding: const pw.EdgeInsets.all(6),
                 child: pw.Text('GENERAL', style: pw.TextStyle(font: boldTtf)),
               ),
-               pw.Container(
+              pw.Container(
                 alignment: pw.Alignment.center,
                 padding: const pw.EdgeInsets.all(6),
                 child: pw.Text('', style: pw.TextStyle(font: boldTtf)),
@@ -4702,7 +4755,7 @@ class _PropertyValuationReportPageState
                 padding: const pw.EdgeInsets.all(5),
                 child: pw.Text('Documents produced for perusal:'),
               ),
-               pw.Container(
+              pw.Container(
                 alignment: pw.Alignment.topCenter,
                 padding: const pw.EdgeInsets.all(5),
                 child: pw.Text(':'),
@@ -5967,72 +6020,180 @@ class _PropertyValuationReportPageState
           pw.TableRow(
             decoration: const pw.BoxDecoration(color: PdfColors.grey300),
             children: [
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text('Sr. no.', style: boldTextStyle, textAlign: pw.TextAlign.center)),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text('Particulars of Item', style: boldTextStyle)),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text('Plinth area (Sq.ft)', style: boldTextStyle)),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text('Roof height', style: boldTextStyle)),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text('Age', style: boldTextStyle)),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text('Rate Rs.', style: boldTextStyle)),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text('Repl. cost Rs.', style: boldTextStyle)),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text('Dep. Rs.', style: boldTextStyle)),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text('Net Value Rs.', style: boldTextStyle)),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text('Sr. no.',
+                      style: boldTextStyle, textAlign: pw.TextAlign.center)),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text('Particulars of Item', style: boldTextStyle)),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text('Plinth area (Sq.ft)', style: boldTextStyle)),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text('Roof height', style: boldTextStyle)),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text('Age', style: boldTextStyle)),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text('Rate Rs.', style: boldTextStyle)),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text('Repl. cost Rs.', style: boldTextStyle)),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text('Dep. Rs.', style: boldTextStyle)),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text('Net Value Rs.', style: boldTextStyle)),
             ],
           ),
           // G.F.
           pw.TableRow(
             children: [
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text('1', textAlign: pw.TextAlign.center)),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text('G. F.')),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text(_gfAreaController.text)),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text('3.0')),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text(_gfAgeController.text)),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text(_gfReplacementRateController.text)),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text(gfReplCostVal > 0 ? gfReplCostVal.toStringAsFixed(2) : '')),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text(gfDepValVal > 0 ? gfDepValVal.toStringAsFixed(2) : '')),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text(gfNetVal > 0 ? gfNetVal.toStringAsFixed(2) : '')),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text('1', textAlign: pw.TextAlign.center)),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4), child: pw.Text('G. F.')),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text(_gfAreaController.text)),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4), child: pw.Text('3.0')),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text(_gfAgeController.text)),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text(_gfReplacementRateController.text)),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text(gfReplCostVal > 0
+                      ? gfReplCostVal.toStringAsFixed(2)
+                      : '')),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text(
+                      gfDepValVal > 0 ? gfDepValVal.toStringAsFixed(2) : '')),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child:
+                      pw.Text(gfNetVal > 0 ? gfNetVal.toStringAsFixed(2) : '')),
             ],
           ),
           // F.F.
           pw.TableRow(
             children: [
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text('2', textAlign: pw.TextAlign.center)),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text('F. F.')),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text(_ffAreaController.text)),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text('3.0')),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text(_ffAgeController.text)),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text(_ffReplacementRateController.text)),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text(ffReplCostVal > 0 ? ffReplCostVal.toStringAsFixed(2) : '')),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text(ffDepValVal > 0 ? ffDepValVal.toStringAsFixed(2) : '')),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text(ffNetVal > 0 ? ffNetVal.toStringAsFixed(2) : '')),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text('2', textAlign: pw.TextAlign.center)),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4), child: pw.Text('F. F.')),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text(_ffAreaController.text)),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4), child: pw.Text('3.0')),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text(_ffAgeController.text)),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text(_ffReplacementRateController.text)),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text(ffReplCostVal > 0
+                      ? ffReplCostVal.toStringAsFixed(2)
+                      : '')),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text(
+                      ffDepValVal > 0 ? ffDepValVal.toStringAsFixed(2) : '')),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child:
+                      pw.Text(ffNetVal > 0 ? ffNetVal.toStringAsFixed(2) : '')),
             ],
           ),
           // Terrace
           pw.TableRow(
             children: [
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text('3', textAlign: pw.TextAlign.center)),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text('Terrace')),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text(_terraceAreaController.text)),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text('3.0')),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text(_terraceYearController.text)),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text('')),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text(terraceReplCostVal > 0 ? terraceReplCostVal.toStringAsFixed(2) : '')),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text('')),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text(terraceNetVal > 0 ? terraceNetVal.toStringAsFixed(2) : '')),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text('3', textAlign: pw.TextAlign.center)),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text('Terrace')),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text(_terraceAreaController.text)),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4), child: pw.Text('3.0')),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text(_terraceYearController.text)),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4), child: pw.Text('')),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text(terraceReplCostVal > 0
+                      ? terraceReplCostVal.toStringAsFixed(2)
+                      : '')),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4), child: pw.Text('')),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text(terraceNetVal > 0
+                      ? terraceNetVal.toStringAsFixed(2)
+                      : '')),
             ],
           ),
           // Total
           pw.TableRow(
             decoration: const pw.BoxDecoration(color: PdfColors.grey200),
             children: [
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text('')),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text('Total', style: boldTextStyle)),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text(totalPlinthValPdf > 0 ? totalPlinthValPdf.toStringAsFixed(2) : '', style: boldTextStyle)),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text('')),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text('')),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text('')),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text(totalReplCostValPdf > 0 ? totalReplCostValPdf.toStringAsFixed(2) : '', style: boldTextStyle)),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text(totalDepValPdf > 0 ? totalDepValPdf.toStringAsFixed(2) : '', style: boldTextStyle)),
-              pw.Padding(padding: const pw.EdgeInsets.all(4), child: pw.Text(totalNetValPdf > 0 ? totalNetValPdf.toStringAsFixed(2) : '', style: boldTextStyle)),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4), child: pw.Text('')),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text('Total', style: boldTextStyle)),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text(
+                      totalPlinthValPdf > 0
+                          ? totalPlinthValPdf.toStringAsFixed(2)
+                          : '',
+                      style: boldTextStyle)),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4), child: pw.Text('')),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4), child: pw.Text('')),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4), child: pw.Text('')),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text(
+                      totalReplCostValPdf > 0
+                          ? totalReplCostValPdf.toStringAsFixed(2)
+                          : '',
+                      style: boldTextStyle)),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text(
+                      totalDepValPdf > 0
+                          ? totalDepValPdf.toStringAsFixed(2)
+                          : '',
+                      style: boldTextStyle)),
+              pw.Padding(
+                  padding: const pw.EdgeInsets.all(4),
+                  child: pw.Text(
+                      totalNetValPdf > 0
+                          ? totalNetValPdf.toStringAsFixed(2)
+                          : '',
+                      style: boldTextStyle)),
             ],
           ),
         ],
@@ -6948,7 +7109,7 @@ class _PropertyValuationReportPageState
             base: ttf,
             bold: boldTtf,
           ),
-          margin: const pw.EdgeInsets.all(30),
+          margin: const pw.EdgeInsets.fromLTRB(30, 30, 30, 60),
         ),
         build: (pw.Context context) => widgets,
       ),

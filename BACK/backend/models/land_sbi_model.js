@@ -16,13 +16,10 @@ const SBIValuationLandSchema = new mongoose.Schema({
     landTaxReceipt:String,
     titleDeed:String,
     buildingCertificate:String,
-    locationSketch:String,
-    possessionCertificate:String,
-    buildingCompletionPlan:String,
-    thandapperDocument:String,
-    buildingTaxReceipt:String,
+
 
     // Page 1 fields
+    loanApplicant:String,
     purpose: String,
     dateOfInspection: String,
     dateOfValuation: String,
@@ -115,6 +112,10 @@ northSouth: String,
 eastWest: String,
 totalExtent: String,
 prevalingMarket: String,
+guidelineRate: String,
+assessed: String,
+estimationValue: String,
+percentValue: String,
 
     
 
@@ -123,6 +124,11 @@ prevalingMarket: String,
     typeOfConstruction: String,
     ageOfTheBuilding: String,
     residualAgeOfTheBuilding: String,
+    noOfFloors: String,
+    plinthAreaFloorWise: String,
+    condtionOfTheBuilding1: String,
+    condtionOfTheBuilding2: String,
+    dateOfissue: String,
     approvedMapAuthority: String,
     genuinenessVerified: String,
     otherComments: String,
